@@ -10,16 +10,17 @@
 [![Pydantic](https://img.shields.io/badge/Pydantic-2.12%2B-E92063?style=for-the-badge&logo=pydantic&logoColor=white)](https://docs.pydantic.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-> ⚠️ **PROJECT IN ACTIVE DEVELOPMENT**
-> This reposiotio documents the design and architecture of an interactive platform that democratizes machine learning; loading your data, selecting your target, and the platform.
 
-**Data Alchemist** is an interactive platform that democratizes machine learning. 
-Upload your data, select your target, and the platform:
-- Automatically analyzes available memory
-- Decide the optimal strategy (eager/lazy/streaming)
-- Guides you in pre-processing and model selection
-- Train and evaluate in real time
-- Export your model and processed data
+> ⚠️ **PROYECTO EN DESARROLLO ACTIVO**
+> Esta repositorio documenta el diseño y la arquitectura de una plataforma interactiva que democratiza el aprendizaje automático; cargando sus datos, seleccionando su objetivo y la plataforma.
 
-Ideal for data scientists, analysts and anyone who wants to experiment 
-with ML without worrying about infrastructure.
+**Data Alchemist** es una plataforma interactiva que democratiza el aprendizaje automático. 
+Sube tus datos, selecciona tu objetivo y la plataforma:
+- Analiza automáticamente la memoria disponible
+- Decidir la estrategia óptima (eager/lazy/streaming)
+- Le guía en el preprocesamiento y la selección de modelos
+- Entrenar y evaluar en tiempo real
+- Exporta tu modelo y datos procesados
+
+Ideal para científicos de datos, analistas y cualquier persona que quiera experimentar 
+con ML sin preocuparse por la infraestructura.
