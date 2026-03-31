@@ -1,0 +1,10 @@
+path: 
+  data: 'users_behavior.csv'
+  sample_data_percent: 0.1 #percent data analysis, this can change by system to be optimal
+
+
+
+
+
+
+
