@@ -116,11 +116,8 @@ cython_debug/
 .vscode/
 
 # Data files (add specific extensions you don't want to upload)
-*.csv
 *.xlsx
 *.xls
-*.json
-*.parquet
 *.db
 *.sqlite
 *.sqlite3
