@@ -3,21 +3,24 @@ path:
   sample_data_percent: 0.1 #percent data analysis, this can change by system to be optimal
 
 eda: 
-  all_eda: True
-  general_information: 
+  general_information: True
   null_values: 
-  basic_analysis_data:
+  basic_analysis_data: 
     distribution: 
       columns: 
+      enable: 
     outliers: 
-      columns: 
-      method: 
+      columns:
+      enable: 
+      method: #if a method is not given, the value will be 'iqr'
     correlation: 
       columns: 
+      enable: 
     category_dominance: 
       columns: 
-      top_n: 
-      rare_threshold_percent: 0.05
+      enable: 
+      top_n: #if a top_n is not given, the value will be 2
+      rare_threshold_percent: #if a threshold is not given, the value will be 0.01
 
 
 
