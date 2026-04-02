@@ -27,7 +27,24 @@ class validation(BaseModel):
     path: path_validation
     eda: eda_val
     
-    
+    @model_validator(mode='after')
+    def columns_analysis_val(self): 
+        path= self.path
+        analysis= self.eda.basic_analysis_data
+        
+        if path.suffix == '.csv': 
+            frame= pl.scan_csv(path, n_rows=1000)
+            schema= frame.collect_schema()
+        elif path.suffix == '.parquet': 
+            frame= pl.scan_parquet(path, n_rows=1000)
+            schema= frame.collect_schema()
+        else: 
+            frame= pl.read_json(path, n_rows=1000)
+            schema= frame.schema
+        
+        
+        
+        
     
 
 
