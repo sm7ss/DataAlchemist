@@ -35,7 +35,7 @@ class eda_val(BaseModel):
     def outlier_val(cls, v): 
         outliers= v['outliers']['method']
         if not outliers:
-            print('AHHHHHHHHHHHHH', outliers)
+            logger.info(f'The value for the outlier method cant be a None, the new value is {analysis_outliers.IQR.value}')
             v['outliers']['method']= analysis_outliers.IQR.value
             return v
         
@@ -56,23 +56,18 @@ class eda_val(BaseModel):
         rare_threshold_percent= v['category_dominance']['rare_threshold_percent']
         
         if not top_n: 
+            logger.info(f'The value of top_n cant be a None, so the new value is: {category_dominance_tn.MIN.value}')
             v['category_dominance']['top_n']= category_dominance_tn.MIN.value
         elif top_n <= category_dominance_tn.MIN.value or top_n >= category_dominance_tn.MAX.value: 
             logger.error(f'Top_n cant be less or equal than {category_dominance_tn.MIN.value} and greater or equal than {category_dominance_tn.MAX.value}')
             raise ValueError(f'Top_n cant be less or equal than {category_dominance_tn.MIN.value} and greater or equal than {category_dominance_tn.MAX.value}')
         
         if not rare_threshold_percent: 
+            logger.info(f'The value of the percent threshold cant be a None, so the new value is: {0.01}')
             v['category_dominance']['rare_threshold_percent']= 0.01
         elif rare_threshold_percent <= category_dominance_rtp.MIN.value or rare_threshold_percent >= category_dominance_rtp.MAX.value: 
             logger.error(f'Top_n cant be less or equal than {category_dominance_rtp.MIN.value} and greater or equal than {category_dominance_rtp.MAX.value}')
             raise ValueError(f'Top_n cant be less or equal than {category_dominance_rtp.MIN.value} and greater or equal than {category_dominance_rtp.MAX.value}')
         
         return v
-    
-    
-    
-
-
-
-
 
