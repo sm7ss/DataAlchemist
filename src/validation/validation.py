@@ -29,7 +29,7 @@ class validation(BaseModel):
     
     @model_validator(mode='after')
     def columns_analysis_val(self): 
-        path= self.path
+        path= self.path.data
         analysis= self.eda.basic_analysis_data
         
         if path.suffix == '.csv': 
@@ -42,10 +42,12 @@ class validation(BaseModel):
             frame= pl.read_json(path, n_rows=1000)
             schema= frame.schema
         
+        num_columns= frame.select(pl.selectors.numeric())
+        cat_columns= frame.select(pl.selectors.string())
         
         
         
-    
+        return self
 
 
 
