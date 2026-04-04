@@ -8,17 +8,17 @@ eda:
   basic_analysis_data: 
     distribution: 
       columns: 
-      enable: 
+      enable: True
     outliers: 
       columns:
-      enable: 
+      enable: True
       method: #if a method is not given, the value will be 'iqr'
     correlation: 
       columns: 
-      enable: 
+      enable: True
     category_dominance: 
       columns: 
-      enable: 
+      enable: True
       top_n: #if a top_n is not given, the value will be 2
       rare_threshold_percent: #if a threshold is not given, the value will be 0.01
 
