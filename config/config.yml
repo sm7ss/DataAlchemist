@@ -1,11 +1,12 @@
 path: 
-  data: 'users_behavior.csv'
+  data: 'games.csv'
   sample_data_percent: 0.1 #percent data analysis, this can change by system to be optimal
 
 eda: 
   general_information: True
   null_values: True
-  null_values_percent: 0.65
+  null_values_percent_column: 0.65
+  null_values_percent_row: 0.40
   basic_analysis_data: 
     distribution: 
       columns: 
