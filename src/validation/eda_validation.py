@@ -10,7 +10,8 @@ logger= logging.getLogger(__name__)
 class eda_val(BaseModel): 
     general_information: Optional[bool]
     null_values: Optional[bool]
-    null_values_percent: Optional[float] = Field(gt=0.0, le=90.0)
+    null_values_percent_column: Optional[float] = Field(gt=0.0, le=95.0)
+    null_values_percent_row: Optional[float] = Field(gt=0.0, le=95.0)
     basic_analysis_data: Dict[str, Any]
     
     @model_validator(mode='after')
