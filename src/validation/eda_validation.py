@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, field_validator, model_validator, Field
 from ..strategies.strategies import analysis_outliers, category_dominance_rtp, category_dominance_tn
 from typing import Dict, Any, Optional
 
@@ -10,6 +10,7 @@ logger= logging.getLogger(__name__)
 class eda_val(BaseModel): 
     general_information: Optional[bool]
     null_values: Optional[bool]
+    null_values_percent: Optional[float] = Field(gt=0.0, le=90.0)
     basic_analysis_data: Dict[str, Any]
     
     @model_validator(mode='after')
