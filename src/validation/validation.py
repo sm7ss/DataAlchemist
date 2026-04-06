@@ -33,7 +33,7 @@ class validation(BaseModel):
         analysis= self.eda.basic_analysis_data
         
         if path.suffix == '.csv': 
-            frame= pl.read_csv(path, n_rows=1000)
+            frame= pl.read_csv(path, n_rows=1000, null_values=['tbd', 'TBD', 'N/A', 'nan'])
         elif path.suffix == '.parquet': 
             frame= pl.read_parquet(path, n_rows=1000)
         else: 
