@@ -4,7 +4,8 @@ path:
 
 eda: 
   general_information: True
-  null_values: 
+  null_values: True
+  null_values_percent: 0.65
   basic_analysis_data: 
     distribution: 
       columns: 
