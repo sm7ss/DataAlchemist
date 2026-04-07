@@ -25,7 +25,7 @@ class EdaNullValues:
     def null_column(self, col: str) -> int: 
         return self.frame.filter(pl.col(col).is_null()).height
     
-    def total_nulls_values(self): 
+    def total_nulls_values(self) -> Dict[str, Any]: 
         columns= self.frame.columns
         total_height= self.frame.height
         col_per= self.column_percentage*100
