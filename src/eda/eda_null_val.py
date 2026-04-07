@@ -63,7 +63,7 @@ class EdaNullValues:
             else: 
                 self.nulls_dict[col]['total_nulls_column']= null_count_col
                 self.nulls_dict[col]['total_nulls_row']= null_count_row
-                self.nulls_dict[col]['action'] = 'leave'
+                self.nulls_dict[col]['action'] = 'keep'
         
         self.nulls_dict['total_nulls']= total_nulls
         return self.nulls_dict
