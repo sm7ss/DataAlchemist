@@ -9,9 +9,8 @@ logger= logging.getLogger(__name__)
 class EdaGeneralInfo: 
     def __init__(self, frame: pl.DataFrame):
         self.frame= frame
-    
-    def frame_head(self) -> pl.DataFrame: 
-        return self.frame.head()
+        
+        self.info_eda_dict= {}
     
     def shape(self) -> Tuple[int]: 
         return self.frame.shape
@@ -22,15 +21,17 @@ class EdaGeneralInfo:
     def basic_statistics(self) -> pl.DataFrame: 
         return self.frame.describe()
     
-    def eda_general_info_format(self) -> str: 
-        print('FRAME HEAD')
-        print(self.frame_head())
+    def eda_general_info_format(self) -> str:
         print('SHAPE')
         print(self.shape())
         print('AVAILABLE COLUMNS')
         print(self.available_columns())
         print('BASIC STATISTICS')
         print(self.basic_statistics())
+        
+        
+        
+        
 
 
 
