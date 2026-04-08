@@ -1,6 +1,7 @@
 from typing import Dict, Any
 
 import polars as pl 
+import numpy as np
 import logging
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s-&(levelname)s-%(message)s')
@@ -9,8 +10,11 @@ logger= logging.getLogger(__name__)
 # HERE # if your outliers analysis detection is another one, please create a new class like OutlierAnalysis
 
 class AnalysisData: 
-    def __init__(self, analysis: Dict[str, Any]):
+    def __init__(self, frame: pl.DataFrame, analysis: Dict[str, Any]):
         self.analysis= analysis
+        
+        self.cat_frame= frame.select(pl.selectors.string())
+        self.num_frame= frame.select(pl.selectors.numeric())
     
     def distribution_analysis(self): 
         pass
@@ -24,7 +28,8 @@ class AnalysisData:
     def category_dominance(self): 
         pass
     
-    
+    def analysis_data(self) -> Dict[str, Any]: 
+        pass
     
     
     
