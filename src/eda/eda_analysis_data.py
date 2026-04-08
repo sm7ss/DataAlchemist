@@ -16,8 +16,50 @@ class AnalysisData:
         self.cat_frame= frame.select(pl.selectors.string())
         self.num_frame= frame.select(pl.selectors.numeric())
     
-    def distribution_analysis(self): 
-        pass
+    def distribution_analysis(self) -> Dict[str, Any]: 
+        distribution_dict= {}
+        
+        for col in self.num_frame.columns: 
+            statistics= self.num_frame[col].describe()
+            
+            mean= statistics.filter(pl.col('statistic')=='mean')['value'].item()
+            median= statistics.filter(pl.col('statistic')=='50%')['value'].item()
+            p25= statistics.filter(pl.col('statistic')=='25%')['value'].item()
+            p75= statistics.filter(pl.col('statistic')=='75%')['value'].item()
+            min_val= statistics.filter(pl.col('statistic')=='min')['value'].item()
+            max_val= statistics.filter(pl.col('statistic')=='max')['value'].item()
+            
+            iqr= p75-p25
+            range_val= max_val-min_val
+            
+            if mean > median: 
+                sesgo= 'positive (tail to the right)'
+            elif mean < median: 
+                sesgo= 'negative (tail to the left)'
+            else: 
+                sesgo= 'symmetrical'
+            
+            if range_val > 0: 
+                concentration= iqr/range_val
+                if concentration < 0.3: 
+                    distribution= 'very concentrated (75% of the data in less than 30% of the range)'
+                elif concentration > 0.7: 
+                    distribution= 'very dispersed (75% of data covers more than 70% of the range)'
+                else: 
+                    distribution= 'moderately dispersed'
+            else: 
+                distribution= 'range value is 0'
+            
+            distribution_dict[col]= {
+                'range': round(range_val, 3),
+                'mean': round(mean, 3),
+                'median': round(median, 3),
+                'iqr': round(iqr, 3),
+                'form': sesgo, 
+                'distribution': distribution
+            }
+        
+        return distribution_dict
     
     def outliers_analysis(self): 
         pass
