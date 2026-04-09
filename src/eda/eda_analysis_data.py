@@ -8,6 +8,32 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s-&(levelname)s-%(mess
 logger= logging.getLogger(__name__)
 
 # HERE # if your outliers analysis detection is another one, please create a new class like OutlierAnalysis
+# HERE it could be a good idea to have another config that can optimize the values like the quantile, to make this more dinamic
+
+class OutlierDecisionMaker: 
+    @staticmethod
+    def scaler_model_option() -> str: 
+        pass
+    
+    @staticmethod 
+    def filter_model_option() -> str: 
+        pass
+    
+    @staticmethod
+    def impute_model_option() -> str: 
+        pass
+    
+    @staticmethod
+    def flag_model_option() -> str: 
+        pass
+    
+    @staticmethod
+    def transform_model_option() -> str: 
+        pass
+    
+    
+    
+    
 
 class AnalysisData: 
     def __init__(self, frame: pl.DataFrame, analysis: Dict[str, Any]):
@@ -61,8 +87,37 @@ class AnalysisData:
         
         return distribution_dict
     
-    def outliers_analysis(self): 
-        pass
+    def outliers_analysis(self, method: str) -> Dict[str, Any]: 
+        outliers_dict= {}
+        
+        for col in self.num_frame.columns: 
+            q1= self.num_frame[col].quantile(0.25)
+            q3= self.num_frame[col].quantile(0.75)
+            iqr= q3 - q1 
+            
+            lower= q1 - 1.5*iqr
+            upper= q3 + 1.5*iqr
+            
+            outliers= self.num_frame.filter((pl.col(col) < lower) | (pl.col(col) > upper))
+            n_out= outliers.height 
+            pct_outlier= (n_out/ self.num_frame.height) *100
+            
+            
+            
+            decisions= {
+                'scaler': , 
+                'filter': ,
+                'method': method
+            }
+            
+            outliers_dict[col] = {
+                'iqr': round(iqr, 3), 
+                'n_outliers': n_out, 
+                'percent_outliers': round(pct_outlier, 3), 
+                'decision': decisions
+            }
+        
+        return outliers_dict
     
     def correlation_analysis(self): 
         pass
