@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 import polars as pl 
 import numpy as np
@@ -12,28 +12,78 @@ logger= logging.getLogger(__name__)
 
 class OutlierDecisionMaker: 
     @staticmethod
-    def scaler_model_option() -> str: 
-        pass
+    def scaler_model_option(percent_outlier: float) -> str: 
+        if percent_outlier > 5: 
+            suggest_scaler= 'robustScaler'
+        elif percent_outlier < 1: 
+            suggest_scaler= 'standarScaler'
+        else: 
+            suggest_scaler= 'minMaxScaler'
+        
+        return suggest_scaler
     
     @staticmethod 
-    def filter_model_option() -> str: 
-        pass
+    def filter_model_option(percent_outlier: float) -> str: 
+        if percent_outlier > 10: 
+            suggest_filter= 'none'
+        elif percent_outlier < 2: 
+            suggest_filter= 'trim'
+        else: 
+            suggest_filter= 'capping'
+        
+        return suggest_filter
     
     @staticmethod
-    def impute_model_option() -> str: 
-        pass
+    def impute_model_option(percent_outlier: float) -> str: 
+        if percent_outlier > 5: 
+            suggest_impute= 'none'
+        else: 
+            suggest_impute= 'median'
+        
+        return suggest_impute
     
     @staticmethod
-    def flag_model_option() -> str: 
-        pass
+    def flag_model_option(percent_outlier: float) -> bool: 
+        if percent_outlier > 5: 
+            suggest_flag= True
+        else: 
+            suggest_flag= False
+        
+        return suggest_flag
     
     @staticmethod
-    def transform_model_option() -> str: 
-        pass
+    def transform_model_option(skew: str, min_max_div: float) -> str: 
+        if skew == 'positive' and min_max_div > 100: 
+            suggest_transform= 'log1p'
+        elif skew == 'positive': 
+            suggest_transform= 'sqrt'
+        else: 
+            suggest_transform= 'none'
+        
+        return suggest_transform
     
-    
-    
-    
+    @classmethod
+    def outlier_decision_maker(cls, percent_outlier: float, skew:str, min_max_div:float) -> Dict[str, Any]: 
+        scaler= cls.scaler_model_option(percent_outlier=percent_outlier)
+        fitler= cls.filter_model_option(percent_outlier=percent_outlier)
+        impute= cls.impute_model_option(percent_outlier=percent_outlier)
+        flag= cls.flag_model_option(percent_outlier=percent_outlier)
+        
+        if min_max_div is None:
+            logger.warning("Min value is 0, we can't divide by 0. So there will be no value option for tranfrom option")
+            transform= None
+        else: 
+            transform= cls.transform_model_option(skew=skew, min_max_div=min_max_div)
+        
+        dict_outlier= {
+            'scaler': scaler, 
+            'filter': fitler, 
+            'impute': impute, 
+            'flag': flag, 
+            'transform': transform
+        }
+        
+        return dict_outlier
 
 class AnalysisData: 
     def __init__(self, frame: pl.DataFrame, analysis: Dict[str, Any]):
@@ -41,6 +91,8 @@ class AnalysisData:
         
         self.cat_frame= frame.select(pl.selectors.string())
         self.num_frame= frame.select(pl.selectors.numeric())
+        
+        self.outlier_decision= OutlierDecisionMaker()
     
     def distribution_analysis(self) -> Dict[str, Any]: 
         distribution_dict= {}
@@ -91,8 +143,15 @@ class AnalysisData:
         outliers_dict= {}
         
         for col in self.num_frame.columns: 
-            q1= self.num_frame[col].quantile(0.25)
-            q3= self.num_frame[col].quantile(0.75)
+            describe= self.num_frame[col].describe()
+            
+            mean= describe.filter(pl.col('statistic')=='mean')['value'].item()
+            median= describe.filter(pl.col('statistic')=='50%')['value'].item()
+            q1= describe.filter(pl.col('statistic')=='25%')['value'].item()
+            q3= describe.filter(pl.col('statistic')=='75%')['value'].item()
+            min_val= describe.filter(pl.col('statistic')=='min')['value'].item()
+            max_val= describe.filter(pl.col('statistic')=='max')['value'].item()
+            
             iqr= q3 - q1 
             
             lower= q1 - 1.5*iqr
@@ -102,18 +161,25 @@ class AnalysisData:
             n_out= outliers.height 
             pct_outlier= (n_out/ self.num_frame.height) *100
             
+            if min_val == 0:
+                min_max_div= None
+            else: 
+                min_max_div= max_val/min_val
             
+            if mean < median:
+                skew= 'negative'
+            elif mean > median: 
+                skew= 'positive'
+            else: 
+                skew= 'balanced'
             
-            decisions= {
-                'scaler': , 
-                'filter': ,
-                'method': method
-            }
+            decisions= self.outlier_decision.outlier_decision_maker(percent_outlier=pct_outlier, skew=skew, min_max_div=min_max_div)
             
             outliers_dict[col] = {
                 'iqr': round(iqr, 3), 
                 'n_outliers': n_out, 
                 'percent_outliers': round(pct_outlier, 3), 
+                'method': method, 
                 'decision': decisions
             }
         
