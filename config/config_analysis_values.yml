@@ -1,0 +1,25 @@
+outlier_decision_maker: 
+  scaler: 
+    robust_scaler_percent: 5.0
+    standard_scaler_percent: 1.0
+    # The difference between robust and standard will be MinMaxScaler
+  
+  filter: 
+    none: 10.0
+    trim: 2.0
+    # The difference betwwen robust and standard will be Capping
+  
+  impute:
+    none: 5.0
+    # Less of None will impute with median
+  
+  flag: 
+    flag_true: 5.0
+    # Less flag_true will be False
+  
+  transform: 
+    log1p: 100.0 
+    sqrt: 1.0 
+    # else will be None
+
+
