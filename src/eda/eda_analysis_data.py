@@ -30,7 +30,7 @@ class OutlierDecisionMaker:
     
     def filter_model_option(self, percent_outlier: float) -> str: 
         if percent_outlier > self.filter.none: 
-            suggest_filter= 'none'
+            suggest_filter= None
         elif percent_outlier < self.filter.trim: 
             suggest_filter= 'trim'
         else: 
@@ -40,7 +40,7 @@ class OutlierDecisionMaker:
     
     def impute_model_option(self, percent_outlier: float) -> str: 
         if percent_outlier > self.impute.none: 
-            suggest_impute= 'none'
+            suggest_impute= None
         else: 
             suggest_impute= 'median'
         
@@ -60,7 +60,7 @@ class OutlierDecisionMaker:
         elif skew == 'positive': 
             suggest_transform= 'sqrt'
         else: 
-            suggest_transform= 'none'
+            suggest_transform= None
         
         return suggest_transform
     
