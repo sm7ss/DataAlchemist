@@ -1,4 +1,5 @@
 from typing import Dict, Any, List
+from pydantic import BaseModel
 
 import polars as pl 
 import numpy as np
@@ -8,52 +9,53 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s-&(levelname)s-%(mess
 logger= logging.getLogger(__name__)
 
 # HERE # if your outliers analysis detection is another one, please create a new class like OutlierAnalysis
-# HERE it could be a good idea to have another config that can optimize the values like the quantile, to make this more dinamic
 
 class OutlierDecisionMaker: 
-    @staticmethod
-    def scaler_model_option(percent_outlier: float) -> str: 
-        if percent_outlier > 5: 
+    def __init__(self, config_vars: BaseModel):
+        self.scaler= config_vars.scaler
+        self.filter= config_vars.filter
+        self.impute= config_vars.impute
+        self.flag= config_vars.flag
+        self.transform= config_vars.transform
+    
+    def scaler_model_option(self, percent_outlier: float) -> str: 
+        if percent_outlier > self.scaler.robust_scaler_percent: 
             suggest_scaler= 'robustScaler'
-        elif percent_outlier < 1: 
+        elif percent_outlier < self.scaler.standard_scaler_percent: 
             suggest_scaler= 'standarScaler'
         else: 
             suggest_scaler= 'minMaxScaler'
         
         return suggest_scaler
     
-    @staticmethod 
-    def filter_model_option(percent_outlier: float) -> str: 
-        if percent_outlier > 10: 
+    def filter_model_option(self, percent_outlier: float) -> str: 
+        if percent_outlier > self.filter.none: 
             suggest_filter= 'none'
-        elif percent_outlier < 2: 
+        elif percent_outlier < self.filter.trim: 
             suggest_filter= 'trim'
         else: 
             suggest_filter= 'capping'
         
         return suggest_filter
     
-    @staticmethod
-    def impute_model_option(percent_outlier: float) -> str: 
-        if percent_outlier > 5: 
+    def impute_model_option(self, percent_outlier: float) -> str: 
+        if percent_outlier > self.impute.none: 
             suggest_impute= 'none'
         else: 
             suggest_impute= 'median'
         
         return suggest_impute
     
-    @staticmethod
-    def flag_model_option(percent_outlier: float) -> bool: 
-        if percent_outlier > 5: 
+    def flag_model_option(self, percent_outlier: float) -> bool: 
+        if percent_outlier > self.flag.flag_true: 
             suggest_flag= True
         else: 
             suggest_flag= False
         
         return suggest_flag
     
-    @staticmethod
-    def transform_model_option(skew: str, min_max_div: float) -> str: 
-        if skew == 'positive' and min_max_div > 100: 
+    def transform_model_option(self, skew: str, min_max_div: float) -> str: 
+        if skew == 'positive' and min_max_div > self.transform.log1p: 
             suggest_transform= 'log1p'
         elif skew == 'positive': 
             suggest_transform= 'sqrt'
@@ -62,18 +64,17 @@ class OutlierDecisionMaker:
         
         return suggest_transform
     
-    @classmethod
-    def outlier_decision_maker(cls, percent_outlier: float, skew:str, min_max_div:float) -> Dict[str, Any]: 
-        scaler= cls.scaler_model_option(percent_outlier=percent_outlier)
-        fitler= cls.filter_model_option(percent_outlier=percent_outlier)
-        impute= cls.impute_model_option(percent_outlier=percent_outlier)
-        flag= cls.flag_model_option(percent_outlier=percent_outlier)
+    def outlier_decision_maker(self, percent_outlier: float, skew:str, min_max_div:float) -> Dict[str, Any]: 
+        scaler= self.scaler_model_option(percent_outlier=percent_outlier)
+        fitler= self.filter_model_option(percent_outlier=percent_outlier)
+        impute= self.impute_model_option(percent_outlier=percent_outlier)
+        flag= self.flag_model_option(percent_outlier=percent_outlier)
         
         if min_max_div is None:
             logger.warning("Min value is 0, we can't divide by 0. So there will be no value option for tranfrom option")
             transform= None
         else: 
-            transform= cls.transform_model_option(skew=skew, min_max_div=min_max_div)
+            transform= self.transform_model_option(skew=skew, min_max_div=min_max_div)
         
         dict_outlier= {
             'scaler': scaler, 
@@ -86,13 +87,13 @@ class OutlierDecisionMaker:
         return dict_outlier
 
 class AnalysisData: 
-    def __init__(self, frame: pl.DataFrame, analysis: Dict[str, Any]):
+    def __init__(self, frame: pl.DataFrame, analysis: Dict[str, Any], config_vars: BaseModel):
         self.analysis= analysis
         
         self.cat_frame= frame.select(pl.selectors.string())
         self.num_frame= frame.select(pl.selectors.numeric())
         
-        self.outlier_decision= OutlierDecisionMaker()
+        self.outlier_decision= OutlierDecisionMaker(config_vars=config_vars)
     
     def distribution_analysis(self) -> Dict[str, Any]: 
         distribution_dict= {}
@@ -185,7 +186,7 @@ class AnalysisData:
         
         return outliers_dict
     
-    def correlation_analysis(self): 
+    def correlation_analysis(self) -> Dict[str, Any]: 
         pass
     
     def category_dominance(self): 
