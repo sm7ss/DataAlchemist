@@ -42,7 +42,6 @@ class flag_val(BaseModel):
 
 class transform_val(BaseModel): 
     log1p: float= Field(ge=0.0, le=100.0)
-    sqrt: float= Field(ge=0.0, le=100.0)
 
 class outlier_decision_maker(BaseModel): 
     scaler: scaler_val

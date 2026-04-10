@@ -18,8 +18,7 @@ outlier_decision_maker:
     # Less flag_true will be False
   
   transform: 
-    log1p: 100.0 
-    sqrt: 1.0 
+    log1p: 100.0 # just positive will be sqrt
     # else will be None
 
 
