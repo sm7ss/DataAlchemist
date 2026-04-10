@@ -41,7 +41,6 @@ class validation(BaseModel):
         
         num_columns= frame.select(pl.selectors.numeric()).columns
         cat_columns= frame.select(pl.selectors.string()).columns
-        all_columns= frame.columns
         
         for analysis_data in analysis: 
             columns= analysis[analysis_data]['columns']
@@ -49,12 +48,12 @@ class validation(BaseModel):
             
             if not columns: 
                 if (analysis_data == 'distribution') and (enable == True): 
-                    if len(all_columns) < 1: 
+                    if len(num_columns) < 1: 
                         logger.warning(f'There are no columns available, {analysis_data} will be desactivated')
                         self.eda.basic_analysis_data[analysis_data]['enable']= False
                     else: 
                         logger.info(f'{analysis_data} analysis will change their columns to be all columns, cause there are no columns available and the analysis is activated')
-                        self.eda.basic_analysis_data[analysis_data]['columns']= all_columns
+                        self.eda.basic_analysis_data[analysis_data]['columns']= num_columns
                 elif (analysis_data == 'outliers') and (enable == True): 
                     if len(num_columns) < 1: 
                         logger.warning(f'There are no numric columns available, {analysis_data} will be desactivated')
@@ -85,8 +84,8 @@ class validation(BaseModel):
             elif isinstance(columns, list): 
                 for col in columns: 
                     if (analysis_data == 'distribution') and (enable == True): 
-                        if col not in all_columns: 
-                            logger.error(f'The column {col} doesnt exist on the frame.\nThe available columns are: {all_columns}')
+                        if col not in num_columns: 
+                            logger.error(f'The column {col} doesnt exist on the frame.\nThe available columns are: {num_columns}')
                     elif (analysis_data == 'outliers') and (enable == True): 
                         if col not in num_columns: 
                             logger.error(f'Th column {col} should be a numerical column.\nNumerical columns available: {num_columns}')
@@ -103,18 +102,20 @@ class validation(BaseModel):
                         continue
             elif isinstance(columns, str): 
                 if (analysis_data == 'distribution') and (enable == True): 
-                    if columns not in all_columns: 
-                        logger.error(f'The column {columns} doesnt exist on the frame.\nThe available columns are: {all_columns}')
-                        raise ValueError(f'The column {columns} doesnt exist on the frame.\nThe available columns are: {all_columns}')
+                    if columns not in num_columns: 
+                        logger.error(f'The column {columns} doesnt exist on the frame.\nThe available columns are: {num_columns}')
+                        raise ValueError(f'The column {columns} doesnt exist on the frame.\nThe available columns are: {num_columns}')
                 elif (analysis_data == 'outliers') and (enable == True): 
                     if columns not in num_columns: 
                         logger.error(f'Th column {columns} should be a numerical column.\nNumerical columns available: {num_columns}')
                         raise ValueError(f'Th column {columns} should be a numerical column.\nNumerical columns available: {num_columns}')
                 elif (analysis_data == 'correlation') and (enable == True): 
+                    
                     if columns not in num_columns: 
                         logger.error(f'The column {columns} should be a numerical column.\nNumerical columns available: {num_columns}')
                         raise ValueError(f'The column {columns} should be a numerical column.\nNumerical columns available: {num_columns}')
                 elif (analysis_data == 'category_dominance') and (enable == True): 
+                    
                     if columns not in cat_columns: 
                         logger.error(f'The column {columns} is not a categorical column.\nCateorical columns available: {cat_columns}')
                         raise ValueError(f'The column {columns} is not a categorical column.\nCateorical columns available: {cat_columns}')
