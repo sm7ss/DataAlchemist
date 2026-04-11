@@ -21,4 +21,17 @@ outlier_decision_maker:
     log1p: 100.0 # just positive will be sqrt
     # else will be None
 
+correlation_decision_maker: 
+  sampling: 
+    percent: 30 # if this percent is not optimal for the system, this will change 
+    # if not value is given, the value per defect will be on strategies_analysis_data.py
+    method: 'random'
+    representative_columns: # if None is the value, then the sample_percent will be random data
+  # if a str or list is given, the sample_percent will be the data in this representative columns
+  
+  handle_nulls: 'median'
+  threshold: 0.75
+
+
+
 
