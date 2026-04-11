@@ -1,10 +1,13 @@
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, field_validator
+from ...strategies.strategies_analysis_data import correlation_config, correlation_sampling
+from typing import List, Union
+
 import logging
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
 logger= logging.getLogger(__name__)
 
-class scaler_val(BaseModel): 
+class out_scaler_val(BaseModel): 
     robust_scaler_percent: float= Field(ge=0.0, le=100.0)
     standard_scaler_percent: float= Field(ge=0.0, le=100.0)
     
@@ -19,7 +22,7 @@ class scaler_val(BaseModel):
         
         return self
 
-class filter_val(BaseModel): 
+class out_filter_val(BaseModel): 
     none: float= Field(ge=0.0, le=100.0)
     trim: float= Field(ge=0.0, le=100.0)
     
@@ -34,19 +37,34 @@ class filter_val(BaseModel):
         
         return self
 
-class impute_val(BaseModel): 
+class out_impute_val(BaseModel): 
     none: float= Field(ge=0.0, le=100.0)
 
-class flag_val(BaseModel): 
+class out_flag_val(BaseModel): 
     flag_true: float= Field(ge=0.0, le=100.0)
 
-class transform_val(BaseModel): 
+class out_transform_val(BaseModel): 
     log1p: float= Field(ge=0.0, le=100.0)
 
-class outlier_decision_maker(BaseModel): 
-    scaler: scaler_val
-    filter: filter_val
-    impute: impute_val
-    flag: flag_val
-    transform: transform_val
+class outlier_decision_maker_val(BaseModel): 
+    scaler: out_scaler_val
+    filter: out_filter_val
+    impute: out_impute_val
+    flag: out_flag_val
+    transform: out_transform_val
+
+class corr_sampling(BaseModel): 
+    percent: float= Field(ge=0.001, le=100.0)
+    method: correlation_sampling
+    representative_columns: Union[List[str], str, None]
+
+class correlation_decision_maker_val(BaseModel): 
+    sampling: corr_sampling
+    handle_nulls: correlation_config
+    threshold: float= Field(gt=0.0, le=100.0)
+
+class validator_analysis_values(BaseModel): 
+    outlier_decision_maker: outlier_decision_maker_val
+    correlation_decision_maker: correlation_decision_maker_val
+
 
