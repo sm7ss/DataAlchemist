@@ -105,7 +105,7 @@ class CorrelationHandleNulls:
         expression=[]
         
         for column in col: 
-            expression(pl.col(column).fill_null(pl.median(column)))
+            expression.append(pl.col(column).fill_null(pl.median(column)))
         
         return self.frame.with_columns(expression)
     
@@ -125,10 +125,7 @@ class CorrelationHandleNulls:
         
         return self.frame.with_columns(expression)
     
-    def correlation_config_decision(self, handle_nulls: correlation_config, col: Union[List[str], str]) -> pl.DataFrame: 
-        if isinstance(col, str): 
-            col= [col]
-        
+    def correlation_config_decision(self, handle_nulls: correlation_config, col: List[str]) -> pl.DataFrame: 
         match handle_nulls: 
             case correlation_config.FILTER: 
                 frame= self.filter(col=col)
@@ -141,43 +138,77 @@ class CorrelationHandleNulls:
         
         return frame
 
-class CorrelationDEcisionMaker: 
+class CorrelationSampling: 
+    def __init__(self, frame: pl.DataFrame, percent: float):
+        self.frame= frame
+        self.percent= percent/100
+    
+    def random_sample(self) -> pl.DataFrame: 
+        return self.frame.sample(fraction=self.percent, seed=42)
+    
+    def representative(self, r_columns: Union[str, List[str]]) -> pl.DataFrame: 
+        return self.frame.select(r_columns).sample(fraction=self.percent, seed=42)
+    
+    def correlation_sampling_decision(self, decision: correlation_sampling, r_columns: Union[str, List[str]]) -> pl.DataFrame: 
+        match decision: 
+            case correlation_sampling.RANDOM: 
+                frame= self.random_sample()
+            case correlation_sampling.REPRESENTATIVE: 
+                frame= self.representative(r_columns=r_columns)
+        
+        return frame
+
+class CorrelationDecisionMaker: 
     def __init__(self, config_vars: BaseModel):
         self.sampling= config_vars.correlation_decision_maker.sampling
         self.handle_nulls= config_vars.correlation_decision_maker.handle_nulls
         self.threshold= config_vars.correlation_decision_maker.threshold
     
-    def correlation_config(self): 
-        pass
+    def correlation_null_hanlder(self, frame: pl.DataFrame, col: List[str]) -> pl.DataFrame: 
+        return CorrelationHandleNulls(frame=frame).correlation_config_decision(
+            handle_nulls=self.handle_nulls, 
+            col=col
+        )
+    
+    def correlation_sampling(self, frame: pl.DataFrame) -> pl.DataFrame: 
+        percent= self.sampling.percent
+        decision= self.sampling.method
+        r_columns= self.sampling.representative_columns
+        return CorrelationSampling(frame=frame, percent=percent).correlation_sampling_decision(
+            decision=decision, 
+            r_columns=r_columns
+        )
+    
+    def correlation_decision_maker(self, frame: pl.DataFrame, column: Union[str, List[str]]) -> pl.DataFrame: 
+        sample_frame= self.correlation_sampling(frame=frame)
+        columns_with_nulls= []
         
+        for col in column: 
+            nulls= sample_frame.filter(pl.col(col).is_null()).height
+            if nulls > 0: 
+                columns_with_nulls.append(col)
         
-    
-    def correlation_sampling(self): 
-        pass
-    
-    def correlation_decision_maker(self) -> Dict[str, Any]: 
-        pass
-    
-    
-
-
-
-
+        if columns_with_nulls:
+            frame= self.correlation_null_hanlder(frame=sample_frame, col=column)
+        
+        return frame
 
 class AnalysisData: 
     def __init__(self, frame: pl.DataFrame, analysis: Dict[str, Any], config_vars: BaseModel):
+        self.frame= frame
         self.analysis= analysis
         
-        self.cat_frame= frame.select(pl.selectors.string())
-        self.num_frame= frame.select(pl.selectors.numeric())
-        
         self.outlier_decision= OutlierDecisionMaker(config_vars=config_vars)
+        self.correlation_decision= CorrelationDecisionMaker(config_vars=config_vars)
     
     def distribution_analysis(self) -> Dict[str, Any]: 
+        columns= self.analysis['distribution']['columns']
+        frame= self.frame.select(columns)
+        
         distribution_dict= {}
         
-        for col in self.num_frame.columns: 
-            statistics= self.num_frame[col].describe()
+        for col in columns: 
+            statistics= frame[col].describe()
             
             mean= statistics.filter(pl.col('statistic')=='mean')['value'].item()
             median= statistics.filter(pl.col('statistic')=='50%')['value'].item()
@@ -219,10 +250,13 @@ class AnalysisData:
         return distribution_dict
     
     def outliers_analysis(self, method: str) -> Dict[str, Any]: 
+        column= self.analysis['outliers']['columns']
+        frame= self.frame.select(column)
+        
         outliers_dict= {}
         
-        for col in self.num_frame.columns: 
-            describe= self.num_frame[col].describe()
+        for col in column: 
+            describe= frame[col].describe()
             
             mean= describe.filter(pl.col('statistic')=='mean')['value'].item()
             median= describe.filter(pl.col('statistic')=='50%')['value'].item()
@@ -236,9 +270,9 @@ class AnalysisData:
             lower= q1 - 1.5*iqr
             upper= q3 + 1.5*iqr
             
-            outliers= self.num_frame.filter((pl.col(col) < lower) | (pl.col(col) > upper))
+            outliers= frame.filter((pl.col(col) < lower) | (pl.col(col) > upper))
             n_out= outliers.height 
-            pct_outlier= (n_out/ self.num_frame.height) *100
+            pct_outlier= (n_out/ frame.height) *100
             
             if min_val == 0:
                 min_max_div= None
@@ -265,7 +299,12 @@ class AnalysisData:
         return outliers_dict
     
     def correlation_analysis(self) -> Dict[str, Any]: 
-        pass
+        column= self.analysis['correlation']['columns']
+        frame= self.frame.select(column)
+        
+        frame= self.correlation_decision.correlation_decision_maker(frame=frame, column=column)
+        
+        return frame
     
     def category_dominance(self): 
         pass
