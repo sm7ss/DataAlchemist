@@ -30,7 +30,7 @@ correlation_decision_maker:
   # if a str or list is given, the sample_percent will be the data in this representative columns
   
   handle_nulls: 'median'
-  threshold: 75.0
+  threshold: 75.0 # multicollinearity value to filter columns with >= threshold 
 
 
 
