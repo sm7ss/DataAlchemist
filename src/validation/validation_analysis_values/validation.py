@@ -57,6 +57,24 @@ class corr_sampling(BaseModel):
     percent: float= Field(ge=0.001, le=100.0)
     method: correlation_sampling
     representative_columns: Union[List[str], str, None]
+    
+    @model_validator(mode='after')
+    def type_operation(self): 
+        percent= self.percent
+        method= self.method
+        representative_columns= self.representative_columns
+        
+        match method: 
+            case correlation_sampling.RANDOM: 
+                if not percent: 
+                    logger.error('A percent should be given for random sample')
+                    raise ValueError('A percent should be given for random sample')
+            case correlation_sampling.REPRESENTATIVE: 
+                if not representative_columns: 
+                    logger.error('You need to asign a column or a list of columns, because you choose i method a representative sample')
+                    raise ValueError('You need to asign a column or a list of columns, because you choose i method a representative sample')
+        
+        return self
 
 class correlation_decision_maker_val(BaseModel): 
     sampling: corr_sampling
