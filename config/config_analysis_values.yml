@@ -23,13 +23,12 @@ outlier_decision_maker:
 
 correlation_decision_maker: 
   sampling: 
-    percent: 30.0 # if this percent is not optimal for the system, this will change 
-    # if not value is given, the value per defect will be on strategies_analysis_data.py
+    percent: 30.0 
     method: 'random'
     representative_columns: # if None is the value, then the sample_percent will be random data
   # if a str or list is given, the sample_percent will be the data in this representative columns
   
-  handle_nulls: 'filter'
+  handle_nulls: 'median'
   threshold: 75.0 # multicollinearity value to filter columns with >= threshold 
 
 
