@@ -1,4 +1,6 @@
-from typing import Dict, Any, List
+from ..strategies.strategies_analysis_data import correlation_config, correlation_sampling
+
+from typing import Dict, Any, Union, List
 from pydantic import BaseModel
 
 import polars as pl 
@@ -8,15 +10,16 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s-&(levelname)s-%(message)s')
 logger= logging.getLogger(__name__)
 
+# This will change to be lazy later
 # HERE # if your outliers analysis detection is another one, please create a new class like OutlierAnalysis
 
 class OutlierDecisionMaker: 
     def __init__(self, config_vars: BaseModel):
-        self.scaler= config_vars.scaler
-        self.filter= config_vars.filter
-        self.impute= config_vars.impute
-        self.flag= config_vars.flag
-        self.transform= config_vars.transform
+        self.scaler= config_vars.outlier_decision_maker.scaler
+        self.filter= config_vars.outlier_decision_maker.filter
+        self.impute= config_vars.outlier_decision_maker.impute
+        self.flag= config_vars.outlier_decision_maker.flag
+        self.transform= config_vars.outlier_decision_maker.transform
     
     def scaler_model_option(self, percent_outlier: float) -> str: 
         if percent_outlier > self.scaler.robust_scaler_percent: 
@@ -85,6 +88,81 @@ class OutlierDecisionMaker:
         }
         
         return dict_outlier
+
+class CorrelationHandleNulls: 
+    def __init__(self, frame: pl.DataFrame):
+        self.frame= frame
+    
+    def filter(self, col:List[str]) -> pl.DataFrame: 
+        expression= []
+        
+        for column in col: 
+            expression.append(~pl.col(column).is_null())
+        
+        return self.frame.with_columns(expression)
+    
+    def median(self, col:List[str]) -> pl.DataFrame: 
+        expression=[]
+        
+        for column in col: 
+            expression(pl.col(column).fill_null(pl.median(column)))
+        
+        return self.frame.with_columns(expression)
+    
+    def zero(self, col:List[str]) -> pl.DataFrame: 
+        expression=[]
+        
+        for column in col: 
+            expression.append(pl.col(column).fill_null(0))
+        
+        return self.frame.with_columns(expression)
+    
+    def mean(self, col:List[str]) -> pl.DataFrame: 
+        expression=[]
+        
+        for column in col: 
+            expression.append(pl.col(column).fill_null(pl.mean(column)))
+        
+        return self.frame.with_columns(expression)
+    
+    def correlation_config_decision(self, handle_nulls: correlation_config, col: Union[List[str], str]) -> pl.DataFrame: 
+        if isinstance(col, str): 
+            col= [col]
+        
+        match handle_nulls: 
+            case correlation_config.FILTER: 
+                frame= self.filter(col=col)
+            case correlation_config.MEDIAN: 
+                frame= self.median(col=col)
+            case correlation_config.ZERO: 
+                frame= self.zero(col=col)
+            case correlation_config.MEAN: 
+                frame= self.mean(col=col)
+        
+        return frame
+
+class CorrelationDEcisionMaker: 
+    def __init__(self, config_vars: BaseModel):
+        self.sampling= config_vars.correlation_decision_maker.sampling
+        self.handle_nulls= config_vars.correlation_decision_maker.handle_nulls
+        self.threshold= config_vars.correlation_decision_maker.threshold
+    
+    def correlation_config(self): 
+        pass
+        
+        
+    
+    def correlation_sampling(self): 
+        pass
+    
+    def correlation_decision_maker(self) -> Dict[str, Any]: 
+        pass
+    
+    
+
+
+
+
 
 class AnalysisData: 
     def __init__(self, frame: pl.DataFrame, analysis: Dict[str, Any], config_vars: BaseModel):
