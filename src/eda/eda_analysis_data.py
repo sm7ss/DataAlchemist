@@ -99,7 +99,7 @@ class CorrelationHandleNulls:
         for column in col: 
             expression.append(~pl.col(column).is_null())
         
-        return self.frame.with_columns(expression)
+        return self.frame.filter(expression)
     
     def median(self, col:List[str]) -> pl.DataFrame: 
         expression=[]
