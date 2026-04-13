@@ -193,6 +193,29 @@ class CorrelationDecisionMaker:
         
         return frame
 
+class CorrelationAnalysisAndDict: 
+    def __init__(self, frame: pl.DataFrame):
+        self.corr_frame= frame.corr()
+        self.columns= frame.columns
+    
+    def corelation_dict(self) -> Dict[str, Any]: 
+        dict_corr= {}
+        
+        for i in range(len(self.columns)): 
+            for j in range(len(i+1, len(self.columns))): 
+                col_1= self.columns[i]
+                col_2= self.columns[j]
+                corr_value= self.corr_frame[col_2][i]
+                dict_corr[f'{col_1}_&_{col_2}']= round(corr_value, 3)
+        
+        return dict_corr
+    
+    def multicollinearity_dict(self) -> Dict[str, Any]: 
+        pass
+    
+    def correlation_analysis_dict(self) -> Dict[str, Any]: 
+        pass
+
 class AnalysisData: 
     def __init__(self, frame: pl.DataFrame, analysis: Dict[str, Any], config_vars: BaseModel):
         self.frame= frame
