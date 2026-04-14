@@ -193,36 +193,14 @@ class CorrelationDecisionMaker:
         
         return frame
 
-class CorrelationAnalysisAndDict: 
-    def __init__(self, frame: pl.DataFrame):
-        self.corr_frame= frame.corr()
-        self.columns= frame.columns
-    
-    def corelation_dict(self) -> Dict[str, Any]: 
-        dict_corr= {}
-        
-        for i in range(len(self.columns)): 
-            for j in range(len(i+1, len(self.columns))): 
-                col_1= self.columns[i]
-                col_2= self.columns[j]
-                corr_value= self.corr_frame[col_2][i]
-                dict_corr[f'{col_1}_&_{col_2}']= round(corr_value, 3)
-        
-        return dict_corr
-    
-    def multicollinearity_dict(self) -> Dict[str, Any]: 
-        pass
-    
-    def correlation_analysis_dict(self) -> Dict[str, Any]: 
-        pass
-
 class AnalysisData: 
     def __init__(self, frame: pl.DataFrame, analysis: Dict[str, Any], config_vars: BaseModel):
         self.frame= frame
         self.analysis= analysis
+        self.config_values= config_vars
         
-        self.outlier_decision= OutlierDecisionMaker(config_vars=config_vars)
-        self.correlation_decision= CorrelationDecisionMaker(config_vars=config_vars)
+        self.outlier_decision= OutlierDecisionMaker(config_vars=self.config_values)
+        self.correlation_decision= CorrelationDecisionMaker(config_vars=self.config_values)
     
     def distribution_analysis(self) -> Dict[str, Any]: 
         columns= self.analysis['distribution']['columns']
@@ -323,11 +301,33 @@ class AnalysisData:
     
     def correlation_analysis(self) -> Dict[str, Any]: 
         column= self.analysis['correlation']['columns']
-        frame= self.frame.select(column)
+        threshold= self.config_values.correlation_decision_maker.threshold/100
         
-        frame= self.correlation_decision.correlation_decision_maker(frame=frame, column=column)
+        old_frame= self.frame.select(column)
+        frame= self.correlation_decision.correlation_decision_maker(frame=old_frame, column=column)
+        corr= frame.corr()
         
-        return frame
+        correlation= []
+        multicollinearity= []
+        
+        for i in range(len(corr)): 
+            for j in range(i+1, len(column)):
+                col_1= column[i]
+                col_2= column[j]
+                corr_value= corr[col_2][i]
+                
+                correlation.append([col_1, col_2, corr_value])
+                if corr_value > threshold: 
+                    multicollinearity.append([col_1, col_2, corr_value])
+        
+        dict_corr= {
+            'correlations': correlation,
+            'high_correlations': multicollinearity if multicollinearity else None,
+            'threshold': threshold, 
+            'note': 'values with high correlation were found, it is recommended to either remove, join or filter values from the columns for model training' if multicollinearity else None
+        }
+        
+        return dict_corr
     
     def category_dominance(self): 
         pass
