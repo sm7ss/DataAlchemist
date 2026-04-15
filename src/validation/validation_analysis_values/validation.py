@@ -81,8 +81,12 @@ class correlation_decision_maker_val(BaseModel):
     handle_nulls: correlation_config
     threshold: float= Field(gt=0.0, le=100.0)
 
+class category_decision_maker_val(BaseModel): 
+    rare_threshold_limit: int= Field(ge=1, le=100)
+
 class validator_analysis_values(BaseModel): 
     outlier_decision_maker: outlier_decision_maker_val
     correlation_decision_maker: correlation_decision_maker_val
+    category_decision_maker: category_decision_maker_val
 
 
