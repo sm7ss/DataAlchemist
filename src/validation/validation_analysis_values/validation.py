@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, model_validator, field_validator
+from pydantic import BaseModel, Field, model_validator
 from ...strategies.strategies_analysis_data import correlation_config, correlation_sampling
 from typing import List, Union
 
@@ -81,8 +81,15 @@ class correlation_decision_maker_val(BaseModel):
     handle_nulls: correlation_config
     threshold: float= Field(gt=0.0, le=100.0)
 
+class category_threshold_ml_analysis_val(BaseModel): 
+    few_categories: int = Field(ge=1, le=50)
+    many_categories: int= Field(ge=10, le=100)
+    high_cardinality: int= Field(ge=10)
+    no_rare_values_and_reasonable_categories: int= Field(ge=1, le=10)
+
 class category_decision_maker_val(BaseModel): 
     rare_threshold_limit: int= Field(ge=1, le=100)
+    threshold_ml_analysis: category_threshold_ml_analysis_val
 
 class validator_analysis_values(BaseModel): 
     outlier_decision_maker: outlier_decision_maker_val
