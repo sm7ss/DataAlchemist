@@ -1,6 +1,8 @@
 from ..strategies.strategies_analysis_data import correlation_config, correlation_sampling
+from ..io.folder_file_manager import FolderAndFile
 
-from typing import Dict, Any, Union, List
+from pathlib import Path
+from typing import Dict, Any, Union, List, Optional
 from pydantic import BaseModel
 
 import polars as pl 
@@ -249,8 +251,10 @@ class AnalysisData:
         
         return distribution_dict
     
-    def outliers_analysis(self, method: str) -> Dict[str, Any]: 
+    def outliers_analysis(self) -> Dict[str, Any]: 
         column= self.analysis['outliers']['columns']
+        method= self.analysis['outliers']['method']
+        
         frame= self.frame.select(column)
         
         outliers_dict= {}
@@ -328,7 +332,7 @@ class AnalysisData:
         
         return dict_corr
     
-    def category_dominance(self) -> Dict[str, Any]:
+    def category_dominance_analysis(self) -> Dict[str, Any]:
         column= self.analysis['category_dominance']['columns']
         top_n= self.analysis['category_dominance']['top_n']
         rare_threshold= self.analysis['category_dominance']['rare_threshold_percent']
@@ -385,7 +389,32 @@ class AnalysisData:
             }
         return dict_cat_dom
     
-    def analysis_data(self) -> Dict[str, Any]: 
-        pass
+    def analysis_data(self) -> Optional[Path]: 
+        distribution= self.analysis['distribution']['enable']
+        outlier= self.analysis['outliers']['enable']
+        correlation= self.analysis['correlation']['enable']
+        category= self.analysis['category_dominance']['enable']
+        
+        analysis_dict= {}
+        
+        if distribution: 
+            dict_distribution= self.distribution_analysis()
+            analysis_dict['distribution']= dict_distribution
+        if outlier: 
+            dict_outlier= self.outliers_analysis()
+            analysis_dict['outliers']= dict_outlier
+        if correlation:
+            dict_correlation= self.correlation_analysis()
+            analysis_dict['correlation']= dict_correlation
+        if category: 
+            dict_category= self.category_dominance_analysis()
+            analysis_dict['category_dominance']= dict_category
+        
+        if not analysis_dict: 
+            logger.warning('The JSON file was not created for exploratory analysis since no analysis was enabled')
+            return None
+        
+        path= FolderAndFile().create_json(json_dict=analysis_dict)
+        return path
 
 
