@@ -31,6 +31,7 @@ correlation_decision_maker:
   handle_nulls: 'median'
   threshold: 75.0 # multicollinearity value to filter columns with >= threshold 
 
-
+category_decision_maker: 
+  rare_threshold_limit: 10 #Limit of count rare values
 
 
