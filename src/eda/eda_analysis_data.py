@@ -1,5 +1,4 @@
 from ..strategies.strategies_analysis_data import correlation_config, correlation_sampling
-from ..io.folder_file_manager import FolderAndFile
 
 from pathlib import Path
 from typing import Dict, Any, Union, List, Optional
@@ -389,7 +388,7 @@ class AnalysisData:
             }
         return dict_cat_dom
     
-    def analysis_data(self) -> Optional[Path]: 
+    def analysis_data(self) -> Optional[Dict[str, Any]]: 
         distribution= self.analysis['distribution']['enable']
         outlier= self.analysis['outliers']['enable']
         correlation= self.analysis['correlation']['enable']
@@ -411,10 +410,9 @@ class AnalysisData:
             analysis_dict['category_dominance']= dict_category
         
         if not analysis_dict: 
-            logger.warning('The JSON file was not created for exploratory analysis since no analysis was enabled')
+            logger.warning('The analysis dictionary for JSON was not created for exploratory analysis since no analysis was enabled')
             return None
         
-        path= FolderAndFile().create_json(json_dict=analysis_dict)
-        return path
+        return analysis_dict
 
 
