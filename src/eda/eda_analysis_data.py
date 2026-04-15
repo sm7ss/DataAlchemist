@@ -4,7 +4,6 @@ from typing import Dict, Any, Union, List
 from pydantic import BaseModel
 
 import polars as pl 
-import numpy as np
 import logging
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s-&(levelname)s-%(message)s')
@@ -329,18 +328,64 @@ class AnalysisData:
         
         return dict_corr
     
-    def category_dominance(self): 
-        pass
+    def category_dominance(self) -> Dict[str, Any]:
+        column= self.analysis['category_dominance']['columns']
+        top_n= self.analysis['category_dominance']['top_n']
+        rare_threshold= self.analysis['category_dominance']['rare_threshold_percent']
+        
+        frame= self.frame.select(column)
+        total_rows= frame.height
+        
+        dict_cat_dom= {}
+        rare_threshold_limit= self.config_values.category_decision_maker.rare_threshold_limit
+        
+        for col in frame.columns: 
+            rare_limit_count= 0
+            rare_values= []
+            top= []
+            
+            total_unique_values= frame[col].n_unique()
+            unique= frame[col].value_counts()
+            top_hight_frecuency= unique.sort(by='count' , descending=True).limit(top_n)
+            
+            for i in range(len(unique)): 
+                value= unique[col][i]
+                count= unique['count'][i]
+                percent= count/total_rows
+                
+                if percent < rare_threshold: 
+                    rare_values_dict= {
+                        'value': value, 
+                    'count': count, 
+                    'percent': round(percent*100, 3)
+                    }
+                    rare_values.append(rare_values_dict)
+                    rare_limit_count+=1
+                    if rare_limit_count == rare_threshold_limit: 
+                        break
+            
+            for i in range(len(top_hight_frecuency)): 
+                value= top_hight_frecuency[col][i]
+                count= top_hight_frecuency['count'][i]
+                percent= count/total_rows
+                
+                top_dict= {
+                    'value': value, 
+                    'count': count, 
+                    'percent': round(percent*100, 3)
+                }
+                top.append(top_dict)
+            
+            dict_cat_dom[col]= {
+                'unique_count': total_unique_values, 
+                'top_values': top,
+                'rare_values':  rare_values if rare_values else None, 
+                'rare_threshold': 0.01, 
+                'suggestion': 'Group rare categories' if rare_values else None
+            }
+        return dict_cat_dom
     
     def analysis_data(self) -> Dict[str, Any]: 
         pass
-    
-    
-    
-    
-    
-    
-    
-
 
 
