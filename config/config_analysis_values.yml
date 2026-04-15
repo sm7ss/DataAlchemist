@@ -33,5 +33,13 @@ correlation_decision_maker:
 
 category_decision_maker: 
   rare_threshold_limit: 10 #Limit of count rare values
+  
+  threshold_ml_analysis:
+    few_categories: 5
+    many_categories: 20
+    high_cardinality: 100
+    no_rare_values_and_reasonable_categories: 10
+
+
 
 
