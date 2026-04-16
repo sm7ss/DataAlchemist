@@ -193,6 +193,77 @@ class CorrelationDecisionMaker:
         
         return frame
 
+class CategoryDominanceDecisionMaker: 
+    def __init__(self, config_vars: BaseModel):
+        self.few_cat= config_vars.category_decision_maker.threshold_ml_analysis.few_categories
+        self.many_cat= config_vars.category_decision_maker.threshold_ml_analysis.many_categories
+        self.hight_cardinality= config_vars.category_decision_maker.threshold_ml_analysis.high_cardinality
+        self.nrv_and_rc= config_vars.category_decision_maker.threshold_ml_analysis.no_rare_values_and_reasonable_categories
+    
+    def few_categories(self, n_cat: int) -> Optional[str]: 
+        if n_cat < self.few_cat: 
+            return 'ordinalEncoder'
+        else: 
+            return None
+    
+    def many_categories(self, n_cat: int) -> Optional[str]: 
+        if n_cat > self.many_cat: 
+            return 'targetEncoder'
+        else: 
+            return None
+    
+    def many_rare_values(self, n_rare_val: int) -> Optional[Dict[str, Any]]: 
+        if n_rare_val > self.nrv_and_rc: 
+            return {
+                'suggestion': 'group', 
+                'encoder': 'oneHotEncoder'
+            }
+        else: 
+            return None
+    
+    def hight_cardinality_decision(self, n_cat: int) -> Optional[str]: 
+        if n_cat > self.hight_cardinality: 
+            return 'targetEncoder'
+        else: 
+            return None
+    
+    def null_cateories(self) -> Dict[str, Any]: 
+        return {
+            'suggestion': ['group', 'filter', 'simpleImputer'], 
+            'encoder': 'Any_encoder'
+        }
+    
+    def no_rare_value_categories_reasonable(self, n_rare_val: int, n_cat: int) -> Optional[str]: 
+        if n_rare_val == 0 and n_cat < self.nrv_and_rc: 
+            return 'oneHotEncoder'
+        else: 
+            return None
+    
+    def category_dominance_decision_maker(self, 
+            n_cat: int, 
+            n_rare_val: int, 
+            n_nuls: Optional[int]=None
+        ) -> Dict[str, Any]: 
+        fc= self.few_categories(n_cat=n_cat)
+        mc= self.many_categories(n_cat=n_cat)
+        mrv= self.many_rare_values(n_rare_val=n_rare_val)
+        hcd= self.hight_cardinality_decision(n_cat=n_cat)
+        nrv_cr= self.no_rare_value_categories_reasonable(n_rare_val=n_rare_val, n_cat=n_cat)
+        
+        if n_nuls: 
+            nc= self.null_cateories()
+        else: 
+            nc= None
+        
+        return {
+            'few_categories': fc, 
+            'many_categories': mc,
+            'many_rare_values': mrv,
+            'hight_cardinality': hcd,
+            'categories_with_nulls': nc,
+            'no_rare_value_categories_reasonable': nrv_cr
+        }
+
 class AnalysisData: 
     def __init__(self, frame: pl.DataFrame, analysis: Dict[str, Any], config_vars: BaseModel):
         self.frame= frame
@@ -201,6 +272,7 @@ class AnalysisData:
         
         self.outlier_decision= OutlierDecisionMaker(config_vars=self.config_values)
         self.correlation_decision= CorrelationDecisionMaker(config_vars=self.config_values)
+        self.category_decision= CategoryDominanceDecisionMaker(config_vars=self.config_values)
     
     def distribution_analysis(self) -> Dict[str, Any]: 
         columns= self.analysis['distribution']['columns']
@@ -296,7 +368,7 @@ class AnalysisData:
                 'n_outliers': n_out, 
                 'percent_outliers': round(pct_outlier, 3), 
                 'method': method, 
-                'decision': decisions
+                'suggestion': decisions
             }
         
         return outliers_dict
@@ -348,8 +420,12 @@ class AnalysisData:
             top= []
             
             total_unique_values= frame[col].n_unique()
+            
             unique= frame[col].value_counts()
             top_hight_frecuency= unique.sort(by='count' , descending=True).limit(top_n)
+            
+            total_rare_value= frame.filter(pl.col(col).n_unique()/total_rows < rare_threshold).height
+            total_nulls= frame.filter(pl.col(col).is_null()).height
             
             for i in range(len(unique)): 
                 value= unique[col][i]
@@ -359,8 +435,8 @@ class AnalysisData:
                 if percent < rare_threshold: 
                     rare_values_dict= {
                         'value': value, 
-                    'count': count, 
-                    'percent': round(percent*100, 3)
+                        'count': count, 
+                        'percent': round(percent*100, 3)
                     }
                     rare_values.append(rare_values_dict)
                     rare_limit_count+=1
@@ -379,12 +455,18 @@ class AnalysisData:
                 }
                 top.append(top_dict)
             
+            suggestion= self.category_decision.category_dominance_decision_maker(
+                n_cat= total_unique_values, 
+                n_rare_val= total_rare_value, 
+                n_nuls= total_nulls
+            )
+            
             dict_cat_dom[col]= {
                 'unique_count': total_unique_values, 
                 'top_values': top,
                 'rare_values':  rare_values if rare_values else None, 
                 'rare_threshold': 0.01, 
-                'suggestion': 'Group rare categories' if rare_values else None
+                'suggestion': suggestion
             }
         return dict_cat_dom
     
