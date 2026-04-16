@@ -16,7 +16,13 @@ class OutlierTransform(str, Enum):
     LOG1P= 'lop1p'
     SQRT= 'sqrt'
 
+class CategoryTransform(str, Enum): 
+    ORDINALENCODER= 'ordinalEncoder'
+    TARGETENCODER= 'targetEncoder'
+    ONEHOTENCODER= 'oneHotEncoder'
 
+class CategoryImpute(str, Enum): 
+    SIMPLEIMPUTER= 'simpleImputer'
 
 
 
