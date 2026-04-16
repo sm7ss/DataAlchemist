@@ -10,6 +10,7 @@ from .eda_validation import eda_val
 
 class path_validation(BaseModel): 
     data: str
+    overhead_percent: float= Field(ge=1.0, le=3.0)
     sample_data_percent: float= Field(gt=0.0, lt=1.0)
     
     @field_validator('data')
