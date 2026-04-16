@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from typing import Dict, Any
 
 import polars as pl 
@@ -7,12 +8,10 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s-&(levelname)s-%(mess
 logger= logging.getLogger(__name__)
 
 class EdaNullValues: 
-    def __init__(self, frame: pl.DataFrame, column_percentage: float, row_percentage: float):
+    def __init__(self, frame: pl.DataFrame, config_eda: BaseModel):
         self.frame= frame
-        self.column_percentage= column_percentage
-        self.row_percentage= row_percentage
-        
-        self.nulls_dict={}
+        self.column_percentage= config_eda.null_values_percent_column
+        self.row_percentage= config_eda.null_values_percent_row
     
     def null_horizontal(self, col: str) -> int: 
         umbral= (self.frame.width*self.row_percentage)
@@ -31,14 +30,15 @@ class EdaNullValues:
         col_per= self.column_percentage*100
         row_per= self.row_percentage*100
         
+        nulls_dict={}
         total_nulls= 0
         
         for col in columns: 
             null_count_col= self.null_column(col=col)
             null_count_row= self.null_horizontal(col=col)
             
-            self.nulls_dict[col]= {}
-            self.nulls_dict[col]= {}
+            nulls_dict[col]= {}
+            nulls_dict[col]= {}
             
             null_percent= (null_count_col/total_height)*100
             
@@ -48,25 +48,25 @@ class EdaNullValues:
             if null_count_col > 0: 
                 row_null_percent= (null_count_row/null_count_col)*100
                 if null_percent < col_per:
-                    self.nulls_dict[col]['total_nulls_column']= null_count_col
-                    self.nulls_dict[col]['total_nulls_row']= null_count_row
-                    self.nulls_dict[col]['nulls_percent']= round((null_count_col/total_height)*100, 3)
+                    nulls_dict[col]['total_nulls_column']= null_count_col
+                    nulls_dict[col]['total_nulls_row']= null_count_row
+                    nulls_dict[col]['nulls_percent']= round((null_count_col/total_height)*100, 3)
                     if row_null_percent < row_per: 
-                        self.nulls_dict[col]['action'] = 'analyse'
+                        nulls_dict[col]['action'] = 'analyse'
                     else: 
-                        self.nulls_dict[col]['action'] = 'delete'
+                        nulls_dict[col]['action'] = 'delete'
                 else: 
-                    self.nulls_dict[col]['total_nulls_column']= null_count_col
-                    self.nulls_dict[col]['total_nulls_row']= null_count_row
-                    self.nulls_dict[col]['nulls_percent']= round((null_count_col/total_height)*100, 3)
-                    self.nulls_dict[col]['action'] = 'delete'
+                    nulls_dict[col]['total_nulls_column']= null_count_col
+                    nulls_dict[col]['total_nulls_row']= null_count_row
+                    nulls_dict[col]['nulls_percent']= round((null_count_col/total_height)*100, 3)
+                    nulls_dict[col]['action'] = 'delete'
             else: 
-                self.nulls_dict[col]['total_nulls_column']= null_count_col
-                self.nulls_dict[col]['total_nulls_row']= null_count_row
-                self.nulls_dict[col]['action'] = 'keep'
+                nulls_dict[col]['total_nulls_column']= null_count_col
+                nulls_dict[col]['total_nulls_row']= null_count_row
+                nulls_dict[col]['action'] = 'keep'
         
-        self.nulls_dict['total_nulls']= total_nulls
-        return self.nulls_dict
+        nulls_dict['total_nulls']= total_nulls
+        return nulls_dict
 
 
 

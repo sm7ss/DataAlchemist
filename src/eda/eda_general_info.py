@@ -9,8 +9,6 @@ logger= logging.getLogger(__name__)
 class EdaGeneralInfo: 
     def __init__(self, frame: pl.DataFrame):
         self.frame= frame
-        
-        self.info_eda_dict= {}
     
     def shape(self) -> Tuple[int]: 
         return self.frame.shape
@@ -62,17 +60,18 @@ class EdaGeneralInfo:
     
     def eda_general_info_format(self) -> Dict[str, Any]:
         shape= self.shape()
+        info_eda_dict= {}
         
-        self.info_eda_dict['total_columns']= shape[1]
-        self.info_eda_dict['total_rows']= shape[0]
+        info_eda_dict['total_columns']= shape[1]
+        info_eda_dict['total_rows']= shape[0]
         
-        self.info_eda_dict['available_columns']= self.available_columns()
-        self.info_eda_dict['datatype']= self.datatype()
+        info_eda_dict['available_columns']= self.available_columns()
+        info_eda_dict['datatype']= self.datatype()
         
-        self.info_eda_dict['statistics']= self.basic_statistics()
-        self.info_eda_dict['unique_values']= self.unique_values()
+        info_eda_dict['statistics']= self.basic_statistics()
+        info_eda_dict['unique_values']= self.unique_values()
         
-        return self.info_eda_dict
+        return info_eda_dict
 
 
 
