@@ -1,6 +1,5 @@
 from ..strategies.strategies_analysis_data import correlation_config, correlation_sampling
 
-from pathlib import Path
 from typing import Dict, Any, Union, List, Optional
 from pydantic import BaseModel
 
