@@ -82,7 +82,7 @@ class correlation_decision_maker_val(BaseModel):
     threshold: float= Field(gt=0.0, le=100.0)
 
 class category_threshold_ml_analysis_val(BaseModel): 
-    few_categories: int = Field(ge=1, le=50)
+    few_categories: int = Field(ge=1, le=10)
     many_categories: int= Field(ge=10, le=100)
     high_cardinality: int= Field(ge=10)
     no_rare_values_and_reasonable_categories: int= Field(ge=1, le=10)
