@@ -41,7 +41,7 @@ class EdaGeneralInfo:
         datatype_dict= {}
         
         for col, type_col in self.frame.schema.items(): 
-            datatype_dict[col]= type_col
+            datatype_dict[col]= str(type_col)
         
         return datatype_dict
     
