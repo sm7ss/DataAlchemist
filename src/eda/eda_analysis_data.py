@@ -12,6 +12,49 @@ logger= logging.getLogger(__name__)
 # This will change to be lazy later
 # HERE # if your outliers analysis detection is another one, please create a new class like OutlierAnalysis
 
+class DistributionDecisionMaker: 
+    def __init__(self, config_vars: BaseModel):
+        self.tail= config_vars.distribution_decision_maker.tail_length
+        self.scaler_con= config_vars.distribution_decision_maker.scaler_concentration
+    
+    def transformer(self, skew: str, max_val: Union[int, float], median: Union[int, float]) -> Optional[str]: 
+        if skew == 'positive': 
+            if median == 0:
+                logger.warning('You cant divide by 0, so in this case the transform will be None because your median is 0')
+                return None
+            elif (max_val/median) > self.tail: 
+                transform= 'log1p'
+            else: 
+                transform= 'sqrt'
+        elif skew == 'negative': 
+            transform= 'square'
+        else: 
+            transform= None
+        return transform
+    
+    def scaler(self, skew: str, concentration: float) -> str: 
+        if concentration < self.scaler_con: 
+            scaler= 'minMaxScaler'
+        elif skew != 'symmetrical': 
+            scaler= 'robustScaler'
+        else: 
+            scaler= 'standarScaler'
+        return scaler
+    
+    def distribution_decision_maker(self,
+            skew: str, 
+            max_val: Union[int, float], 
+            median: Union[int, float], 
+            concentration: float
+        ) -> Dict[str, Any]: 
+        transformer= self.transformer(skew=skew, max_val=max_val, median=median)
+        scaler= self.scaler(skew=skew, concentration=concentration)
+        
+        return {
+            'transformer': transformer, 
+            'scaler': scaler
+        }
+
 class OutlierDecisionMaker: 
     def __init__(self, config_vars: BaseModel):
         self.scaler= config_vars.outlier_decision_maker.scaler
@@ -269,6 +312,7 @@ class AnalysisData:
         self.analysis= analysis
         self.config_values= config_vars
         
+        self.distribution_decision= DistributionDecisionMaker(config_vars=self.config_values)
         self.outlier_decision= OutlierDecisionMaker(config_vars=self.config_values)
         self.correlation_decision= CorrelationDecisionMaker(config_vars=self.config_values)
         self.category_decision= CategoryDominanceDecisionMaker(config_vars=self.config_values)
@@ -293,9 +337,9 @@ class AnalysisData:
             range_val= max_val-min_val
             
             if mean > median: 
-                sesgo= 'positive (tail to the right)'
+                sesgo= 'positive'
             elif mean < median: 
-                sesgo= 'negative (tail to the left)'
+                sesgo= 'negative'
             else: 
                 sesgo= 'symmetrical'
             
@@ -310,13 +354,21 @@ class AnalysisData:
             else: 
                 distribution= 'range value is 0'
             
+            suggestion= self.distribution_decision.distribution_decision_maker(
+                skew= sesgo, 
+                max_val= max_val, 
+                median= median, 
+                concentration= concentration
+            )
+            
             distribution_dict[col]= {
                 'range': round(range_val, 3),
                 'mean': round(mean, 3),
                 'median': round(median, 3),
                 'iqr': round(iqr, 3),
                 'form': sesgo, 
-                'distribution': distribution
+                'distribution': distribution,
+                'suggestion': suggestion
             }
         
         return distribution_dict
