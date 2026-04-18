@@ -1,3 +1,7 @@
+distribution_decision_maker: 
+  tail_length: 100
+  scaler_concentration: 0.3
+
 outlier_decision_maker: 
   scaler: 
     robust_scaler_percent: 5.0
