@@ -15,10 +15,10 @@ logger= logging.getLogger(__name__)
 
 class InfoGeneralEdaReport: 
     def __init__(self, eda_general_dict: Dict[str, Any]):
-        self.dict= eda_general_dict
+        self.dict= eda_general_dict['general_eda']
     
     def available_columns(self) -> str: 
-        available_columns= self.dict['general_eda']['available_columns']
+        available_columns= self.dict['available_columns']
         return ', '.join(map(str, available_columns))
     
     def datatype_unique(self, type: Dict[str, Any]) -> str: 
@@ -30,7 +30,7 @@ class InfoGeneralEdaReport:
         return text
     
     def statistics(self) -> str: 
-        statistics= self.dict['general_eda']['statistics']
+        statistics= self.dict['statistics']
         text= ''
         
         for col in statistics: 
@@ -52,8 +52,8 @@ class InfoGeneralEdaReport:
         return text
     
     def get_text(self) -> str: 
-        datatype= self.dict['general_eda']['datatype']
-        unique= self.dict['general_eda']['unique_values']
+        datatype= self.dict['datatype']
+        unique= self.dict['unique_values']
         return f'''
 GENERAL INFO
 -----------------------------------------------------------------------
@@ -63,11 +63,24 @@ Column Type:
 {self.datatype_unique(type=datatype)}
 Numeric Statistics: {self.statistics()} 
 Unique Categoric Values: 
-{self.datatype_unique(type=unique)} 
-'''
+{self.datatype_unique(type=unique)} '''
 
 class InfoNullEda: 
-    pass
+    def __init__(self, eda_null_analysis: Dict[str, Any]):
+        self.dict= eda_null_analysis
+    
+    
+    
+    
+    
+    def get_text(self) -> str: 
+        total_nulls= self.dict['']
+        
+        return f'''
+MISSING VALUES ANALYSIS
+-----------------------------------------------------------------------
+
+'''
 
 class InfoAnalysisEda: 
     pass
