@@ -67,19 +67,35 @@ Unique Categoric Values:
 
 class InfoNullEda: 
     def __init__(self, eda_null_analysis: Dict[str, Any]):
-        self.dict= eda_null_analysis
+        self.dict= eda_null_analysis['null_analysis']
     
-    
-    
-    
+    def null_text(self) -> str: 
+        text= ''
+        null_dict= self.dict
+        
+        for col in null_dict: 
+            if col != 'total_nulls': 
+                total_nulls= null_dict[col]['total_nulls_column']
+                total_null_row= null_dict[col]['total_nulls_row']
+                action= null_dict[col]['action']
+                percent= null_dict[col].get('nulls_percent', None)
+                if percent: 
+                    text+= f'''
+{col}: {total_nulls} nulls column ({percent}%), {total_null_row} nulls row -> action: {action}'''
+                else: 
+                    text+= f'''
+{col}: {total_nulls} nulls column -> action: {action}'''
+        
+        return text
     
     def get_text(self) -> str: 
-        total_nulls= self.dict['']
+        total_nulls= self.dict['total_nulls']
         
         return f'''
 MISSING VALUES ANALYSIS
 -----------------------------------------------------------------------
-
+Total Nulls in Dataset: {total_nulls}
+{self.null_text()}
 '''
 
 class InfoAnalysisEda: 
