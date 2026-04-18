@@ -1,5 +1,15 @@
 from enum import Enum
 
+class DistributionTransformer(str, Enum): 
+    LOG1P= 'log1p'
+    SQRT= 'sqrt'
+    SQUARE= 'square'
+
+class DistributionScaler(str, Enum): 
+    ROBUSTSCALER= 'robustScaler'
+    STANDARDSCALER= 'standarScaler'
+    MINMAXSCALER= 'minMaxScaler'
+
 class OutlierScaler(str, Enum): 
     ROBUSTSCALER= 'robustScaler'
     STANDARDSCALER= 'standarScaler'
