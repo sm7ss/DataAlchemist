@@ -7,6 +7,10 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
 logger= logging.getLogger(__name__)
 
+class distribution_decision_maker_val(BaseModel): 
+    tail_length: int= Field(ge=50, le=1000)
+    scaler_concentration: float= Field(ge=0.1, le=100) 
+
 class out_scaler_val(BaseModel): 
     robust_scaler_percent: float= Field(ge=0.0, le=100.0)
     standard_scaler_percent: float= Field(ge=0.0, le=100.0)
@@ -92,8 +96,7 @@ class category_decision_maker_val(BaseModel):
     threshold_ml_analysis: category_threshold_ml_analysis_val
 
 class validator_analysis_values(BaseModel): 
+    distribution_decision_maker: distribution_decision_maker_val
     outlier_decision_maker: outlier_decision_maker_val
     correlation_decision_maker: correlation_decision_maker_val
     category_decision_maker: category_decision_maker_val
-
-
