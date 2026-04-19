@@ -63,7 +63,9 @@ Column Type:
 {self.datatype_unique(type=datatype)}
 Numeric Statistics: {self.statistics()} 
 Unique Categoric Values: 
-{self.datatype_unique(type=unique)} '''
+{self.datatype_unique(type=unique)} 
+
+======================================================================='''
 
 class InfoNullEda: 
     def __init__(self, eda_null_analysis: Dict[str, Any]):
@@ -96,7 +98,58 @@ MISSING VALUES ANALYSIS
 -----------------------------------------------------------------------
 Total Nulls in Dataset: {total_nulls}
 {self.null_text()}
-'''
+
+======================================================================='''
+
+class InfoAnalysisNumericColumns: 
+    def __init__(self, data_analysis: Dict[str, Any]):
+        self.dict_distribution= data_analysis['distribution']
+        self.dict_outliers= data_analysis['outliers']
+        self.dict_correlations= data_analysis['correlation']
+    
+    def distribution(self) -> str: 
+        text=''
+        
+        for col in self.dict_distribution: 
+            mean= self.dict_distribution[col]['mean']
+            median= self.dict_distribution[col]['median']
+            skew= self.dict_distribution[col]['form']
+            distribution_data= self.dict_distribution[col]['distribution']
+            ml_transformer= self.dict_distribution[col]['suggestion']['transformer']
+            ml_scaler= self.dict_distribution[col]['suggestion']['scaler']
+            
+            if skew== 'positive': 
+                tail= 'Tail to the left. Higher values'
+            elif skew == 'negative': 
+                tail= 'Tail to the left. Smaller values'
+            else: 
+                tail= 'Symmetric values'
+            
+            text+=f'''
+{col}
+    - Mean: {mean} | Median: {median} -> skew: {skew} ({tail})
+    - Distribution: {distribution_data}
+    ML Suggestions: 
+        - Transformer: {ml_transformer if ml_transformer else 'Many zeros. Consider a specific model for excess zeros'}
+        - Scaler: {ml_scaler}\n'''
+        return text
+    
+    def outliers(self) -> str: 
+        pass
+    
+    def correlation(self) -> str: 
+        pass
+    
+    def get_text(self) -> str: 
+        pass
+
+
+
+
+
+class InfoAnalysisCategoricColumns: 
+    def __init__(self, data_analysis: Dict[str, Any]):
+        self.dict_category= data_analysis['category_dominance']
 
 class InfoAnalysisEda: 
     pass
