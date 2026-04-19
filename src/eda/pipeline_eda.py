@@ -135,7 +135,41 @@ class InfoAnalysisNumericColumns:
         return text
     
     def outliers(self) -> str: 
-        pass
+        text= ''
+        
+        for col in self.dict_outliers: 
+            concentration= self.dict_outliers[col]['iqr']
+            n_out= self.dict_outliers[col]['n_outliers']
+            percent_out= self.dict_outliers[col]['percent_outliers']
+            
+            text+= f'''
+{col}
+    - IQR (distance between 25 and 75: {concentration}
+    - Total of Outliers: {n_out}
+    - Percent: {percent_out}
+    ML Suggestions: 
+'''
+            scaler_sugg= self.dict_outliers[col]['suggestion']['scaler']
+            if scaler_sugg: 
+                text+= f'       - Scaler: {scaler_sugg}\n'
+            
+            filter_sugg= self.dict_outliers[col]['suggestion']['filter']
+            if filter_sugg: 
+                text+= f'       - Filter: {filter_sugg}\n'
+            
+            impute_sugg= self.dict_outliers[col]['suggestion']['impute']
+            if impute_sugg: 
+                text+= f'       - Impute: {impute_sugg}\n'
+            
+            flag_sugg= self.dict_outliers[col]['suggestion']['flag']
+            if flag_sugg: 
+                text+= f'       - Flag: {flag_sugg}\n'
+            
+            transfrom_sugg= self.dict_outliers[col]['suggestion']['transform']
+            if transfrom_sugg: 
+                text+= f'       - Transform: {transfrom_sugg}\n'
+        
+        return text
     
     def correlation(self) -> str: 
         pass
