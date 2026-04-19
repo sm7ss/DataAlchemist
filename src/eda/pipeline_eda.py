@@ -6,7 +6,7 @@ from ..get_frame import get_frame
 
 from pydantic import BaseModel
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 import logging
 
@@ -172,14 +172,65 @@ class InfoAnalysisNumericColumns:
         return text
     
     def correlation(self) -> str: 
-        pass
+        text= ''
+        
+        high_correlation= self.dict_correlations['high_correlations']
+        if not high_correlation: 
+            return 'No high correlation was detected'
+        
+        threshold= self.dict_correlations['threshold']
+        note= self.dict_correlations['note']
+        
+        text+= f'High correlation detected (threshold= {threshold})\n'
+        
+        for i in high_correlation: 
+            col_1= i[0] 
+            col_2= i[1]
+            corr= round(i[2], 3)
+            
+            text+= f'   - {col_1} <--> {col_2}: {corr}\n'
+        
+        text+= f'\nNote: {note}\n'
+        
+        return text
     
-    def get_text(self) -> str: 
-        pass
-
-
-
-
+    def get_text(self, analysis_data_enable: Dict[str, Any]) -> Optional[str]: 
+        text= ''
+        
+        distribution_enable= analysis_data_enable['distribution']['enable']
+        outliers_enable= analysis_data_enable['outliers']['enable']
+        correlation_enable= analysis_data_enable['correlation']['enable']
+        
+        if distribution_enable or outliers_enable or correlation_enable: 
+            text+='''
+NUMERIC COLUMNS ANALYSIS
+======================================================================='''
+        else: 
+            return None
+        
+        if distribution_enable: 
+            dis= self.distribution()
+            text+= f'''
+DISTRIBUTION 
+-----------------------------------------------------------------------{dis}
+======================================================================='''
+        
+        if outliers_enable: 
+            out= self.outliers()
+            text+= f'''
+OUTLIERS
+-----------------------------------------------------------------------{out}
+======================================================================='''
+        
+        if correlation_enable: 
+            corr= self.correlation()
+            text+= f'''
+CORRELATION
+-----------------------------------------------------------------------
+{corr}
+======================================================================='''
+        
+        return text
 
 class InfoAnalysisCategoricColumns: 
     def __init__(self, data_analysis: Dict[str, Any]):
@@ -230,8 +281,9 @@ class EdaPipeline:
         
         analysis_data= self.eda_analysis_info()
         if analysis_data: 
+            #PASAR LA CONFIG PARA HABILITAR LOS ANALYSIS
             analysis_report= ''
-        dict_eda['analysis_data']= analysis_data
+            dict_eda['analysis_data']= analysis_data
         
         json_path= FolderAndFile().create_json(json_dict=dict_eda)
         txt_path= FolderAndFile().create_txt(report=report)
