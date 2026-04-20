@@ -144,7 +144,7 @@ class InfoAnalysisNumericColumns:
             
             text+= f'''
 {col}
-    - IQR (distance between 25 and 75: {concentration}
+    - IQR (distance between 25 and 75): {concentration}
     - Total of Outliers: {n_out}
     - Percent: {percent_out}
     ML Suggestions: 
@@ -380,6 +380,7 @@ class EdaPipeline:
     def __init__(self, config: BaseModel, config_var: BaseModel):
         frame= get_frame(file=config.path.data, overhead=config.path.overhead_percent)
         
+        self.path= config.path.data
         self.config_eda= config.eda
         
         self.eda_general= EdaGeneralInfo(frame=frame)
@@ -410,18 +411,32 @@ class EdaPipeline:
             general_eda= self.eda_general_info()
             general_report= True
             dict_eda['general_eda']= general_eda
+        else: 
+            general_report= False
         
         if enable_null_analysis: 
             null_analysis= self.eda_null_info()
             null_report= True
             dict_eda['null_analysis']= null_analysis
+        else: 
+            null_report= False
         
         analysis_data= self.eda_analysis_info()
         if analysis_data: 
             analysis_report= True
             dict_eda['analysis_data']= analysis_data
+        else: 
+            analysis_report=False
         
-        return 
+        report= InfoAnalysisEda(
+            data_analysis=dict_eda, 
+            dict_analysis=self.config_eda.basic_analysis_data
+        ).report(
+            dataset_name= self.path.name, 
+            general=general_report, 
+            null=null_report, 
+            analysis=analysis_report
+        )
         
         json_path= FolderAndFile().create_json(json_dict=dict_eda)
         txt_path= FolderAndFile().create_txt(report=report)
