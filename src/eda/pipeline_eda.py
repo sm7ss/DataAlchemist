@@ -6,7 +6,7 @@ from ..get_frame import get_frame
 
 from pydantic import BaseModel
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 
 import logging
 
@@ -235,6 +235,96 @@ CORRELATION
 class InfoAnalysisCategoricColumns: 
     def __init__(self, data_analysis: Dict[str, Any]):
         self.dict_category= data_analysis['category_dominance']
+    
+    @staticmethod
+    def category_dominance_top_rare_values(list_dicts: List[str]) -> str: 
+        text= ''
+        
+        for i in range(len(list_dicts)): 
+            value= list_dicts[i]['value']
+            count= list_dicts[i]['count']
+            percent= list_dicts[i]['percent']
+            text+= f'    - {value} ({percent}%) -> {count} total values\n'
+        
+        return text
+    
+    def category_dominance(self) -> str: 
+        text= ''
+        
+        for col in self.dict_category: 
+            unique_count= self.dict_category[col]['unique_count']
+            
+            top_values= self.dict_category[col]['top_values']
+            rare_values= self.dict_category[col]['rare_values']
+            
+            top_categories_text= self.category_dominance_top_rare_values(list_dicts=top_values)
+            rare_values_text= self.category_dominance_top_rare_values(list_dicts=rare_values)
+            
+            text+= f'''
+{col}
+Total unique values: {unique_count}
+
+    Unique Top Values
+{top_categories_text}
+    Rare Unique Values
+{rare_values_text}
+'''
+            ml_suggestion= self.dict_category[col]['suggestion']
+            
+            few_cat= ml_suggestion['few_categories']
+            if few_cat: 
+                text+= f'    - For few categories: {few_cat}\n'
+            
+            many_cat= ml_suggestion['many_categories']
+            if many_cat: 
+                text+= f'    - For many categories: {many_cat}\n'
+            
+            hight_cardin= ml_suggestion['hight_cardinality']
+            if hight_cardin: 
+                text+= f'    - For hight cardinality: {hight_cardin}\n'
+            
+            nrv_cr= ml_suggestion['no_rare_value_categories_reasonable']
+            if nrv_cr: 
+                text+= f'    - For no rare value categories resonable: {nrv_cr}\n'
+            
+            many_rare_val= ml_suggestion['many_rare_values']
+            if many_rare_val:
+                text+= '    Many Rare Values\n'
+                many_rare_val_sugg= many_rare_val['suggestion']
+                if many_rare_val_sugg: 
+                    text+= f'    - Suggestion: {many_rare_val_sugg}\n'
+                many_rare_val_encoder= many_rare_val['encoder']
+                if many_rare_val_encoder: 
+                    text+= f'    - Encoder: {many_rare_val_encoder}\n'
+            
+            cat_with_nulls= ml_suggestion['categories_with_nulls']
+            if cat_with_nulls:
+                text+= '    Categories With Nulls\n'
+                cat_with_nulls_sugg= cat_with_nulls['suggestion']
+                if cat_with_nulls_sugg: 
+                    text+= f'    - Suggestion: {cat_with_nulls_sugg}\n'
+                cat_with_nulls_encoder= cat_with_nulls['encoder']
+                if cat_with_nulls_encoder: 
+                    text+= f'    - Encoder: {cat_with_nulls_encoder}\n'
+        
+        return text
+    
+    def get_text(self, analysis_data_enable: Dict[str, Any]) -> Optional[str]: 
+        text= ''
+        
+        category_dominance_enable= analysis_data_enable['category_dominance']['enable']
+        
+        if category_dominance_enable: 
+            text+= f'''
+CATEGORICAL COLUMNS ANALYSIS
+-----------------------------------------------------------------------
+{self.category_dominance()}
+=======================================================================
+'''
+        else: 
+            return None
+        
+        return text
 
 class InfoAnalysisEda: 
     pass
