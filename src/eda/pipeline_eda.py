@@ -5,6 +5,7 @@ from ..io.folder_file_manager import FolderAndFile
 from ..get_frame import get_frame
 
 from pydantic import BaseModel
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
@@ -56,7 +57,7 @@ class InfoGeneralEdaReport:
         unique= self.dict['unique_values']
         return f'''
 GENERAL INFO
------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 Available Columns: {self.available_columns()}
 
 Column Type: 
@@ -64,8 +65,7 @@ Column Type:
 Numeric Statistics: {self.statistics()} 
 Unique Categoric Values: 
 {self.datatype_unique(type=unique)} 
-
-======================================================================='''
+========================================================================================'''
 
 class InfoNullEda: 
     def __init__(self, eda_null_analysis: Dict[str, Any]):
@@ -83,10 +83,10 @@ class InfoNullEda:
                 percent= null_dict[col].get('nulls_percent', None)
                 if percent: 
                     text+= f'''
-{col}: {total_nulls} nulls column ({percent}%), {total_null_row} nulls row -> action: {action}'''
+    - {col}: {total_nulls} nulls column ({percent}%), {total_null_row} nulls row -> action: {action}'''
                 else: 
                     text+= f'''
-{col}: {total_nulls} nulls column -> action: {action}'''
+    - {col}: {total_nulls} nulls column -> action: {action}'''
         
         return text
     
@@ -95,17 +95,17 @@ class InfoNullEda:
         
         return f'''
 MISSING VALUES ANALYSIS
------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 Total Nulls in Dataset: {total_nulls}
 {self.null_text()}
 
-======================================================================='''
+========================================================================================'''
 
 class InfoAnalysisNumericColumns: 
     def __init__(self, data_analysis: Dict[str, Any]):
-        self.dict_distribution= data_analysis['distribution']
-        self.dict_outliers= data_analysis['outliers']
-        self.dict_correlations= data_analysis['correlation']
+        self.dict_distribution= data_analysis['analysis_data']['distribution']
+        self.dict_outliers= data_analysis['analysis_data']['outliers']
+        self.dict_correlations= data_analysis['analysis_data']['correlation']
     
     def distribution(self) -> str: 
         text=''
@@ -204,7 +204,7 @@ class InfoAnalysisNumericColumns:
         if distribution_enable or outliers_enable or correlation_enable: 
             text+='''
 NUMERIC COLUMNS ANALYSIS
-======================================================================='''
+========================================================================================'''
         else: 
             return None
         
@@ -212,29 +212,29 @@ NUMERIC COLUMNS ANALYSIS
             dis= self.distribution()
             text+= f'''
 DISTRIBUTION 
------------------------------------------------------------------------{dis}
-======================================================================='''
+----------------------------------------------------------------------------------------{dis}
+========================================================================================'''
         
         if outliers_enable: 
             out= self.outliers()
             text+= f'''
 OUTLIERS
------------------------------------------------------------------------{out}
-======================================================================='''
+----------------------------------------------------------------------------------------{out}
+========================================================================================'''
         
         if correlation_enable: 
             corr= self.correlation()
             text+= f'''
 CORRELATION
------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 {corr}
-======================================================================='''
+========================================================================================'''
         
         return text
 
 class InfoAnalysisCategoricColumns: 
     def __init__(self, data_analysis: Dict[str, Any]):
-        self.dict_category= data_analysis['category_dominance']
+        self.dict_category= data_analysis['analysis_data']['category_dominance']
     
     @staticmethod
     def category_dominance_top_rare_values(list_dicts: List[str]) -> str: 
@@ -317,17 +317,64 @@ Total unique values: {unique_count}
         if category_dominance_enable: 
             text+= f'''
 CATEGORICAL COLUMNS ANALYSIS
------------------------------------------------------------------------
-{self.category_dominance()}
-=======================================================================
-'''
+----------------------------------------------------------------------------------------{self.category_dominance()}
+========================================================================================'''
         else: 
             return None
         
         return text
 
 class InfoAnalysisEda: 
-    pass
+    def __init__(self, data_analysis: Dict[str, Any], dict_analysis: Dict[str, Any]):
+        self.enable= dict_analysis
+        
+        self.data_analysis= data_analysis
+        
+        self.general_info= InfoGeneralEdaReport(eda_general_dict=self.data_analysis)
+        self.null_info= InfoNullEda(eda_null_analysis=self.data_analysis)
+        self.numeric_info= InfoAnalysisNumericColumns(data_analysis=self.data_analysis)
+        self.categoric_info= InfoAnalysisCategoricColumns(data_analysis=self.data_analysis)
+    
+    def report_numeric_columns(self) -> Optional[str]: 
+        return self.numeric_info.get_text(analysis_data_enable=self.enable)
+    
+    def report_categoric_columns(self) -> Optional[str]: 
+        return self.categoric_info.get_text(analysis_data_enable=self.enable)
+    
+    def report(self, dataset_name: str, general: bool=False, null: bool=False, analysis: bool=False) -> Optional[str]: 
+        date= datetime.now().strftime('%Y-%m-%d')
+        rows= self.data_analysis['general_eda']['total_rows']
+        columns= self.data_analysis['general_eda']['total_columns']
+        
+        text= f'''
+========================================================================================
+                                    DATA ALCHEMIST  
+                                ANALYSIS REPORT (TEXT MODE)
+========================================================================================
+📅 Date: {date}
+📁 Dataset: {dataset_name}
+📊 Shape: {rows} rows | {columns} columns
+========================================================================================'''
+        
+        if general: 
+            text+= self.general_info.get_text()
+        
+        if null: 
+            text+= self.null_info.get_text()
+        
+        if analysis:
+            report_num= self.report_numeric_columns()
+            report_cat= self.report_categoric_columns()
+            
+            if not(report_num) and not (report_cat): 
+                logger.warning(f'The analysis report for numeric columns and categoric columns is not available or there are no columns available for numeric and categoric')
+            else:
+                if report_num: 
+                    text+= report_num
+                if report_cat: 
+                    text+= report_cat
+        
+        return text
 
 class EdaPipeline: 
     def __init__(self, config: BaseModel, config_var: BaseModel):
@@ -361,19 +408,20 @@ class EdaPipeline:
         
         if enable_general_eda: 
             general_eda= self.eda_general_info()
-            general_report= ''
+            general_report= True
             dict_eda['general_eda']= general_eda
         
         if enable_null_analysis: 
             null_analysis= self.eda_null_info()
-            null_report= ''
+            null_report= True
             dict_eda['null_analysis']= null_analysis
         
         analysis_data= self.eda_analysis_info()
         if analysis_data: 
-            #PASAR LA CONFIG PARA HABILITAR LOS ANALYSIS
-            analysis_report= ''
+            analysis_report= True
             dict_eda['analysis_data']= analysis_data
+        
+        return 
         
         json_path= FolderAndFile().create_json(json_dict=dict_eda)
         txt_path= FolderAndFile().create_txt(report=report)
