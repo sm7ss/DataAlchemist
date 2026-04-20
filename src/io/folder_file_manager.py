@@ -25,8 +25,7 @@ class FolderAndFile:
         path.mkdir(parents=True, exist_ok=True)
         return path
     
-    def create_json(self, json_dict: Dict[str, Any]) -> Path: 
-        json_name= 'JSON_analysis.json'
+    def create_json(self, json_dict: Dict[str, Any], json_name: str='JSON_analysis.json') -> Path: 
         file_path= self.folder_date() / json_name
         
         try: 
@@ -37,6 +36,18 @@ class FolderAndFile:
         except json.JSONDecodeError: 
             logger.error(f'The JSON file "{file_path.name}" is corrputed')
             raise ValueError(f'The JSON file "{file_path.name}" is corrputed')
+        except Exception as e: 
+            logger.error(f'An error ocurred: {e}')
+            raise ValueError(f'An error ocurred: {e}')
+    
+    def create_txt(self, report: str, report_name: str='TXT_report.txt') -> Path: 
+        file_path= self.folder_date() / report_name
+        
+        try: 
+            with open(file_path, 'w', encoding='utf-8') as f: 
+                f.write(report)
+                logger.info(f'The file {file_path.name} was created succesfully')
+            return file_path
         except Exception as e: 
             logger.error(f'An error ocurred: {e}')
             raise ValueError(f'An error ocurred: {e}')
