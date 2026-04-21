@@ -58,13 +58,13 @@ class InfoGeneralEdaReport:
         return f'''
 GENERAL INFO
 ----------------------------------------------------------------------------------------
-Available Columns: {self.available_columns()}
+📝 Available Columns: {self.available_columns()}
 
-Column Type: 
+🏷️ Column Type: 
 {self.datatype_unique(type=datatype)}
-Numeric Statistics: {self.statistics()} 
+📐 Numeric Statistics: {self.statistics()} 
 Unique Categoric Values: 
-{self.datatype_unique(type=unique)} 
+🧮 {self.datatype_unique(type=unique)} 
 ========================================================================================'''
 
 class InfoNullEda: 
@@ -96,7 +96,7 @@ class InfoNullEda:
         return f'''
 MISSING VALUES ANALYSIS
 ----------------------------------------------------------------------------------------
-Total Nulls in Dataset: {total_nulls}
+❓ Total Nulls in Dataset: {total_nulls}
 {self.null_text()}
 
 ========================================================================================'''
@@ -126,7 +126,7 @@ class InfoAnalysisNumericColumns:
                 tail= 'Symmetric values'
             
             text+=f'''
-{col}
+📊 {col}
     - Mean: {mean} | Median: {median} -> skew: {skew} ({tail})
     - Distribution: {distribution_data}
     ML Suggestions: 
@@ -143,7 +143,7 @@ class InfoAnalysisNumericColumns:
             percent_out= self.dict_outliers[col]['percent_outliers']
             
             text+= f'''
-{col}
+🚨 {col}
     - IQR (distance between 25 and 75): {concentration}
     - Total of Outliers: {n_out}
     - Percent: {percent_out}
@@ -181,7 +181,7 @@ class InfoAnalysisNumericColumns:
         threshold= self.dict_correlations['threshold']
         note= self.dict_correlations['note']
         
-        text+= f'High correlation detected (threshold= {threshold})\n'
+        text+= f'🔗 High correlation detected (threshold= {threshold})\n'
         
         for i in high_correlation: 
             col_1= i[0] 
@@ -190,7 +190,7 @@ class InfoAnalysisNumericColumns:
             
             text+= f'   - {col_1} <--> {col_2}: {corr}\n'
         
-        text+= f'\nNote: {note}\n'
+        text+= f'\n📌 Note: {note}\n'
         
         return text
     
@@ -261,7 +261,7 @@ class InfoAnalysisCategoricColumns:
             rare_values_text= self.category_dominance_top_rare_values(list_dicts=rare_values)
             
             text+= f'''
-{col}
+🧮 {col}
 Total unique values: {unique_count}
 
     Unique Top Values
@@ -324,6 +324,98 @@ CATEGORICAL COLUMNS ANALYSIS
         
         return text
 
+class SummaryInfo: 
+    def __init__(self, data_eda: Dict[str, Any]):
+        self.eda= data_eda
+        
+        self.success= ''
+        self.priority= ''
+    
+    def columns(self, dict_eda: Dict[str, Any], var: str) -> List[str]: 
+        columns= []
+        
+        for col in dict_eda: 
+            if col != 'total_nulls':
+                nulls= dict_eda[col][var]
+                if nulls > 0: 
+                    columns.append(col)
+        
+        return columns
+    
+    def null_summary(self) -> None: 
+        dict_eda= self.eda['null_analysis']
+        var= 'total_nulls_column'
+        cols= self.columns(dict_eda=dict_eda, var=var)
+        
+        if cols: 
+            string= ', '.join(map(str, cols))
+            self.success+= '✅ Missing values detected and categorized by action\n'
+            self.priority= f'    - Handle nulls in {string}\n'
+        else: 
+            self.success+= '✅ Missing values were not detected\n'
+    
+    def outlier_summary(self) -> None: 
+        dict_eda= self.eda['analysis_data']['outliers']
+        var='n_outliers'
+        cols= self.columns(dict_eda=dict_eda, var=var)
+        
+        
+        if cols: 
+            string= ', '.join(map(str, cols))
+            self.success+= '✅ Outliers quantified and suggested handling per column\n'
+            self.priority= f'    - Apply or analyse the suggestions in {string}\n'
+        else: 
+            self.success+= '✅ Outliers were not found\n'
+    
+    def correlation_summary(self) -> str: 
+        corr= self.eda['analysis_data']['correlation']['high_correlations']
+        columns= []
+        
+        for i in range(len(corr)): 
+            list_columns= corr[i][:2]
+            for col in list_columns: 
+                columns.append(col)
+        
+        if corr: 
+            string= ', '.join(map(str, columns))
+            self.success+= '✅ High correlations identified for model consideration\n' 
+            self.priority+= f'    - Join, filter, remove or group {string}\n'
+        else: 
+            self.success+= '✅ High correlations were not identified\n'
+    
+    def categoric_summary(self) -> str: 
+        dict_eda= self.eda['analysis_data']['category_dominance']
+        columns= []
+        
+        for col in dict_eda:
+            value= dict_eda[col]['rare_values']
+            if value: 
+                columns.append(col)
+        
+        if columns: 
+            self.success+= '✅ Categorical encoding suggestions provided\n' 
+            self.priority+= '    - Group, remove or filter rare categories\n'
+        else: 
+            self.success+= '✅ Categorical rare values were not found\n'
+    
+    def summary(self, null: bool=False, outlier: bool=False, correlation: bool=False, categoric: bool=False) -> Dict[str, str]: 
+        if null: 
+            self.null_summary()
+        
+        if outlier: 
+            self.outlier_summary()
+        
+        if correlation: 
+            self.correlation_summary()
+        
+        if categoric: 
+            self.categoric_summary()
+        
+        return {
+            'success': self.success, 
+            'priority': self.priority
+        }
+
 class InfoAnalysisEda: 
     def __init__(self, data_analysis: Dict[str, Any], dict_analysis: Dict[str, Any]):
         self.enable= dict_analysis
@@ -334,6 +426,7 @@ class InfoAnalysisEda:
         self.null_info= InfoNullEda(eda_null_analysis=self.data_analysis)
         self.numeric_info= InfoAnalysisNumericColumns(data_analysis=self.data_analysis)
         self.categoric_info= InfoAnalysisCategoricColumns(data_analysis=self.data_analysis)
+        self.summary= SummaryInfo(data_eda=self.data_analysis)
     
     def report_numeric_columns(self) -> Optional[str]: 
         return self.numeric_info.get_text(analysis_data_enable=self.enable)
@@ -349,7 +442,7 @@ class InfoAnalysisEda:
         text= f'''
 ========================================================================================
                                     DATA ALCHEMIST  
-                                ANALYSIS REPORT (TEXT MODE)
+                             🐥 ANALYSIS REPORT (TEXT MODE)
 ========================================================================================
 📅 Date: {date}
 📁 Dataset: {dataset_name}
@@ -360,7 +453,10 @@ class InfoAnalysisEda:
             text+= self.general_info.get_text()
         
         if null: 
+            null_summary= True
             text+= self.null_info.get_text()
+        else: 
+            null_summary= False
         
         if analysis:
             report_num= self.report_numeric_columns()
@@ -370,9 +466,40 @@ class InfoAnalysisEda:
                 logger.warning(f'The analysis report for numeric columns and categoric columns is not available or there are no columns available for numeric and categoric')
             else:
                 if report_num: 
+                    outlier= self.enable['outliers']['enable']
+                    corr= self.enable['correlation']['enable']
+                    
+                    if outlier: 
+                        outlier_summary= True
+                    else: 
+                        outlier_summary= False
+                    if corr: 
+                        correlation_summary= True
+                    else: 
+                        correlation_summary= False
+                    
                     text+= report_num
                 if report_cat: 
+                    cat_summary= True
                     text+= report_cat
+                else: 
+                    cat_summary= False
+        
+        summary= self.summary.summary(
+            null= null_summary, 
+            outlier= outlier_summary, 
+            correlation= correlation_summary, 
+            categoric= cat_summary
+        )
+        
+        text+= f'''
+SUMMARY & RECOMMENDATIONS
+----------------------------------------------------------------------------------------
+{summary['success']}
+⚠️  Priority suggestions actions before modeling:
+{summary['priority']}
+========================================================================================
+'''
         
         return text
 
