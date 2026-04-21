@@ -63,8 +63,8 @@ GENERAL INFO
 🏷️ Column Type: 
 {self.datatype_unique(type=datatype)}
 📐 Numeric Statistics: {self.statistics()} 
-Unique Categoric Values: 
-🧮 {self.datatype_unique(type=unique)} 
+🧮 Unique Categoric Values: 
+{self.datatype_unique(type=unique)} 
 ========================================================================================'''
 
 class InfoNullEda: 
