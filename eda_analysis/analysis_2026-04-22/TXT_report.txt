@@ -1,0 +1,164 @@
+
+========================================================================================
+                                    DATA ALCHEMIST  
+                             🐥 ANALYSIS REPORT (TEXT MODE)
+========================================================================================
+📅 Date: 2026-04-22
+📁 Dataset: users_behavior.csv
+📊 Shape: 3214 rows | 5 columns
+========================================================================================
+GENERAL INFO
+----------------------------------------------------------------------------------------
+📝 Available Columns: calls, minutes, messages, mb_used, is_ultra
+
+🏷️ Column Type: 
+    - calls: Float64
+    - minutes: Float64
+    - messages: Float64
+    - mb_used: Float64
+    - is_ultra: Int64
+
+📐 Numeric Statistics:     
+        calls 
+            - Mean: 63.03889234598631 
+            - Median: 62.0
+            - Std: 33.23636754744351
+            - Min:  0.0
+            - Max: 244.0
+            
+        minutes 
+            - Mean: 438.20878655880523 
+            - Median: 430.69999999999993
+            - Std: 234.5698721733563
+            - Min:  0.0
+            - Max: 1632.0600000000004
+            
+        messages 
+            - Mean: 38.28126944617299 
+            - Median: 30.0
+            - Std: 36.14832557358982
+            - Min:  0.0
+            - Max: 224.0
+            
+        mb_used 
+            - Mean: 17207.673836341008 
+            - Median: 16944.44
+            - Std: 7570.968246251093
+            - Min:  0.0
+            - Max: 49745.73000000001
+            
+        is_ultra 
+            - Mean: 0.30647168637212197 
+            - Median: 0.0
+            - Std: 0.4610997115090933
+            - Min:  0.0
+            - Max: 1.0
+         
+🧮 Unique Categoric Values: 
+    📌 Note: there are no categoric columns
+ 
+========================================================================================
+MISSING VALUES ANALYSIS
+----------------------------------------------------------------------------------------
+❓ Total Nulls in Dataset: 0
+    📌 Note: no nulls where detected. It means, the total of nulls are 0
+
+========================================================================================
+NUMERIC COLUMNS ANALYSIS
+========================================================================================
+DISTRIBUTION 
+----------------------------------------------------------------------------------------
+📊 calls
+    - Mean: 63.039 | Median: 62.0 -> skew: positive (Tail to the left. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 minutes
+    - Mean: 438.209 | Median: 430.7 -> skew: positive (Tail to the left. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 messages
+    - Mean: 38.281 | Median: 30.0 -> skew: positive (Tail to the left. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 mb_used
+    - Mean: 17207.674 | Median: 16944.44 -> skew: positive (Tail to the left. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 is_ultra
+    - Mean: 0.306 | Median: 0.0 -> skew: positive (Tail to the left. Higher values)
+    - Distribution: very dispersed (75% of data covers more than 70% of the range)
+    ML Suggestions: 
+        - Transformer: Many zeros. Consider a specific model for excess zeros
+        - Scaler: robustScaler
+
+========================================================================================
+OUTLIERS
+----------------------------------------------------------------------------------------
+🚨 calls
+    - IQR (distance between 25 and 75): 42.0
+    - Total of Outliers: 62
+    - Percent: 1.929
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: trim
+       - Impute: median
+
+🚨 minutes
+    - IQR (distance between 25 and 75): 297.5
+    - Total of Outliers: 61
+    - Percent: 1.898
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: trim
+       - Impute: median
+
+🚨 messages
+    - IQR (distance between 25 and 75): 48.0
+    - Total of Outliers: 91
+    - Percent: 2.831
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+
+🚨 mb_used
+    - IQR (distance between 25 and 75): 8934.09
+    - Total of Outliers: 77
+    - Percent: 2.396
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+
+========================================================================================
+CORRELATION
+----------------------------------------------------------------------------------------
+🔗 High correlation detected (threshold= 0.75)
+   - calls <--> minutes: 0.982
+
+📌 Note: values with high correlation were found, it is recommended to either remove, join or filter values from the columns for model training
+
+========================================================================================
+SUMMARY & RECOMMENDATIONS
+----------------------------------------------------------------------------------------
+✅ Missing values were not detected
+✅ Outliers quantified and suggested handling per column
+✅ High correlations identified for model consideration
+
+⚠️  Priority suggestions actions before modeling:
+    - Apply or analyse the suggestions in calls, minutes, messages, mb_used
+    - Join, filter, remove or group calls, minutes
+
+========================================================================================

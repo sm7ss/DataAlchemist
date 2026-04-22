@@ -1,0 +1,290 @@
+{
+    "general_eda": {
+        "total_columns": 5,
+        "total_rows": 3214,
+        "available_columns": [
+            "calls",
+            "minutes",
+            "messages",
+            "mb_used",
+            "is_ultra"
+        ],
+        "datatype": {
+            "calls": "Float64",
+            "minutes": "Float64",
+            "messages": "Float64",
+            "mb_used": "Float64",
+            "is_ultra": "Int64"
+        },
+        "statistics": {
+            "calls": {
+                "mean": 63.03889234598631,
+                "std": 33.23636754744351,
+                "25": 40.0,
+                "50": 62.0,
+                "75": 82.0,
+                "min": 0.0,
+                "max": 244.0
+            },
+            "minutes": {
+                "mean": 438.20878655880523,
+                "std": 234.5698721733563,
+                "25": 274.53000000000003,
+                "50": 430.69999999999993,
+                "75": 572.0299999999999,
+                "min": 0.0,
+                "max": 1632.0600000000004
+            },
+            "messages": {
+                "mean": 38.28126944617299,
+                "std": 36.14832557358982,
+                "25": 9.0,
+                "50": 30.0,
+                "75": 57.0,
+                "min": 0.0,
+                "max": 224.0
+            },
+            "mb_used": {
+                "mean": 17207.673836341008,
+                "std": 7570.968246251093,
+                "25": 12491.750000000004,
+                "50": 16944.44,
+                "75": 21425.83999999999,
+                "min": 0.0,
+                "max": 49745.73000000001
+            },
+            "is_ultra": {
+                "mean": 0.30647168637212197,
+                "std": 0.4610997115090933,
+                "25": 0.0,
+                "50": 0.0,
+                "75": 1.0,
+                "min": 0.0,
+                "max": 1.0
+            }
+        },
+        "unique_values": null
+    },
+    "null_analysis": {
+        "calls": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "minutes": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "messages": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "mb_used": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "is_ultra": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "total_nulls": 0
+    },
+    "analysis_data": {
+        "distribution": {
+            "calls": {
+                "range": 244.0,
+                "mean": 63.039,
+                "median": 62.0,
+                "iqr": 42.0,
+                "form": "positive",
+                "distribution": "very concentrated (75% of the data in less than 30% of the range)",
+                "suggestion": {
+                    "transformer": "sqrt",
+                    "scaler": "minMaxScaler"
+                }
+            },
+            "minutes": {
+                "range": 1632.06,
+                "mean": 438.209,
+                "median": 430.7,
+                "iqr": 297.5,
+                "form": "positive",
+                "distribution": "very concentrated (75% of the data in less than 30% of the range)",
+                "suggestion": {
+                    "transformer": "sqrt",
+                    "scaler": "minMaxScaler"
+                }
+            },
+            "messages": {
+                "range": 224.0,
+                "mean": 38.281,
+                "median": 30.0,
+                "iqr": 48.0,
+                "form": "positive",
+                "distribution": "very concentrated (75% of the data in less than 30% of the range)",
+                "suggestion": {
+                    "transformer": "sqrt",
+                    "scaler": "minMaxScaler"
+                }
+            },
+            "mb_used": {
+                "range": 49745.73,
+                "mean": 17207.674,
+                "median": 16944.44,
+                "iqr": 8934.09,
+                "form": "positive",
+                "distribution": "very concentrated (75% of the data in less than 30% of the range)",
+                "suggestion": {
+                    "transformer": "sqrt",
+                    "scaler": "minMaxScaler"
+                }
+            },
+            "is_ultra": {
+                "range": 1.0,
+                "mean": 0.306,
+                "median": 0.0,
+                "iqr": 1.0,
+                "form": "positive",
+                "distribution": "very dispersed (75% of data covers more than 70% of the range)",
+                "suggestion": {
+                    "transformer": null,
+                    "scaler": "robustScaler"
+                }
+            }
+        },
+        "outliers": {
+            "calls": {
+                "iqr": 42.0,
+                "n_outliers": 62,
+                "percent_outliers": 1.929,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "minMaxScaler",
+                    "filter": "trim",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": null
+                }
+            },
+            "minutes": {
+                "iqr": 297.5,
+                "n_outliers": 61,
+                "percent_outliers": 1.898,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "minMaxScaler",
+                    "filter": "trim",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": null
+                }
+            },
+            "messages": {
+                "iqr": 48.0,
+                "n_outliers": 91,
+                "percent_outliers": 2.831,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "minMaxScaler",
+                    "filter": "capping",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": null
+                }
+            },
+            "mb_used": {
+                "iqr": 8934.09,
+                "n_outliers": 77,
+                "percent_outliers": 2.396,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "minMaxScaler",
+                    "filter": "capping",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": null
+                }
+            },
+            "is_ultra": {
+                "iqr": 1.0,
+                "n_outliers": 0,
+                "percent_outliers": 0.0,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "standarScaler",
+                    "filter": "trim",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": null
+                }
+            }
+        },
+        "correlation": {
+            "correlations": [
+                [
+                    "calls",
+                    "minutes",
+                    0.9820832355742292
+                ],
+                [
+                    "calls",
+                    "messages",
+                    0.17738450121769536
+                ],
+                [
+                    "calls",
+                    "mb_used",
+                    0.28644151203505447
+                ],
+                [
+                    "calls",
+                    "is_ultra",
+                    0.20712155898607518
+                ],
+                [
+                    "minutes",
+                    "messages",
+                    0.17311022580969082
+                ],
+                [
+                    "minutes",
+                    "mb_used",
+                    0.2809669350882148
+                ],
+                [
+                    "minutes",
+                    "is_ultra",
+                    0.20695463812169462
+                ],
+                [
+                    "messages",
+                    "mb_used",
+                    0.19572112095582156
+                ],
+                [
+                    "messages",
+                    "is_ultra",
+                    0.20382983853553593
+                ],
+                [
+                    "mb_used",
+                    "is_ultra",
+                    0.1985676456197422
+                ]
+            ],
+            "high_correlations": [
+                [
+                    "calls",
+                    "minutes",
+                    0.9820832355742292
+                ]
+            ],
+            "threshold": 0.75,
+            "note": "values with high correlation were found, it is recommended to either remove, join or filter values from the columns for model training"
+        }
+    }
+}
