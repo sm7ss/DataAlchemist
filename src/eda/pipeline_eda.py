@@ -37,21 +37,24 @@ class InfoGeneralEdaReport:
         statistics= self.dict['statistics']
         text= ''
         
-        for col in statistics: 
-            values= statistics[col]
-            mean= values['mean']
-            median= values['50']
-            std= values['std']
-            min= values['min']
-            max= values['max']
-            text+= f'''    
-        {col} 
-            - Mean: {mean} 
-            - Median: {median}
-            - Std: {std}
-            - Min:  {min}
-            - Max: {max}
-        '''
+        if not statistics: 
+            text+= '    📌 Note: there are no categoric columns\n'
+        else: 
+            for col in statistics: 
+                values= statistics[col]
+                mean= values['mean']
+                median= values['50']
+                std= values['std']
+                min= values['min']
+                max= values['max']
+                text+= f'''    
+    {col} 
+        - Mean: {mean} 
+        - Median: {median}
+        - Std: {std}
+        - Min:  {min}
+        - Max: {max}
+    '''
         
         return text
     
@@ -87,10 +90,10 @@ class InfoNullEda:
                 if total_nulls > 0: 
                     if percent: 
                         text+= f'''
-        - {col}: {total_nulls} nulls column ({percent}%), {total_null_row} nulls row -> action: {action}'''
+    - {col}: {total_nulls} nulls column ({percent}%), {total_null_row} nulls row -> action: {action}'''
                     else: 
                         text+= f'''
-        - {col}: {total_nulls} nulls column -> action: {action}'''
+    - {col}: {total_nulls} nulls column -> action: {action}'''
         
         if not text: 
             text+= '    📌 Note: no nulls where detected. It means, the total of nulls are 0'
@@ -243,12 +246,14 @@ class InfoAnalysisCategoricColumns:
     @staticmethod
     def category_dominance_top_rare_values(list_dicts: List[str]) -> str: 
         text= ''
-        
-        for i in range(len(list_dicts)): 
-            value= list_dicts[i]['value']
-            count= list_dicts[i]['count']
-            percent= list_dicts[i]['percent']
-            text+= f'    - {value} ({percent}%) -> {count} total values\n'
+        if not list_dicts: 
+            text+= '    📌 Note: there are no rare values\n'
+        else: 
+            for i in range(len(list_dicts)): 
+                value= list_dicts[i]['value']
+                count= list_dicts[i]['count']
+                percent= list_dicts[i]['percent']
+                text+= f'    - {value} ({percent}%) -> {count} total values\n'
         
         return text
     
