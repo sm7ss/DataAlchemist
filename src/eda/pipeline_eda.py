@@ -16,7 +16,7 @@ logger= logging.getLogger(__name__)
 
 class InfoGeneralEdaReport: 
     def __init__(self, eda_general_dict: Dict[str, Any]):
-        self.dict= eda_general_dict['general_eda']
+        self.dict= eda_general_dict.get('general_eda', None)
     
     def available_columns(self) -> str: 
         available_columns= self.dict['available_columns']
@@ -25,8 +25,11 @@ class InfoGeneralEdaReport:
     def datatype_unique(self, type: Dict[str, Any]) -> str: 
         text= ''
         
-        for key, val in type.items(): 
-            text+= f'    - {key}: {val}\n'
+        if not type: 
+            text+= '    📌 Note: there are no categoric columns\n'
+        else: 
+            for key, val in type.items(): 
+                text+= f'    - {key}: {val}\n'
         
         return text
     
@@ -69,7 +72,7 @@ GENERAL INFO
 
 class InfoNullEda: 
     def __init__(self, eda_null_analysis: Dict[str, Any]):
-        self.dict= eda_null_analysis['null_analysis']
+        self.dict= eda_null_analysis.get('null_analysis', None)
     
     def null_text(self) -> str: 
         text= ''
@@ -81,12 +84,16 @@ class InfoNullEda:
                 total_null_row= null_dict[col]['total_nulls_row']
                 action= null_dict[col]['action']
                 percent= null_dict[col].get('nulls_percent', None)
-                if percent: 
-                    text+= f'''
-    - {col}: {total_nulls} nulls column ({percent}%), {total_null_row} nulls row -> action: {action}'''
-                else: 
-                    text+= f'''
-    - {col}: {total_nulls} nulls column -> action: {action}'''
+                if total_nulls > 0: 
+                    if percent: 
+                        text+= f'''
+        - {col}: {total_nulls} nulls column ({percent}%), {total_null_row} nulls row -> action: {action}'''
+                    else: 
+                        text+= f'''
+        - {col}: {total_nulls} nulls column -> action: {action}'''
+        
+        if not text: 
+            text+= '    📌 Note: no nulls where detected. It means, the total of nulls are 0'
         
         return text
     
@@ -103,9 +110,9 @@ MISSING VALUES ANALYSIS
 
 class InfoAnalysisNumericColumns: 
     def __init__(self, data_analysis: Dict[str, Any]):
-        self.dict_distribution= data_analysis['analysis_data']['distribution']
-        self.dict_outliers= data_analysis['analysis_data']['outliers']
-        self.dict_correlations= data_analysis['analysis_data']['correlation']
+        self.dict_distribution= data_analysis['analysis_data'].get('distribution', None)
+        self.dict_outliers= data_analysis['analysis_data'].get('outliers', None)
+        self.dict_correlations= data_analysis['analysis_data'].get('correlation', None)
     
     def distribution(self) -> str: 
         text=''
@@ -142,32 +149,33 @@ class InfoAnalysisNumericColumns:
             n_out= self.dict_outliers[col]['n_outliers']
             percent_out= self.dict_outliers[col]['percent_outliers']
             
-            text+= f'''
+            if n_out > 0: 
+                text+= f'''
 🚨 {col}
     - IQR (distance between 25 and 75): {concentration}
     - Total of Outliers: {n_out}
     - Percent: {percent_out}
     ML Suggestions: 
 '''
-            scaler_sugg= self.dict_outliers[col]['suggestion']['scaler']
-            if scaler_sugg: 
-                text+= f'       - Scaler: {scaler_sugg}\n'
-            
-            filter_sugg= self.dict_outliers[col]['suggestion']['filter']
-            if filter_sugg: 
-                text+= f'       - Filter: {filter_sugg}\n'
-            
-            impute_sugg= self.dict_outliers[col]['suggestion']['impute']
-            if impute_sugg: 
-                text+= f'       - Impute: {impute_sugg}\n'
-            
-            flag_sugg= self.dict_outliers[col]['suggestion']['flag']
-            if flag_sugg: 
-                text+= f'       - Flag: {flag_sugg}\n'
-            
-            transfrom_sugg= self.dict_outliers[col]['suggestion']['transform']
-            if transfrom_sugg: 
-                text+= f'       - Transform: {transfrom_sugg}\n'
+                scaler_sugg= self.dict_outliers[col]['suggestion']['scaler']
+                if scaler_sugg: 
+                    text+= f'       - Scaler: {scaler_sugg}\n'
+                
+                filter_sugg= self.dict_outliers[col]['suggestion']['filter']
+                if filter_sugg: 
+                    text+= f'       - Filter: {filter_sugg}\n'
+                
+                impute_sugg= self.dict_outliers[col]['suggestion']['impute']
+                if impute_sugg: 
+                    text+= f'       - Impute: {impute_sugg}\n'
+                
+                flag_sugg= self.dict_outliers[col]['suggestion']['flag']
+                if flag_sugg: 
+                    text+= f'       - Flag: {flag_sugg}\n'
+                
+                transfrom_sugg= self.dict_outliers[col]['suggestion']['transform']
+                if transfrom_sugg: 
+                    text+= f'       - Transform: {transfrom_sugg}\n'
         
         return text
     
@@ -194,35 +202,31 @@ class InfoAnalysisNumericColumns:
         
         return text
     
-    def get_text(self, analysis_data_enable: Dict[str, Any]) -> Optional[str]: 
+    def get_text(self, distribution: bool=False, outliers: bool=False, correlation: bool=False) -> Optional[str]: 
         text= ''
         
-        distribution_enable= analysis_data_enable['distribution']['enable']
-        outliers_enable= analysis_data_enable['outliers']['enable']
-        correlation_enable= analysis_data_enable['correlation']['enable']
-        
-        if distribution_enable or outliers_enable or correlation_enable: 
+        if distribution or outliers or correlation: 
             text+='''
 NUMERIC COLUMNS ANALYSIS
 ========================================================================================'''
         else: 
             return None
         
-        if distribution_enable: 
+        if distribution: 
             dis= self.distribution()
             text+= f'''
 DISTRIBUTION 
 ----------------------------------------------------------------------------------------{dis}
 ========================================================================================'''
         
-        if outliers_enable: 
+        if outliers: 
             out= self.outliers()
             text+= f'''
 OUTLIERS
 ----------------------------------------------------------------------------------------{out}
 ========================================================================================'''
         
-        if correlation_enable: 
+        if correlation: 
             corr= self.correlation()
             text+= f'''
 CORRELATION
@@ -234,7 +238,7 @@ CORRELATION
 
 class InfoAnalysisCategoricColumns: 
     def __init__(self, data_analysis: Dict[str, Any]):
-        self.dict_category= data_analysis['analysis_data']['category_dominance']
+        self.dict_category= data_analysis['analysis_data'].get('category_dominance', None)
     
     @staticmethod
     def category_dominance_top_rare_values(list_dicts: List[str]) -> str: 
@@ -309,12 +313,10 @@ Total unique values: {unique_count}
         
         return text
     
-    def get_text(self, analysis_data_enable: Dict[str, Any]) -> Optional[str]: 
+    def get_text(self, categoric: bool= False) -> Optional[str]: 
         text= ''
         
-        category_dominance_enable= analysis_data_enable['category_dominance']['enable']
-        
-        if category_dominance_enable: 
+        if categoric: 
             text+= f'''
 CATEGORICAL COLUMNS ANALYSIS
 ----------------------------------------------------------------------------------------{self.category_dominance()}
@@ -367,7 +369,7 @@ class SummaryInfo:
         else: 
             self.success+= '✅ Outliers were not found\n'
     
-    def correlation_summary(self) -> str: 
+    def correlation_summary(self) -> None: 
         corr= self.eda['analysis_data']['correlation']['high_correlations']
         columns= []
         
@@ -383,7 +385,7 @@ class SummaryInfo:
         else: 
             self.success+= '✅ High correlations were not identified\n'
     
-    def categoric_summary(self) -> str: 
+    def categoric_summary(self) -> None: 
         dict_eda= self.eda['analysis_data']['category_dominance']
         columns= []
         
@@ -412,11 +414,11 @@ class SummaryInfo:
             self.categoric_summary()
         
         return {
-            'success': self.success, 
-            'priority': self.priority
+            'success': self.success if self.success else None, 
+            'priority': self.priority if self.priority else None
         }
 
-class InfoAnalysisEda: 
+class InfoAnalysisEda:  
     def __init__(self, data_analysis: Dict[str, Any], dict_analysis: Dict[str, Any]):
         self.enable= dict_analysis
         
@@ -424,17 +426,32 @@ class InfoAnalysisEda:
         
         self.general_info= InfoGeneralEdaReport(eda_general_dict=self.data_analysis)
         self.null_info= InfoNullEda(eda_null_analysis=self.data_analysis)
+        
         self.numeric_info= InfoAnalysisNumericColumns(data_analysis=self.data_analysis)
         self.categoric_info= InfoAnalysisCategoricColumns(data_analysis=self.data_analysis)
         self.summary= SummaryInfo(data_eda=self.data_analysis)
     
-    def report_numeric_columns(self) -> Optional[str]: 
-        return self.numeric_info.get_text(analysis_data_enable=self.enable)
+    def report_numeric_columns(self, distribution: bool=False, outliers: bool=False, correlation: bool=False) -> Optional[str]: 
+        return self.numeric_info.get_text(
+            distribution=distribution, 
+            outliers=outliers, 
+            correlation=correlation
+        )
     
-    def report_categoric_columns(self) -> Optional[str]: 
-        return self.categoric_info.get_text(analysis_data_enable=self.enable)
+    def report_categoric_columns(self, categoric: bool= False) -> Optional[str]: 
+        return self.categoric_info.get_text(
+            categoric=categoric
+        )
     
-    def report(self, dataset_name: str, general: bool=False, null: bool=False, analysis: bool=False) -> Optional[str]: 
+    def report(self, 
+            dataset_name: str, 
+            general: bool=False, 
+            null: bool=False, 
+            distribution: bool=False, 
+            outliers: bool=False, 
+            correlation: bool=False, 
+            categoric: bool= False
+        ) -> Optional[str]: 
         date= datetime.now().strftime('%Y-%m-%d')
         rows= self.data_analysis['general_eda']['total_rows']
         columns= self.data_analysis['general_eda']['total_columns']
@@ -458,48 +475,48 @@ class InfoAnalysisEda:
         else: 
             null_summary= False
         
-        if analysis:
-            report_num= self.report_numeric_columns()
-            report_cat= self.report_categoric_columns()
-            
-            if not(report_num) and not (report_cat): 
-                logger.warning(f'The analysis report for numeric columns and categoric columns is not available or there are no columns available for numeric and categoric')
-            else:
-                if report_num: 
-                    outlier= self.enable['outliers']['enable']
-                    corr= self.enable['correlation']['enable']
-                    
-                    if outlier: 
-                        outlier_summary= True
-                    else: 
-                        outlier_summary= False
-                    if corr: 
-                        correlation_summary= True
-                    else: 
-                        correlation_summary= False
-                    
-                    text+= report_num
-                if report_cat: 
-                    cat_summary= True
-                    text+= report_cat
-                else: 
-                    cat_summary= False
+        if not distribution or not outliers or not correlation: 
+            logger.warning('There are no numeric report enable')
+        if not categoric: 
+            logger.warning('There are not categoric report enable')
+        
+        numeric_info= self.numeric_info.get_text(
+            distribution= True if distribution else False, 
+            outliers= True if outliers else False, 
+            correlation= True if correlation else False
+        )
+        if numeric_info: 
+            text+= numeric_info
+        
+        categoric_info= self.categoric_info.get_text(
+            categoric= True if categoric else False
+        )
+        if categoric_info: 
+            text+= categoric_info
         
         summary= self.summary.summary(
             null= null_summary, 
-            outlier= outlier_summary, 
-            correlation= correlation_summary, 
-            categoric= cat_summary
+            outlier= True if outliers else False, 
+            correlation= True if correlation else False, 
+            categoric= True if categoric else False
         )
         
-        text+= f'''
+        if summary['success'] or summary['priority']: 
+            text+= f'''
 SUMMARY & RECOMMENDATIONS
-----------------------------------------------------------------------------------------
-{summary['success']}
+----------------------------------------------------------------------------------------'''
+        
+        if summary['success']: 
+            success= summary['success']
+            text+= f'\n{success}'
+        if summary['priority']:
+            priority= summary['priority'] 
+            text+= f'''
 ⚠️  Priority suggestions actions before modeling:
-{summary['priority']}
-========================================================================================
+{priority}
 '''
+        
+        text+= '========================================================================================'
         
         return text
 
@@ -550,10 +567,25 @@ class EdaPipeline:
         
         analysis_data= self.eda_analysis_info()
         if analysis_data: 
-            analysis_report= True
+            distribution_enable= False
+            outliers_enable= False
+            correlation_enable= False
+            categories_enable= False
+            
+            distribution_exists= analysis_data.get('distribution', None)
+            outliers_exists= analysis_data.get('outliers', None)
+            correlation_exists= analysis_data.get('correlation', None)
+            categories_exists= analysis_data.get('category_dominance', None)
+            
+            if distribution_exists: 
+                distribution_enable= True
+            if outliers_exists: 
+                outliers_enable= True
+            if correlation_exists: 
+                correlation_enable= True
+            if categories_exists: 
+                categories_enable= True
             dict_eda['analysis_data']= analysis_data
-        else: 
-            analysis_report=False
         
         report= InfoAnalysisEda(
             data_analysis=dict_eda, 
@@ -562,7 +594,10 @@ class EdaPipeline:
             dataset_name= self.path.name, 
             general=general_report, 
             null=null_report, 
-            analysis=analysis_report
+            distribution=distribution_enable, 
+            outliers=outliers_enable, 
+            correlation=correlation_enable, 
+            categoric=categories_enable 
         )
         
         json_path= FolderAndFile().create_json(json_dict=dict_eda)
