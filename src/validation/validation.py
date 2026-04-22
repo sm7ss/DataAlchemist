@@ -44,6 +44,18 @@ class validation(BaseModel):
         cat_columns= frame.select(pl.selectors.string()).columns
         
         for analysis_data in analysis: 
+            if not num_columns: 
+                if analysis_data == 'distribution': 
+                    self.eda.basic_analysis_data[analysis_data]['enable']= False
+                if analysis_data == 'outliers': 
+                    self.eda.basic_analysis_data[analysis_data]['enable']= False
+                if analysis_data == 'correlation': 
+                    self.eda.basic_analysis_data[analysis_data]['enable']= False
+            
+            if not cat_columns: 
+                if analysis_data == 'category_dominance': 
+                    self.eda.basic_analysis_data[analysis_data]['enable']= False
+            
             columns= analysis[analysis_data]['columns']
             enable= analysis[analysis_data]['enable']
             
@@ -91,7 +103,10 @@ class validation(BaseModel):
                         if col not in num_columns: 
                             logger.error(f'Th column {col} should be a numerical column.\nNumerical columns available: {num_columns}')
                             raise ValueError(f'Th column {col} should be a numerical column.\nNumerical columns available: {num_columns}')
-                    elif (analysis_data == 'correlation') and (enable == True): 
+                    elif (analysis_data == 'correlation') and (enable == True):
+                        if len(num_columns) < 2: 
+                            logger.warning(f'{analysis_data} analysis cannot have less than 2 numeric columns. This analysis will be desactivated')
+                            self.eda.basic_analysis_data[analysis_data]['enable']= False 
                         if col not in num_columns: 
                             logger.error(f'The column {col} should be a numerical column.\nNumerical columns available: {num_columns}')
                             raise ValueError(f'The column {col} should be a numerical column.\nNumerical columns available: {num_columns}')
@@ -111,12 +126,13 @@ class validation(BaseModel):
                         logger.error(f'Th column {columns} should be a numerical column.\nNumerical columns available: {num_columns}')
                         raise ValueError(f'Th column {columns} should be a numerical column.\nNumerical columns available: {num_columns}')
                 elif (analysis_data == 'correlation') and (enable == True): 
-                    
+                    if len(num_columns) < 2: 
+                        logger.warning(f'{analysis_data} analysis cannot have less than 2 numeric columns. This analysis will be desactivated')
+                        self.eda.basic_analysis_data[analysis_data]['enable']= False
                     if columns not in num_columns: 
                         logger.error(f'The column {columns} should be a numerical column.\nNumerical columns available: {num_columns}')
                         raise ValueError(f'The column {columns} should be a numerical column.\nNumerical columns available: {num_columns}')
                 elif (analysis_data == 'category_dominance') and (enable == True): 
-                    
                     if columns not in cat_columns: 
                         logger.error(f'The column {columns} is not a categorical column.\nCateorical columns available: {cat_columns}')
                         raise ValueError(f'The column {columns} is not a categorical column.\nCateorical columns available: {cat_columns}')
