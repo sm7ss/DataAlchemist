@@ -19,41 +19,41 @@ GENERAL INFO
     - is_ultra: Int64
 
 📐 Numeric Statistics:     
-        calls 
-            - Mean: 63.03889234598631 
-            - Median: 62.0
-            - Std: 33.23636754744351
-            - Min:  0.0
-            - Max: 244.0
-            
-        minutes 
-            - Mean: 438.20878655880523 
-            - Median: 430.69999999999993
-            - Std: 234.5698721733563
-            - Min:  0.0
-            - Max: 1632.0600000000004
-            
-        messages 
-            - Mean: 38.28126944617299 
-            - Median: 30.0
-            - Std: 36.14832557358982
-            - Min:  0.0
-            - Max: 224.0
-            
-        mb_used 
-            - Mean: 17207.673836341008 
-            - Median: 16944.44
-            - Std: 7570.968246251093
-            - Min:  0.0
-            - Max: 49745.73000000001
-            
-        is_ultra 
-            - Mean: 0.30647168637212197 
-            - Median: 0.0
-            - Std: 0.4610997115090933
-            - Min:  0.0
-            - Max: 1.0
-         
+    calls 
+        - Mean: 63.03889234598631 
+        - Median: 62.0
+        - Std: 33.23636754744351
+        - Min:  0.0
+        - Max: 244.0
+        
+    minutes 
+        - Mean: 438.20878655880523 
+        - Median: 430.69999999999993
+        - Std: 234.5698721733563
+        - Min:  0.0
+        - Max: 1632.0600000000004
+        
+    messages 
+        - Mean: 38.28126944617299 
+        - Median: 30.0
+        - Std: 36.14832557358982
+        - Min:  0.0
+        - Max: 224.0
+        
+    mb_used 
+        - Mean: 17207.673836341008 
+        - Median: 16944.44
+        - Std: 7570.968246251093
+        - Min:  0.0
+        - Max: 49745.73000000001
+        
+    is_ultra 
+        - Mean: 0.30647168637212197 
+        - Median: 0.0
+        - Std: 0.4610997115090933
+        - Min:  0.0
+        - Max: 1.0
+     
 🧮 Unique Categoric Values: 
     📌 Note: there are no categoric columns
  
