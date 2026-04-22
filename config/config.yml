@@ -1,5 +1,5 @@
 path: 
-  data: 'games.csv'
+  data: 'users_behavior.csv'
   overhead_percent: 1.8
   sample_data_percent: 0.1 #percent data analysis, this can change by system to be optimal
 
