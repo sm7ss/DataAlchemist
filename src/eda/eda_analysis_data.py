@@ -1,4 +1,4 @@
-from ..strategies.strategies_analysis_data import correlation_config, correlation_sampling
+from ..strategies.pre_processing_strategies import NullHandler, CorrSampling
 
 from typing import Dict, Any, Union, List, Optional
 from pydantic import BaseModel
@@ -167,15 +167,15 @@ class CorrelationHandleNulls:
         
         return self.frame.with_columns(expression)
     
-    def correlation_config_decision(self, handle_nulls: correlation_config, col: List[str]) -> pl.DataFrame: 
+    def correlation_config_decision(self, handle_nulls: NullHandler, col: List[str]) -> pl.DataFrame: 
         match handle_nulls: 
-            case correlation_config.FILTER: 
+            case NullHandler.FILTER: 
                 frame= self.filter(col=col)
-            case correlation_config.MEDIAN: 
+            case NullHandler.MEDIAN: 
                 frame= self.median(col=col)
-            case correlation_config.ZERO: 
+            case NullHandler.ZERO: 
                 frame= self.zero(col=col)
-            case correlation_config.MEAN: 
+            case NullHandler.MEAN: 
                 frame= self.mean(col=col)
         
         return frame
@@ -191,11 +191,11 @@ class CorrelationSampling:
     def representative(self, r_columns: Union[str, List[str]]) -> pl.DataFrame: 
         return self.frame.select(r_columns).sample(fraction=self.percent, seed=42)
     
-    def correlation_sampling_decision(self, decision: correlation_sampling, r_columns: Union[str, List[str]]) -> pl.DataFrame: 
+    def correlation_sampling_decision(self, decision: CorrSampling, r_columns: Union[str, List[str]]) -> pl.DataFrame: 
         match decision: 
-            case correlation_sampling.RANDOM: 
+            case CorrSampling.RANDOM: 
                 frame= self.random_sample()
-            case correlation_sampling.REPRESENTATIVE: 
+            case CorrSampling.REPRESENTATIVE: 
                 frame= self.representative(r_columns=r_columns)
         
         return frame

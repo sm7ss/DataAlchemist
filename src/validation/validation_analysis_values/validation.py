@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, model_validator
-from ...strategies.strategies_analysis_data import correlation_config, correlation_sampling
+from ...strategies.pre_processing_strategies import NullHandler, CorrSampling
 from typing import List, Union
 
 import logging
@@ -59,7 +59,7 @@ class outlier_decision_maker_val(BaseModel):
 
 class corr_sampling(BaseModel): 
     percent: float= Field(ge=0.001, le=100.0)
-    method: correlation_sampling
+    method: CorrSampling
     representative_columns: Union[List[str], str, None]
     
     @model_validator(mode='after')
@@ -69,11 +69,11 @@ class corr_sampling(BaseModel):
         representative_columns= self.representative_columns
         
         match method: 
-            case correlation_sampling.RANDOM: 
+            case CorrSampling.RANDOM: 
                 if not percent: 
                     logger.error('A percent should be given for random sample')
                     raise ValueError('A percent should be given for random sample')
-            case correlation_sampling.REPRESENTATIVE: 
+            case CorrSampling.REPRESENTATIVE: 
                 if not representative_columns: 
                     logger.error('You need to asign a column or a list of columns, because you choose i method a representative sample')
                     raise ValueError('You need to asign a column or a list of columns, because you choose i method a representative sample')
@@ -82,7 +82,7 @@ class corr_sampling(BaseModel):
 
 class correlation_decision_maker_val(BaseModel): 
     sampling: corr_sampling
-    handle_nulls: correlation_config
+    handle_nulls: NullHandler
     threshold: float= Field(gt=0.0, le=100.0)
 
 class category_threshold_ml_analysis_val(BaseModel): 
