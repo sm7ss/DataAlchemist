@@ -23,8 +23,18 @@ class OutlierImpute(str, Enum):
     MEDIAN= 'median'
 
 class OutlierTransform(str, Enum): 
-    LOG1P= 'lop1p'
+    LOG1P= 'log1p'
     SQRT= 'sqrt'
+
+class NullHandler(str, Enum): 
+    FILTER= 'filter'
+    MEDIAN= 'median'
+    ZERO= 'zero'
+    MEAN= 'mean'
+
+class CorrSampling(str, Enum): 
+    RANDOM= 'random'
+    REPRESENTATIVE= 'representative'
 
 class CategoryTransform(str, Enum): 
     ORDINALENCODER= 'ordinalEncoder'
