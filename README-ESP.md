@@ -246,9 +246,9 @@ GENERAL INFO
 | **Pydantic** | 2.12.5	     | Validación de configuraciones                 |
 | **PyYAML**	 | 6.0.3	     | Parseo de archivos YAML                       |
 | **tomli**		 | 2.4.1       | Soporte para TOML (alternativo)               |
-| **pathlib**	 | -           | built-in	Manejo de rutas                      |
+| **pathlib**	 | built-in    | Manejo de rutas                               |
 | **psutil**	 | -	         | Monitoreo de recursos (futuro)                | 
-| **datetime** | -           | built-in	Timestamps en reportes               |
+| **datetime** | built-in    | Timestamps en reportes                        |
 
 ---
 
@@ -292,11 +292,11 @@ GENERAL INFO
 
 ## 🤝 Cómo contribuir
 
-Haz fork del proyecto
-Crea tu rama (git checkout -b feature/nueva-funcion)
-Haz commit (git commit -m 'Añade nueva funcionalidad')
-Haz push (git push origin feature/nueva-funcion)
-Abre un Pull Request
+1. Haz fork del proyecto
+2. Crea tu rama (git checkout -b feature/nueva-funcion)
+3. Haz commit (git commit -m 'Añade nueva funcionalidad')
+4. Haz push (git push origin feature/nueva-funcion)
+5. Abre un Pull Request
 
 > 💡🐥 ¿Ideas para la interfaz? ¿Sugerencias de usabilidad para no programadores? ¡Abierto a feedback!
 
