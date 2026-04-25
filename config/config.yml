@@ -1,7 +1,7 @@
 path: 
   data: 'users_behavior.csv'
   overhead_percent: 1.8
-  sample_data_percent: 0.1 #percent data analysis, this can change by system to be optimal
+  sample_data_percent: 0.1 #percent data analysis, this can change by system to be optimal, not used now, until laz and streaming is added
 
 eda: 
   general_information: True
@@ -25,6 +25,34 @@ eda:
       top_n: #if a top_n is not given, the value will be 2
       rare_threshold_percent: #if a threshold is not given, the value will be 0.01
 
+ml_preprocessing: 
+  auto_preprocessing: True
+  
+  columns: # if None, all columns will be used
+  sample_data: # Total files or percent of the total file, if none, 0.01 of the data will be used
+  
+  sampling: 'random'
+  null_handler: 'median' # if total_null > 0 this will be used
+  
+  scaler: # if none, auto will be use, the algorithm will decide
+  
+  distribution: 
+    transformer: 
+  
+  outlier: 
+    filter: 
+    impute: 
+    flag: # Bool True/False
+    transform: 
+  
+  correlation:
+    high_correlation: # if None, then join will be the operation
+    remove_column: # just if high_correlation is selected if not, join will be the auto operation for not deleting any column
+  
+  category: 
+    operation: 
+    encoder: # Can be auto, if auto, every column will have their encoder, if not all colulmns will have the encoder you selected
+    impute: 
 
 
 
