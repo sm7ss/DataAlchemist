@@ -6,7 +6,9 @@ class Scaler(str, Enum):
     MINMAXSCALER= 'minMaxScaler'
 
 class Encoder(str, Enum): 
-    
+    ORDINALENCODER= 'ordinalEncoder'
+    TARGETENCODER= 'targetEncoder'
+    ONEHOTENCODER= 'oneHotEncoder'
 
 class NullHandler(str, Enum): 
     FILTER= 'filter'
