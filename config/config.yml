@@ -53,6 +53,7 @@ ml_preprocessing:
     operation: 
     encoder: # Can be auto, if auto, every column will have their encoder, if not all colulmns will have the encoder you selected
     impute: 
+    strategy_fill_value: # Value for constant, if None, then "Unknown" will be the auto value given
 
 
 
