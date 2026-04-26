@@ -1,6 +1,6 @@
 from ..strategies.pre_processing_strategies import Scaler, Encoder, NullHandler, DistributionTransformer, OutlierFilter, OutlierImpute, OutlierTransform, CorrSampling, HighCorrelationActions, CategoryOperation, CategoryImpute
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, field_validator
 from typing import List, Union, Optional
 
 import logging
@@ -40,6 +40,15 @@ class category_val(BaseModel):
     operation: Optional[CategoryOperation]
     encoder: Optional[Encoder]
     impute: Optional[CategoryImpute]
+    strategy_fill_value: Optional[str]
+    
+    @field_validator('strategy_fill_value')
+    def strategy_fill_value_val(cls, v): 
+        if not v: 
+            v= 'Unknown'
+            logger.warning('As no value was given to "strategy_fill_value" the new value will be "Unknown"')
+        
+        return v
 
 class ml_preprocessing_val(BaseModel): 
     auto_preprocessing: bool
