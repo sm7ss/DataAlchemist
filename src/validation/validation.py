@@ -7,6 +7,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(mess
 logger= logging.getLogger(__name__)
 
 from .eda_validation import eda_val
+from .pre_processing_validation import ml_preprocessing_val
 
 class path_validation(BaseModel): 
     data: str
@@ -19,9 +20,9 @@ class path_validation(BaseModel):
         if not path.exists(): 
             logger.error(f'The path for file {v} doesnt exists')
             raise FileNotFoundError(f'The path for file {v} doesnt exists')
-        if path.suffix not in ['.csv', '.parquet', '.json']: 
-            logger.error(f'The file {v} should be a csv, parquet or json')
-            raise ValueError(f'The file {v} should be a csv, parquet or json')
+        if path.suffix not in ['.csv', '.parquet']: 
+            logger.error(f'The file {v} should be a csv, parquet')
+            raise ValueError(f'The file {v} should be a csv, parquet')
         return path
 
 class validation(BaseModel): 
@@ -35,10 +36,8 @@ class validation(BaseModel):
         
         if path.suffix == '.csv': 
             frame= pl.read_csv(path, n_rows=1000, null_values=['tbd', 'TBD', 'N/A', 'nan'])
-        elif path.suffix == '.parquet': 
-            frame= pl.read_parquet(path, n_rows=1000)
         else: 
-            frame= pl.read_json(path, n_rows=1000)
+            frame= pl.read_parquet(path, n_rows=1000)
         
         num_columns= frame.select(pl.selectors.numeric()).columns
         cat_columns= frame.select(pl.selectors.string()).columns
@@ -143,6 +142,24 @@ class validation(BaseModel):
                 raise ValueError('The columns should be on a list or should be a string')
         
         return self
+    
+    @model_validator(mode='after')
+    def column_ml_preprocessing_val(self): 
+        path= self.path.data
+        
+        if path.suffix == '.csv': 
+            frame= pl.read_csv(path, n_rows=1000, null_values=['tbd', 'TBD', 'N/A', 'nan'])
+        else: 
+            frame= pl.read_parquet(path, n_rows=1000)
+        
+        
+        
+        
+        
+        
+        
+        
+    
 
 
 
