@@ -28,6 +28,7 @@ class path_validation(BaseModel):
 class validation(BaseModel): 
     path: path_validation
     eda: eda_val
+    ml_preprocessing: ml_preprocessing_val
     
     @model_validator(mode='after')
     def columns_analysis_val(self): 
@@ -152,14 +153,37 @@ class validation(BaseModel):
         else: 
             frame= pl.read_parquet(path, n_rows=1000)
         
+        frame_columns= frame.columns
         
+        # COLUMNS ML VALIDATION
+        columns_ml= self.ml_preprocessing.columns
+        if not columns_ml: 
+            self.ml_preprocessing.columns= frame_columns
+            logger.warning('As the columns for ML pre-processing wasnt selected then all columns will be selected')
+        if columns_ml: 
+            if isinstance(columns_ml, str): 
+                if columns_ml not in frame_columns: 
+                    logger.error(f'Column {columns_ml} was not found in the frame columns.\nAvailable columns: {frame_columns}')
+                    raise ValueError(f'Column {columns_ml} was not found in the frame columns.\nAvailable columns: {frame_columns}')
+            elif isinstance(columns_ml, list): 
+                for col in columns_ml: 
+                    if col not in frame_columns: 
+                        logger.error(f'Column {col} was not found in the frame columns.\nAvailable columns: {frame_columns}')
+                        raise ValueError(f'Column {col} was not found in the frame columns.\nAvailable columns: {frame_columns}')
         
+        # COLUMNS REMOVE VALIDATION 
+        columns_correlation= self.ml_preprocessing.correlation.remove_column
+        if isinstance(columns_correlation, str): 
+            if columns_correlation not in frame_columns: 
+                logger.error(f'Column {columns_correlation} was not found in the frame columns.\nAvailable columns: {frame_columns}')
+                raise ValueError(f'Column {columns_correlation} was not found in the frame columns.\nAvailable columns: {frame_columns}')
+        elif isinstance(columns_correlation, list): 
+            for col in columns_correlation: 
+                if col not in frame_columns: 
+                    logger.error(f'Column {col} was not found in the frame columns.\nAvailable columns: {frame_columns}')
+                    raise ValueError(f'Column {col} was not found in the frame columns.\nAvailable columns: {frame_columns}')
         
-        
-        
-        
-        
-    
+        return self
 
 
 
