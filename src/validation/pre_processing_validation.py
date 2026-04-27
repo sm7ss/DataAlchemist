@@ -1,4 +1,6 @@
-from ..strategies.pre_processing_strategies import Scaler, Encoder, NullHandler, DistributionTransformer, OutlierFilter, OutlierImpute, OutlierTransform, CorrSampling, HighCorrelationActions, CategoryOperation, CategoryImpute
+from ..strategies.pre_processing_strategies import Scaler, Encoder, NullHandler, DistributionTransformer, OutlierFilter, OutlierImpute, OutlierTransform, CorrSampling, HighCorrelationActions, CategoryOperation
+
+from ..strategies.strategies import analysis_outliers
 
 from pydantic import BaseModel, Field, model_validator, field_validator
 from typing import List, Union, Optional
@@ -12,10 +14,19 @@ class distribution_val(BaseModel):
     transformer: Optional[DistributionTransformer]
 
 class outlier_val(BaseModel): 
+    strategy: Optional[analysis_outliers]
     filter: Optional[OutlierFilter]
-    impute: Optional[OutlierImpute]
+    impute_nulls: Optional[OutlierImpute]
     flag: Optional[bool]
     transform: Optional[OutlierTransform]
+    
+    @field_validator('strategy')
+    def strategy_val(cls, v): 
+        if not v: 
+            v= 'iqr'
+            logger.warning('As None value was given to "strategy" then the method IQR will be used')
+        
+        return v
 
 class correlation_val(BaseModel): 
     high_correlation: Optional[HighCorrelationActions]
@@ -39,14 +50,22 @@ class correlation_val(BaseModel):
 class category_val(BaseModel): 
     operation: Optional[CategoryOperation]
     encoder: Optional[Encoder]
-    impute: Optional[CategoryImpute]
-    strategy_fill_value: Optional[str]
+    impute_nulls: Optional[NullHandler]
+    name_operation_value: Optional[str]
     
-    @field_validator('strategy_fill_value')
-    def strategy_fill_value_val(cls, v): 
+    @field_validator('operation')
+    def operation_val(cls, v): 
+        if not v: 
+            v= 'group'
+            logger.warning('As no value was given to "operation" then the new value will be "group"')
+        
+        return v 
+    
+    @field_validator('name_operation_value')
+    def name_operation_value_val(cls, v): 
         if not v: 
             v= 'Unknown'
-            logger.warning('As no value was given to "strategy_fill_value" the new value will be "Unknown"')
+            logger.warning('As no value was given to "name_operation_value" the new value will be "Unknown"')
         
         return v
 
@@ -72,14 +91,14 @@ class ml_preprocessing_val(BaseModel):
         vals= [
             self.distribution.transformer,
             self.outlier.filter,
-            self.outlier.impute,
+            self.outlier.impute_nulls,
             self.outlier.flag,
             self.outlier.transform,
             self.correlation.high_correlation,
             self.correlation.remove_column,
             self.category.operation,
             self.category.encoder,
-            self.category.impute,
+            self.category.impute_nulls,
         ]
         
         if not ap:
