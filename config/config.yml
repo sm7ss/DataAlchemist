@@ -42,7 +42,7 @@ ml_preprocessing:
   outlier: 
     strategy: # if not given "iqr" will be the strategy used
     filter: 
-    impute: 
+    impute_nulls: 
     flag: # Bool True/False
     transform: 
   
@@ -53,7 +53,7 @@ ml_preprocessing:
   category: 
     operation: # if not value given, "Group" operation will be given
     encoder: # Can be auto, if auto, every column will have their encoder, if not all colulmns will have the encoder you selected
-    impute: 
+    impute_nulls: 
     name_operation_value: # Value for operation, if None, then "Unknown" will be the auto value given
 
 
