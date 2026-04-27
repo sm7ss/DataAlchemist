@@ -271,7 +271,7 @@ class CategoryDominanceDecisionMaker:
     
     def null_cateories(self) -> Dict[str, Any]: 
         return {
-            'suggestion': ['group', 'filter', 'simpleImputer'], 
+            'suggestion': ['group', 'filter', 'constantValue'], 
             'encoder': 'Any_encoder'
         }
     
