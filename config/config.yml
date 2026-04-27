@@ -40,6 +40,7 @@ ml_preprocessing:
     transformer: 
   
   outlier: 
+    strategy: # if not given "iqr" will be the strategy used
     filter: 
     impute: 
     flag: # Bool True/False
@@ -50,10 +51,10 @@ ml_preprocessing:
     remove_column: # just if high_correlation is selected if not, join will be the auto operation for not deleting any column
   
   category: 
-    operation: 
+    operation: # if not value given, "Group" operation will be given
     encoder: # Can be auto, if auto, every column will have their encoder, if not all colulmns will have the encoder you selected
     impute: 
-    strategy_fill_value: # Value for constant, if None, then "Unknown" will be the auto value given
+    name_operation_value: # Value for operation, if None, then "Unknown" will be the auto value given
 
 
 
