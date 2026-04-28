@@ -10,13 +10,17 @@ class Encoder(str, Enum):
     TARGETENCODER= 'targetEncoder'
     ONEHOTENCODER= 'oneHotEncoder'
 
-# THISSSSSSSSSSSSSSS used in category for nulls
-class NullHandler(str, Enum): 
+# THIS IS DONE
+class NullNumericHandler(str, Enum): 
     FILTER= 'filter'
     MEDIAN= 'median'
     ZERO= 'zero'
     MEAN= 'mean'
-    CONSTANTVALUE= 'constantalue'
+
+# THIS IS DONE
+class NullCategoricHandler(str, Enum): 
+    FILTER= 'filter'
+    CONSTANTVALUE= 'constantValue'
 
 # THIS IS DONE
 class DistributionTransformer(str, Enum): 
@@ -28,7 +32,7 @@ class OutlierFilter(str, Enum):
     TRIM= 'trim'
     CAPPING= 'capping'
 
-# THISSSSSSSSSSSSSSSSSSSSSSS
+# THIS IS DONE
 class OutlierImpute(str, Enum): 
     MEDIAN= 'median'
     MEAN= 'mean'
