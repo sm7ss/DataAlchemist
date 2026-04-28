@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, model_validator
-from ...strategies.pre_processing_strategies import NullHandler, CorrSampling
+from ...strategies.pre_processing_strategies import NullNumericHandler, CorrSampling
 from typing import List, Union
 
 import logging
@@ -82,7 +82,7 @@ class corr_sampling(BaseModel):
 
 class correlation_decision_maker_val(BaseModel): 
     sampling: corr_sampling
-    handle_nulls: NullHandler
+    handle_nulls: NullNumericHandler
     threshold: float= Field(gt=0.0, le=100.0)
 
 class category_threshold_ml_analysis_val(BaseModel): 

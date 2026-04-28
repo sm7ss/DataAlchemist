@@ -1,4 +1,4 @@
-from ..strategies.pre_processing_strategies import Scaler, Encoder, NullHandler, DistributionTransformer, OutlierFilter, OutlierImpute, OutlierTransform, CorrSampling, HighCorrelationActions, CategoryOperation
+from ..strategies.pre_processing_strategies import Scaler, Encoder, NullCategoricHandler, NullNumericHandler, DistributionTransformer, OutlierFilter, OutlierImpute, OutlierTransform, CorrSampling, HighCorrelationActions, CategoryOperation
 
 from ..strategies.strategies import analysis_outliers
 
@@ -16,7 +16,7 @@ class distribution_val(BaseModel):
 class outlier_val(BaseModel): 
     strategy: Optional[analysis_outliers]
     filter: Optional[OutlierFilter]
-    impute_nulls: Optional[OutlierImpute]
+    impute_outliers: Optional[OutlierImpute]
     flag: Optional[bool]
     transform: Optional[OutlierTransform]
     
@@ -50,7 +50,6 @@ class correlation_val(BaseModel):
 class category_val(BaseModel): 
     operation: Optional[CategoryOperation]
     encoder: Optional[Encoder]
-    impute_nulls: Optional[NullHandler]
     name_operation_value: Optional[str]
     
     @field_validator('operation')
@@ -75,14 +74,50 @@ class ml_preprocessing_val(BaseModel):
     columns: Union[List[str], str, None]
     sample_data: Optional[float]= Field(ge=0.001, le=100.0)
     
-    sampling: CorrSampling
-    null_handler: NullHandler
+    sampling: Optional[CorrSampling]
+    
+    null_num_handler: Optional[NullNumericHandler]
+    null_cat_handler: Optional[NullCategoricHandler]
+    null_cat_handler_value: Optional[str]
+    
     scaler: Optional[Scaler]
     
     distribution: distribution_val
     outlier: outlier_val
     correlation: correlation_val
     category: category_val
+    
+    @field_validator('sampling')
+    def sampling_val(cls, v): 
+        if not v: 
+            logger.warning('As no value was found for sampling, "random" will be used')
+            return 'random'
+        else: 
+            return v
+    
+    @field_validator('null_num_handler')
+    def null_num_handler_val(cls, v): 
+        if not v: 
+            logger.warning('As no value was found for null_num_handler, "median" will be used')
+            return 'median'
+        else: 
+            return v
+    
+    @field_validator('null_cat_handler')
+    def null_cat_handler_val(cls, v): 
+        if not v: 
+            logger.warning('As no value was found for null_cat_handler, "constantValue" will be used')
+            return 'constantValue'
+        else: 
+            return v
+    
+    @field_validator('null_cat_handler_value')
+    def null_cat_handler_value_val(cls, v): 
+        if not v: 
+            logger.warning('As no value was found for null_cat_handler_value, "Unknown" will be used')
+            return 'Unknown'
+        else: 
+            return v
     
     @model_validator(mode='after')
     def ml_validation_values(self): 
@@ -91,14 +126,14 @@ class ml_preprocessing_val(BaseModel):
         vals= [
             self.distribution.transformer,
             self.outlier.filter,
-            self.outlier.impute_nulls,
+            self.outlier.impute_outliers,
             self.outlier.flag,
             self.outlier.transform,
             self.correlation.high_correlation,
             self.correlation.remove_column,
             self.category.operation,
             self.category.encoder,
-            self.category.impute_nulls,
+            self.category.name_operation_value
         ]
         
         if not ap:
