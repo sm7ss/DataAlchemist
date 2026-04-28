@@ -31,8 +31,11 @@ ml_preprocessing:
   columns: # if None, all columns will be used
   sample_data: # Percent of the total file, if none, 0.01 of the data will be used
   
-  sampling: 'random'
-  null_handler: 'median' # if total_null > 0 this will be used
+  sampling: # if not value given 'random' will be used
+  
+  null_num_handler: # if not value given 'median' will be used
+  null_cat_handler: # if not value given 'constantValue' will be used
+  null_cat_handler_value: # if not value is given "Unknown" will be used
   
   scaler: # if none, auto will be use, the algorithm will decide
   
@@ -42,7 +45,7 @@ ml_preprocessing:
   outlier: 
     strategy: # if not given "iqr" will be the strategy used
     filter: 
-    impute_nulls: 
+    impute_outliers: 
     flag: # Bool True/False
     transform: 
   
@@ -53,7 +56,6 @@ ml_preprocessing:
   category: 
     operation: # if not value given, "Group" operation will be given
     encoder: # Can be auto, if auto, every column will have their encoder, if not all colulmns will have the encoder you selected
-    impute_nulls: 
     name_operation_value: # Value for operation, if None, then "Unknown" will be the auto value given
 
 
