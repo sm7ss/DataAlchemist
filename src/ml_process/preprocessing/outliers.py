@@ -1,6 +1,5 @@
 from ...strategies.strategies import analysis_outliers
 from ...strategies.pre_processing_strategies import OutlierImpute
-from .operations.imputer import ImputeOutlier
 
 from typing import List
 
@@ -10,12 +9,30 @@ import polars as pl
 logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
 logger= logging.getLogger(__name__)
 
+class ImputeOutlierValue: 
+    def __init__(self, frame: pl.DataFrame):
+        self.frame= frame
+    
+    def median(self, col: str) -> float: 
+        return self.frame[col].median()
+    
+    def mean(self, col: str) -> float: 
+        return self.frame[col].mean()
+    
+    def get_value(self, col: str, method: OutlierImpute) -> float: 
+        match method: 
+            case OutlierImpute.MEDIAN: 
+                value= self.median(col=col)
+            case OutlierImpute.MEAN: 
+                value= self.mean(col=col)
+        return value
+
 class InputOutliers: 
     def __init__(self, frame: pl.DataFrame):
         self.frame= frame.with_row_index()
         self.numeric_frame= self.frame.select(pl.selectors.numeric())
         
-        self.value= ImputeOutlier(frame=self.frame)
+        self.value= ImputeOutlierValue(frame=self.frame)
     
     def iqr_method(self, method: OutlierImpute) -> List[pl.Expr]:
         list_expr= []
@@ -50,5 +67,12 @@ class InputOutliers:
         frame= self.frame.with_columns(list_expr)
         
         return frame.drop('index')
+
+
+
+
+
+
+
 
 
