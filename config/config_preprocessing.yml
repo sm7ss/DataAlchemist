@@ -1,0 +1,6 @@
+preprocessing_outlier_rules:
+  filter_percent: 1 # % < filter_percent
+  impute_percent: 5 # % < impute_percent
+  transform_percent: 5 # % > transform_percent
+  flag_percent: 10 # % > flag_percent
+
