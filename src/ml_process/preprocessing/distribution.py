@@ -11,8 +11,7 @@ logger= logging.getLogger(__name__)
 
 class DistributionListExpr: 
     def __init__(self, frame: pl.DataFrame):
-        self.frame= frame
-        self.num_frame= self.frame.select(pl.selectors.numeric())
+        self.num_frame= frame.select(pl.selectors.numeric())
     
     def transform(self, col: str, method: DistributionTransformer) -> pl.Expr: 
         transform= TransformationOperation()
