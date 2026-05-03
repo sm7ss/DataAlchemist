@@ -223,26 +223,6 @@ class OutlierPreprocessingPipeline:
                 list_iqr_expr.append(expr)
         
         return list_iqr_expr
-    
-    def pipeline(self, 
-            method_anal: analysis_outliers, 
-            auto: bool, 
-            outlier_dict: Optional[Dict[str, Any]]= None
-        ) -> pl.DataFrame: 
-        
-        match method_anal: 
-            case analysis_outliers.IQR: 
-                if auto:
-                    list_expr= self.iqr_auto_expr_method(outlier_dict=outlier_dict)
-                else: 
-                    list_expr= self.iqr_manual_expr_method()
-        
-        frame= self.frame.with_columns(list_expr)
-        
-        return frame.drop('index')
-
-
-
 
 
 
