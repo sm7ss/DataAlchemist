@@ -55,7 +55,7 @@ class FilterOutliersExpr:
         
         return expression
 
-class OutlierPreprocessingPipeline: 
+class OutlierExprList: 
     def __init__(self, frame: pl.DataFrame, config_outlier: BaseModel, config: BaseModel):
         self.frame= frame.with_row_index()
         

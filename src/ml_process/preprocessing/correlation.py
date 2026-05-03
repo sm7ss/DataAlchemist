@@ -1,7 +1,7 @@
 import polars as pl 
 import logging 
 from pydantic import BaseModel
-from typing import Union, Optional, Dict, Any, List
+from typing import Union, Dict, Any, List
 
 from ...strategies.pre_processing_strategies import HighCorrelationActions
 
