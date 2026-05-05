@@ -29,9 +29,9 @@ ml_preprocessing:
   auto_preprocessing: True
   
   columns: # if None, all columns will be used
-  sample_data: # Percent of the total file, if none, 0.01 of the data will be used
   
   sampling: # if not value given 'random' will be used
+  representative_column: #use when "representative" is selected
   
   null_num_handler: # if not value given 'median' will be used
   null_cat_handler: # if not value given 'constantValue' will be used
@@ -53,7 +53,7 @@ ml_preprocessing:
     high_correlation: # if None, then join will be the operation
     remove_column: # just if high_correlation is selected if not, join will be the auto operation for not deleting any column
   
-  category: 
+  category: # THIS IS MISSING
     operation: # if not value given, "Group" operation will be given
     encoder: # Can be auto, if auto, every column will have their encoder, if not all colulmns will have the encoder you selected
     name_operation_value: # Value for operation, if None, then "Unknown" will be the auto value given
