@@ -2,7 +2,7 @@ from ..strategies.pre_processing_strategies import Scaler, Encoder, NullCategori
 
 from ..strategies.strategies import analysis_outliers
 
-from pydantic import BaseModel, Field, model_validator, field_validator
+from pydantic import BaseModel, model_validator, field_validator
 from typing import List, Union, Optional
 
 import logging
@@ -72,8 +72,8 @@ class ml_preprocessing_val(BaseModel):
     auto_preprocessing: bool
     
     columns: Union[List[str], str, None]
-    sample_data: Optional[float]= Field(ge=0.001, le=100.0)
     
+    representative_column: Union[str, List[str], None]
     sampling: Optional[CorrSampling]
     
     null_num_handler: Optional[NullNumericHandler]
@@ -141,11 +141,6 @@ class ml_preprocessing_val(BaseModel):
                 if value == None: 
                     logger.error('The values cant be None if "auto_preprocessing" is False')
                     raise ValueError('The values cant be None if "auto_preprocessing" is False')
-        
-        # VALIDATION SAMPLE DATA
-        if not self.sample_data: 
-            self.sample_data= 0.01
-            logger.warning('"sample_data" was None, so the new value is 0.01')
         
         return self
 
