@@ -30,6 +30,9 @@ class DistributionListExpr:
         list_expr= []
         
         for col in self.num_frame.columns: 
+            if col == 'index': 
+                continue
+            
             transform= distribution_dict[col]['suggestion'].get('transformer')
             
             if transform: 
@@ -56,8 +59,6 @@ class DistributionListExpr:
             list_expr.append(expr)
         
         return list_expr
-
-
 
 
 
