@@ -56,11 +56,10 @@ class FilterOutliersExpr:
         return expression
 
 class OutlierExprList: 
-    def __init__(self, frame: pl.DataFrame, config_outlier: BaseModel, config: BaseModel):
-        self.frame= frame.with_row_index()
+    def __init__(self, frame: pl.DataFrame, config: BaseModel):
+        self.frame= frame
         
-        self.config= config
-        self.o_config= config_outlier
+        self.o_config= config.preprocessing_outlier_rules
         
         self.numeric_frame= self.frame.select(pl.selectors.numeric())
         
@@ -124,6 +123,9 @@ class OutlierExprList:
         list_iqr_expr= []
         
         for col in self.numeric_frame.columns:
+            if col == 'index': 
+                continue
+            
             dict_iqr_method= self.iqr_method(col=col)
             list_index_out= dict_iqr_method['list']
             
@@ -178,13 +180,13 @@ class OutlierExprList:
         
         return list_iqr_expr
     
-    def iqr_manual_expr_method(self) -> List[pl.Expr]: 
+    def iqr_manual_expr_method(self, config: BaseModel) -> List[pl.Expr]: 
         list_iqr_expr= []
         
-        filter= self.config.ml_preprocessing.outlier.filter
-        i_outlier= self.config.ml_preprocessing.outlier.impute_outliers
-        flag= self.config.ml_preprocessing.outlier.flag
-        transform= self.config.ml_preprocessing.outlier.transform
+        filter= config.ml_preprocessing.outlier.filter
+        i_outlier= config.ml_preprocessing.outlier.impute_outliers
+        flag= config.ml_preprocessing.outlier.flag
+        transform= config.ml_preprocessing.outlier.transform
         
         for col in self.numeric_frame.columns: 
             dict_method= self.iqr_method(col=col)
