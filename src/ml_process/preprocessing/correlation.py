@@ -51,7 +51,7 @@ class CorrelationPreprocessing:
             'expr': list_expr
         }
     
-    def manual_correlation(self) -> Union[pl.DataFrame, List[pl.Expr], None]: 
+    def manual_correlation(self) -> Union[pl.DataFrame, Dict[str, pl.Expr], None]: 
         if not self.corr:
             logger.info('No high correlation was found') 
             return None
