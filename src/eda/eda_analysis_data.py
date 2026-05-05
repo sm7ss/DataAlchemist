@@ -1,4 +1,4 @@
-from ..strategies.pre_processing_strategies import NullHandler, CorrSampling
+from ..strategies.pre_processing_strategies import NullNumericHandler, CorrSampling
 
 from typing import Dict, Any, Union, List, Optional
 from pydantic import BaseModel
@@ -167,15 +167,15 @@ class CorrelationHandleNulls:
         
         return self.frame.with_columns(expression)
     
-    def correlation_config_decision(self, handle_nulls: NullHandler, col: List[str]) -> pl.DataFrame: 
+    def correlation_config_decision(self, handle_nulls: NullNumericHandler, col: List[str]) -> pl.DataFrame: 
         match handle_nulls: 
-            case NullHandler.FILTER: 
+            case NullNumericHandler.FILTER: 
                 frame= self.filter(col=col)
-            case NullHandler.MEDIAN: 
+            case NullNumericHandler.MEDIAN: 
                 frame= self.median(col=col)
-            case NullHandler.ZERO: 
+            case NullNumericHandler.ZERO: 
                 frame= self.zero(col=col)
-            case NullHandler.MEAN: 
+            case NullNumericHandler.MEAN: 
                 frame= self.mean(col=col)
         
         return frame
