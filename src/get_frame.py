@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(mess
 logger= logging.getLogger(__name__)
 
 #Right now, no streaming or lazy mode will be added, just eager mode
-def get_frame(file: Path, overhead: float) -> Optional[pl.DataFrame]: 
+def get_frame(file: Path, overhead: Optional[float]= 1.8) -> Optional[pl.DataFrame]: 
     file_size= file.stat().st_size
     memory= psutil.virtual_memory().available * overhead
     
