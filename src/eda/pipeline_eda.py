@@ -2,8 +2,8 @@ from .eda_general_info import EdaGeneralInfo
 from .eda_null_val import EdaNullValues
 from .eda_analysis_data import AnalysisData
 from ..io.folder_file_manager import FolderAndFile
-from ..get_frame import get_frame
 
+import polars as pl
 from pydantic import BaseModel
 from datetime import datetime
 from pathlib import Path
@@ -526,8 +526,8 @@ SUMMARY & RECOMMENDATIONS
         return text
 
 class EdaPipeline: 
-    def __init__(self, config: BaseModel, config_var: BaseModel):
-        frame= get_frame(file=config.path.data, overhead=config.path.overhead_percent)
+    def __init__(self,frame: pl.DataFrame, config: BaseModel, config_var: BaseModel):
+        frame= frame
         
         self.path= config.path.data
         self.config_eda= config.eda
