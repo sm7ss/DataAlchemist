@@ -183,6 +183,22 @@ class validation(BaseModel):
                     logger.error(f'Column {col} was not found in the frame columns.\nAvailable columns: {frame_columns}')
                     raise ValueError(f'Column {col} was not found in the frame columns.\nAvailable columns: {frame_columns}')
         
+        # REPRESENTATIVE COLUMNS 
+        sample_data= self.ml_preprocessing.sampling
+        if sample_data == 'representative': 
+            columns_representative= self.ml_preprocessing.representative_column
+            if isinstance(columns_representative, str): 
+                if columns_representative not in frame_columns: 
+                    logger.error(f'Column {columns_representative} were not found in available columns.\nAvailable columns: {frame_columns}')
+                    raise ValueError(f'Column {columns_representative} were not found in available columns.\nAvailable columns: {frame_columns}')
+            elif isinstance(columns_representative, list): 
+                for col in columns_representative: 
+                    if col not in frame_columns: 
+                        logger.error(f'Column {columns_representative} were not found in available columns.\nAvailable columns: {frame_columns}')
+                        raise ValueError(f'Column {columns_representative} were not found in available columns.\nAvailable columns: {frame_columns}')
+            else: 
+                logger.error(f'Column/s should be selected to be representative')
+        
         return self
 
 
