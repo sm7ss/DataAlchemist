@@ -10,7 +10,7 @@ logger= logging.getLogger(__name__)
 
 from .validation import validation
 from .validation_analysis_values.validation import validator_analysis_values
-from .validation_preprocessing.validation import preprocessing_outlier_rules
+from .validation_preprocessing.validation import preprocessing_validation
 
 class ReadConfig: 
     @staticmethod
@@ -45,38 +45,6 @@ class ReadConfig:
             logger.error(f'There is an error:\n{e}')
             raise ValueError(f'There is an error:\n{e}')
     
-    @staticmethod
-    def yaml_preprocessing(config: Path) -> BaseModel: 
-        try: 
-            with open(config, 'r') as c: 
-                read= yaml.safe_load(c)
-                logger.info(f'The file {config.name} was readed correctly')
-            val= preprocessing_outlier_rules(**read['preprocessing_outlier_rules'])
-            logger.info(f'The file {config.name} was validated correctly')
-            return val
-        except yaml.YAMLError: 
-            logger.error(f'The yaml file {config.name} is corrupted')
-            raise ValueError(f'The yaml file {config.name} is corrupted')
-        except Exception as e: 
-            logger.error(f'There is an error:\n{e}')
-            raise ValueError(f'There is an error:\n{e}')
-    
-    @staticmethod
-    def toml_preprocessing(config: Path,) -> BaseModel: 
-        try: 
-            with open(config, 'rb') as c: 
-                read= tomli.load(c)
-                logger.info(f'The file {config.name} was readed correctly')
-            val= preprocessing_outlier_rules(**read['preprocessing_outlier_rules'])
-            logger.info(f'The file {config.name} was validated correctly')
-            return val
-        except tomli.TOMLDecodeError: 
-            logger.error(f'The toml file {config.name} is corrupted')
-            raise ValueError(f'The toml file {config.name} is corrupted')
-        except Exception as e: 
-            logger.error(f'There is an error:\n{e}')
-            raise ValueError(f'There is an error:\n{e}')
-    
     @classmethod
     def read_config(cls) -> Dict[str, Any]: 
         config= Path(__file__).resolve().parent.parent.parent / 'config' / 'config.yml'
@@ -96,9 +64,9 @@ class ReadConfig:
             dict_configs['config_vars']= cls.toml_read(config=config_var, callable=validator_analysis_values)
         
         if config_preprocessing.suffix in ['.yml', '.yaml']: 
-            dict_configs['preprocessing']= cls.yaml_preprocessing(config=config_preprocessing)
+            dict_configs['preprocessing']= cls.yaml_read(config=config_preprocessing, callable=preprocessing_validation)
         else:
-            dict_configs['preprocessing']= cls.toml_preprocessing(config=config_preprocessing)
+            dict_configs['preprocessing']= cls.toml_read(config=config_preprocessing, callable=preprocessing_validation)
         
         return dict_configs
 
