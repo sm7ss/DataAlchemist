@@ -7,7 +7,7 @@ from ...strategies.pre_processing_strategies import CorrSampling
 from .operations.null import NullNumHandler, NullCatHandler
 
 from .distribution import DistributionListExpr
-from .outliers import OutlierExprList
+from .outliers import OutlierCleanFrame
 from .correlation import CorrelationPreprocessing
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
@@ -33,9 +33,9 @@ class SamplingData:
         
         if size < min_sample: 
             new_size= size
-        elif (size > min_sample) or (size < medium_sample): 
+        elif size < medium_sample: 
             new_size= int(size* medium_percent)
-        elif (size > medium_sample) or (size < many_sample): 
+        elif size < many_sample: 
             new_size= int(size*many_percent)
         else: 
             new_size= int(size*too_much_percent)
@@ -152,14 +152,10 @@ class PreProcessinAuto:
             logger.info(f'No outlier analysis were detected or enabled')
             return None
         
-        outlier_expr= OutlierExprList(frame=self.frame, config=self.config_prep)
-        list_expr= outlier_expr.iqr_auto_expr_method(outlier_dict=outlier_dict)
+        outlier_frame= OutlierCleanFrame(frame=self.frame, config=self.config_prep)
+        frame= outlier_frame.iqr_auto_expr_method(outlier_dict=outlier_dict)
         
-        if list_expr: 
-            logger.info('List of expresions for outliers were added into principal list expressions')
-            return list_expr
-        else: 
-            logger.info('No expressions for outliers analisys were found')
+        return frame
     
     def correlation(self) -> Optional[List[pl.Expr]]: 
         corr_dict= self.analysis_dict.get('correlation', None)
@@ -189,8 +185,8 @@ class PreProcessinAuto:
             frame= frame.with_columns(d_expr)
             logger.info('DataFrame with changes to the distribution data')
             change+=1
-        if o_expr: 
-            frame= frame.with_columns(o_expr)
+        if o_expr is not None: 
+            frame= o_expr
             logger.info('DataFrame with changes to the data for outliers')
             change+=1
         if c_expr: 
@@ -256,9 +252,9 @@ class AutoPipeline:
         sample_frame= self.frame_sampling()
         
         nulls= self.nulls_frame(frame=sample_frame)
-        if nulls: 
+        if nulls is not None: 
             analysis= self.analysis_frame(frame=nulls)
-            if analysis: 
+            if analysis is not None: 
                 logger.info('Frame was obtained correctly')
                 return analysis
         
