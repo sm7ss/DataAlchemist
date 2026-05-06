@@ -36,7 +36,7 @@ class FilterOutliersExpr:
     
     @staticmethod
     def capping(col: str, upper: Union[int, float], lower: Union[int, float]) -> pl.Expr: 
-        return pl.col(col).clip(lower, upper).alias(col)
+        return pl.col(col).clip(lower, upper).alias(col).alias(col)
     
     @classmethod
     def get_expr(cls, 
@@ -55,7 +55,7 @@ class FilterOutliersExpr:
         
         return expression
 
-class OutlierExprList: 
+class OutlierCleanFrame: 
     def __init__(self, frame: pl.DataFrame, config: BaseModel):
         self.frame= frame
         
@@ -69,7 +69,7 @@ class OutlierExprList:
     def input_expr(self, col: str, method: OutlierImpute, list_index_out: List[int]) -> pl.Expr: 
         value= self.value.get_value(col=col, method=method)
         
-        return  pl.when(pl.col('index').is_in(list_index_out)).then(pl.lit(value)).otherwise(pl.col(col)).alias(col)
+        return pl.when(pl.col('index').is_in(list_index_out)).then(pl.lit(value)).otherwise(pl.col(col)).alias(col)
     
     def filter_expr(self, 
         method: OutlierFilter, 
@@ -101,84 +101,89 @@ class OutlierExprList:
         
         return expression
     
-    def iqr_method(self, col) -> Dict[str, Any]: 
-        q1= self.numeric_frame[col].quantile(0.25)
-        q3= self.numeric_frame[col].quantile(0.75)
-        
-        iqr= q3 - q1
-        
-        lower= q1 - iqr *1.5
-        upper= q3 + iqr *1.5
-        
-        outlier_frame= self.numeric_frame.filter((pl.col(col) < lower) | (pl.col(col) > upper))
-        list_index_out= outlier_frame.get_column('index').to_list()
-        
-        return {
-            'lower': lower, 
-            'upper': upper, 
-            'list': list_index_out
-        }
-    
-    def iqr_auto_expr_method(self, outlier_dict: Dict[str, Any]) -> List[pl.Expr]:
-        list_iqr_expr= []
+    def iqr_auto_expr_method(self, outlier_dict: Dict[str, Any]) -> pl.DataFrame:
+        frame= self.frame
         
         for col in self.numeric_frame.columns:
-            if col == 'index': 
-                continue
-            
-            dict_iqr_method= self.iqr_method(col=col)
-            list_index_out= dict_iqr_method['list']
-            
-            lower= dict_iqr_method['lower']
-            upper= dict_iqr_method['upper']
-            
-            if list_index_out: 
-                logger.info(f'The total outliers detected were {len(list_index_out)} for column {col}')
+            if col != 'index': 
+                q1= self.numeric_frame[col].quantile(0.25)
+                q3= self.numeric_frame[col].quantile(0.75)
                 
-                percent= outlier_dict[col].get('percent_outliers')
-                sugg= outlier_dict[col].get('suggestion')
+                iqr= q3 - q1
                 
-                for type_op, operation in sugg.items(): 
-                    if percent < self.o_config.filter_percent: 
-                        if type_op == 'filter' and operation: 
-                            logger.info(f'Column {col} was filtered into type {type_op} with operation {operation}')
-                            expr= self.filter_expr(
-                                method=operation, 
-                                col=col, 
-                                out_index=list_index_out, 
-                                upper=upper, 
-                                lower=lower
-                            )
-                            list_iqr_expr.append(expr)
-                            break
-                    elif percent < self.o_config.impute_percent: 
-                        if type_op == 'impute' and operation: 
-                            logger.info(f'Column {col} was imputed in type {type_op} with operation {operation}')
-                            expr= self.input_expr(
-                                col=col, 
-                                method=operation, 
-                                list_index_out=list_index_out
-                            )
-                            list_iqr_expr.append(expr)
-                            break
-                    elif percent > self.o_config.transform_percent: 
-                        if type_op == 'transform' and operation: 
-                            logger.info(f'Column {col} was transformed into the type {type_op} with the transformer {operation}')
-                            expr= self.transform_expr(col=col, method=operation)
-                            list_iqr_expr.append(expr)
-                            break
-                    elif percent > self.o_config.flag_percent: 
-                        if type_op == 'flag' and True: 
-                            logger.info(f'Column {col} was flagged')
-                            expr= self.flag_expr(col=col, list_index_outlier=list_index_out)
-                            list_iqr_expr.append(expr)
-                            break
-                        else: 
-                            logger.info(f'Column {col} was not flagged')
+                lower= q1 - iqr *1.5
+                upper= q3 + iqr *1.5
+                
+                outlier_frame= self.numeric_frame.filter((pl.col(col) < lower) | (pl.col(col) > upper))
+                list_index_out= outlier_frame.get_column('index').to_list()
+                
+                if list_index_out: 
+                    logger.info(f'The total outliers detected were {len(list_index_out)} for column {col}')
+                    
+                    percent= outlier_dict[col].get('percent_outliers')
+                    sugg= outlier_dict[col].get('suggestion')
+                    
+                    for type_op, operation in sugg.items(): 
+                        if percent < self.o_config.filter_percent: 
+                            if type_op == 'filter' and operation: 
+                                logger.info(f'Column {col} was filtered into type {type_op} with operation {operation}')
+                                expr= self.filter_expr(
+                                    method=operation, 
+                                    col=col, 
+                                    out_index=list_index_out, 
+                                    upper=upper, 
+                                    lower=lower
+                                )
+                                
+                                if operation == 'trim': 
+                                    frame= frame.filter(expr)
+                                else: 
+                                    frame= frame.with_columns(expr)
+                                
+                                break
+                        elif percent < self.o_config.impute_percent: 
+                            if type_op == 'impute' and operation: 
+                                logger.info(f'Column {col} was imputed in type {type_op} with operation {operation}')
+                                
+                                expr= self.input_expr(
+                                    col=col, 
+                                    method=operation, 
+                                    list_index_out=list_index_out
+                                )
+                                
+                                frame= frame.with_columns(expr)
+                                
+                                break
+                        elif percent > self.o_config.transform_percent: 
+                            if type_op == 'transform' and operation: 
+                                logger.info(f'Column {col} was transformed into the type {type_op} with the transformer {operation}')
+                                
+                                expr= self.transform_expr(
+                                    col=col, 
+                                    method=operation
+                                )
+                                
+                                frame= frame.with_columns(expr)
+                                
+                                break
+                        elif percent > self.o_config.flag_percent: 
+                            if type_op == 'flag' and True: 
+                                logger.info(f'Column {col} was flagged')
+                                
+                                expr= self.flag_expr(
+                                    col=col, 
+                                    list_index_outlier=list_index_out
+                                )
+                                
+                                frame= frame.with_columns(expr)
+                                
+                                break
+                            else: 
+                                logger.info(f'Column {col} was not flagged')
             else: 
                 logger.info(f'No outliers were detected for {col}')
         
-        return list_iqr_expr
+        return frame
     
     def iqr_manual_expr_method(self, config: BaseModel) -> List[pl.Expr]: 
         list_iqr_expr= []
