@@ -212,6 +212,18 @@ preprocessing_outlier_rules:
 python main.py 
 ```
 
+### 🚀 Quick installation
+
+```bash 
+git clone https://github.com/sm7ss/DataAlchemist # Clone
+cd DataAlchemist # Go to folder
+
+poetry install # Install dependencies
+poetry shell # Activate environment
+
+python main.py # Run
+```
+
 ### 📦 Generated Outputs
 
 | File	             | Format |	Content                                                   |
