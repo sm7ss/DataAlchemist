@@ -27,15 +27,17 @@ Upload your data, select your target, and the platform:
 
 ## 📍 Project Status
 
-| Module               | Status           | What it does                                                                 |
-|----------------------|------------------|------------------------------------------------------------------------------|
-| **EDA**              | ✅ Completed     | General analysis, nulls, distributions, outliers, correlations, categorical  |
-| **Cleaning**         | 🚧 In development| Applying cleaning suggestions                                                |
-| **Preprocessing**    | 🚧 In development| Transformations, scaling, encoding                                           |
-| **Modeling**         | 🚧 In development| Algorithm selection, hyperparameter tuning                                   |
-| **Training**         | 🚧 In development| Metrics, learning curves, comparisons                                        |
-| **Export**           | 🚧 In development| Trained model + processed data (Parquet)                                     |
-| **Visual Dashboard** | 📝 Planned       | Interface with sliders and interactive main panel                            |
+| Module                               | Status           | What it does                                                                 |
+|--------------------------------------|------------------|------------------------------------------------------------------------------|
+| **EDA**                              | ✅ Completed     | General analysis, nulls, distributions, outliers, correlations, categorical  |
+| **Cleaning**                         | 🚧 In development| Applying cleaning suggestions                                                |
+| **Preprocessing (numeric)**          | ✅ Completed     | Correlation, distribution, and outliers                                      |
+| **Preprocessing (categorical)**      | 🚧 In development| Categorical dominance                                                        |
+| **Scaling & Encoding**               | 🚧 Next          | Encoding and Scaling                                                         |
+| **Modeling**                         | 🚧 In development| Algorithm selection, hyperparameter tuning                                   |
+| **Training**                         | 🚧 In development| Metrics, learning curves, comparisons                                        |
+| **Export**                           | 🚧 In development| Trained model + processed data (Parquet)                                     |
+| **Visual Dashboard**                 | 📝 Planned       | Interface with sliders and interactive main panel                            |
 
 > 🐥 **You can already run EDA from the terminal and get reports in JSON + TXT.**
 
@@ -83,6 +85,42 @@ Upload your data, select your target, and the platform:
   - `targetEncoder` (many categories / high cardinality)
   - `oneHotEncoder` (grouped rare values)
   - Null handling for categorical columns
+
+---
+
+## ✨ Feature Engineering Features
+
+Once the EDA generates the `JSON_analysis.json` report, the preprocessing pipeline can **automatically apply** the suggested transformations, imputations, and filters — no manual intervention required (for now).
+
+> 🐥🚨 Currently only auto mode is available. Manual mode is still in development.
+
+### 🔄 Pipeline Flow
+
+```text
+CONFIG VALIDATION → EDA → JSON/TXT REPORTS → PREPROCESSING → DATAFRAME FOR PROCESSING (sampled)
+```
+
+### 🧠 What Happens Automatically?
+
+| Step	                     | What it does	                                    | Based on                                                | 
+|----------------------------|--------------------------------------------------|---------------------------------------------------------|
+| **Sampling**	             | Dynamically adjusts dataset size for large files	| `config_preprocessing.yml` (size thresholds)            |
+| **Null Handling**	         | Imputes or filters nulls per column | EDA null analysis + `ml_preprocessing.preprocessing.operations.null` |
+| **Distribution Transform** | Applies `log1p`, `sqrt`, or `square`	| EDA distribution suggestions                                        |
+| **Outlier Handling**       | Filters, imputes, flags, or transforms outliers | EDA outlier suggestions + `preprocessing_outlier_rules`  |
+| **High Correlation**       | Joins highly correlated columns (average) | EDA correlation analysis                                       |
+
+### 📊 Output
+
+A **clean Polars DataFrame** with:
+
+- Transformations applied (distribution)
+- Outliers handled (filtered, imputed, flagged, or transformed)
+- Nulls imputed or filtered
+- Highly correlated columns joined (averaged)
+- Sampling applied if the dataset was too large
+
+> 🐥 All decisions are **traceable** through logs. Check the console to see exactly what was applied to each column.
 
 ---
 
@@ -138,6 +176,31 @@ outlier_decision_maker:
   # ... more configurations
 ```
 
+### [config_preprocessing.yml](config/config_preprocessing.yml) (preprocessing decisions for outliers)
+
+```yaml 
+sample_data:
+  min_sample: # < min_sample
+    max_files: 10000
+  
+  medium_sample: # min_sample between medium_sample
+    max_files: 100000
+    percent: 0.2
+  
+  many_sample: # medium_sample between many_sample
+    max_files: 1000000
+    percent: 0.05
+  
+  too_much_sample: # > many_sample
+    percent: 0.01
+
+preprocessing_outlier_rules:
+  filter_percent: 1 # % < filter_percent
+  impute_percent: 5 # % < impute_percent
+  transform_percent: 5 # % > transform_percent
+  flag_percent: 10 # % > flag_percent
+```
+
 > 🐥 You can adjust thresholds, methods, and suggestions according to your criteria.
 
 ---
@@ -146,7 +209,7 @@ outlier_decision_maker:
 
 ```bash 
 # Run EDA with your config
-python main.py --config config.yml
+python main.py 
 ```
 
 ### 📦 Generated Outputs
@@ -154,7 +217,7 @@ python main.py --config config.yml
 | File	             | Format |	Content                                                   |
 |--------------------|--------|-----------------------------------------------------------|
 | JSON_analysis.json | JSON	  | Structured data with all analyses                         |
-| TXT_report.txt	 | TXT	  | Human-readable report with emojis and friendly formatting |
+| TXT_report.txt	   | TXT	  | Human-readable report with emojis and friendly formatting |
 
 ### 📄 Example Output (TXT)
 
@@ -194,7 +257,8 @@ GENERAL INFO
 ```text 
 📂 data_alchemist/
 ├── 📂 config 
-│   └── config_analysis_values.yml    # ML configuration
+│   └── config_analysis_values.yml    # Analysis configuration
+│   └── config_preprocessing.yml      # Preprocessing configuration
 │   └── config.yml                    # Main configuration
 ├── 📂 data                           # Datasets
 ├── 📂 eda_analysis                   # Reports by date
@@ -206,16 +270,28 @@ GENERAL INFO
 │   │   └── pipeline_eda.py           # Pipeline orchestrator
 │   ├── 📂 io/
 │   │   └── folder_file_manager.py    # Output management (JSON/TXT)
+│   ├── 📂 ml_process/
+|   |   ├── 📂 preprocessing/
+|   |   |   ├── 📂 operations/
+│   │   |   |   ├── null.py           # Expressions for nulls
+│   │   |   |   └── transformers.py   # Expressions for transformers
+│   │   |   ├── correlation.py        # Correlation handling
+│   │   |   ├── distribution.py       # Distribution transformations
+│   │   |   ├── outliers.py           # Outlier cleaning
+│   │   └────── pipeline.py           # Preprocessing orchestrator
 │   ├── 📂 strategies/
 │   │   └── strategies.py                 # Enums for validation strategies
 │   │   └── pre_processing_strategies.py  # Enums for feature engineering strategies
 │   ├── 📂 validation/
 |   |   ├── 📂 validation_analysis_values/
-│   │   |   ├── validation.py                  # ML config validation
-│   │   └── eda_validation.py                  # General config validation
-│   │   └── read_validation.py                 # Validation reader
-│   │   └── validation.py                      # Validation orchestrator
-│   └── get_frame.py                           # Data loading (eager)
+│   │   |   └── validation.py               # Config validation for EDA analysis
+|   |   ├── 📂 validation_preprocessing/
+│   │   |   └── validation.py               # Config validation for ML
+│   │   └── eda_validation.py               # General config validation
+│   │   └── pre_processing_validation.py    # Config validation for preprocessing
+│   │   └── read_validation.py              # Validation reader
+│   │   └── validation.py                   # Validation orchestrator
+│   └── get_frame.py                        # Data loading (eager)
 ├── .gitignore
 ├── LICENSE
 ├── README-ESP.md
@@ -230,14 +306,14 @@ GENERAL INFO
 
 | **Library**  | **Version** |	**Purpose**                       |
 |--------------|-------------|------------------------------------|
-| **Python**   | 3.10.18	 | Base language                      |
+| **Python**   | 3.10.18	   | Base language                      |
 | **Polars**   | 1.39.3	     | Fast and efficient data processing |
 | **Pydantic** | 2.12.5	     | Configuration validation           |
 | **PyYAML**   | 6.0.3	     | YAML file parsing                  |
 | **tomli**	   | 2.4.1	     | TOML support (alternative)         |
 | **pathlib**  | built-in    | Path management                    | 
 | **psutil**   | -	         | Resource monitoring (future)       |
-| **datetime** | built-in	 | Timestamps in reports              |
+| **datetime** | built-in	   | Timestamps in reports              |
 
 --- 
 
@@ -303,9 +379,6 @@ You are free to use, modify, and share it
 🐥 **Data Alchemist** 
 Questions or suggestions? Open an issue or contact me directly.
 
-
-
----
 
 
 

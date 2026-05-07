@@ -29,15 +29,17 @@ con ML sin preocuparse por la infraestructura.
 
 ## 📍 Estado del proyecto
 
-| Módulo               | Estado           | ¿Qué hace?                                                                    |
-|----------------------|------------------|-------------------------------------------------------------------------------|
-| **EDA**              | ✅ Completado    | Análisis general, nulos, distribuciones, outliers, correlaciones, categóricas |
-| **Limpieza**         | 🚧 En desarrollo | Aplicación de sugerencias de limpieza                                         |
-| **Preprocesamiento** | 🚧 En desarrollo | Transformaciones, escalado, encoding                                          |
-| **Modelado**         | 🚧 En desarrollo | Selección de algoritmos, ajuste de hiperparámetros                            |
-| **Entrenamiento**    | 🚧 En desarrollo | Métricas, curvas de aprendizaje, comparativas                                 |
-| **Exportación**      | 🚧 En desarrollo | Modelo entrenado + datos procesados (Parquet)                                 |
-| **Dashboard visual** | 📝 Planificado   | Interfaz con sliders y panel principal interactivo                            |
+| Módulo                            | Estado           | ¿Qué hace?                                                                    |
+|-----------------------------------|------------------|-------------------------------------------------------------------------------|
+| **EDA**                           | ✅ Completado    | Análisis general, nulos, distribuciones, outliers, correlaciones, categóricas |
+| **Limpieza**                      | 🚧 En desarrollo | Aplicación de sugerencias de limpieza                                         |
+| **Preprocesamiento (numérico)**   | ✅ Completado    | Correlación, distribución y outliers                                          |
+| **Preprocesamiento (categórico)** | 🚧 En desarrollo | Dominancia categórica                                                         |
+| **Scaling & Encoding**            | 🚧 Siguiente     | Encoding y Scaler                                                             |
+| **Modelado**                      | 🚧 En desarrollo | Selección de algoritmos, ajuste de hiperparámetros                            |
+| **Entrenamiento**                 | 🚧 En desarrollo | Métricas, curvas de aprendizaje, comparativas                                 |
+| **Exportación**                   | 🚧 En desarrollo | Modelo entrenado + datos procesados (Parquet)                                 |
+| **Dashboard visual**              | 📝 Planificado   | Interfaz con sliders y panel principal interactivo                            |
 
 > 🐥 **Ya puedes ejecutar el EDA desde terminal y obtener reportes en JSON + TXT.**
 
@@ -73,7 +75,7 @@ con ML sin preocuparse por la infraestructura.
 - **Sugerencias ML**:
   - Escalador (`robustScaler`, `standarScaler`, `minMaxScaler`)
   - Filtrado (`trim`, `capping`)
-  - Imputación (`median`)
+  - Imputación (`median`, `mean`)
   - Flag (True/False)
   - Transformación (`log1p`, `sqrt`)
 
@@ -81,7 +83,7 @@ con ML sin preocuparse por la infraestructura.
 
 - Matriz de correlaciones numéricas
 - Detección de alta correlación (threshold configurable)
-- Nota con recomendaciones (`eliminar`, `unir` o `filtrar`)
+- Nota con recomendaciones (`eliminar` o `join`)
 
 ### 🏷️ Dominio de Categóricas
 
@@ -94,6 +96,42 @@ con ML sin preocuparse por la infraestructura.
     - `targetEncoder` (muchas categorías / alta cardinalidad)
     - `oneHotEncoder` (valores raros agrupados)
     - Manejo de nulos en categóricas
+
+---
+
+## ✨ Características Feature Engineering
+
+Una vez que el EDA genera el reporte `JSON_analysis.json`, el pipeline de preprocesamiento puede **aplicar automáticamente** las transformaciones, imputaciones y filtros sugeridos — sin intervención manual (aún).
+
+> 🐥🚨 Unicamente ahora disponible auto mode, el modo manual aún esta en desarrollo
+
+### 🔄 Flujo del Pipeline
+
+```text
+VALIDACIÓN DE CONFIGS -> EDA -> REPORTES JSON/TXT -> PREPROCESAMIENTO -> DATAFRAME PARA PROCESAMIENTO (sampleado)
+```
+
+### 🧠 ¿Qué hace automáticamente?
+
+| Paso	                             | ¿Qué hace?	                                      | ¿En qué se basa?                                                             |
+|------------------------------------|--------------------------------------------------|------------------------------------------------------------------------------|
+| **Muestreo**	                     | Ajusta el tamaño del dataset dinámicamente	      | `config_preprocessing.yml` (umbrales por tamaño)                             |
+| **Manejo de nulos**	               | Imputa o filtra nulos por columna                | Análisis de nulos del EDA + `ml_preprocessing.preprocessing.operations.null` |
+| **Transformación de distribución** | Aplica `log1p`, `sqrt` o `square`                | Sugerencias de distribución del EDA                                          |
+| **Manejo de outliers**	           | Filtra, imputa, flaggea o transforma             | Sugerencias de outliers del EDA + `preprocessing_outlier_rules`              | 
+| **Alta correlación**	             | Combina columnas con alta correlación (promedio) | Análisis de correlación del EDA                                              | 
+
+### 📊 Salida 
+
+Un **DataFrame de Polars limpio** con:
+
+- Transformaciones aplicadas (distribución)
+- Outliers manejados (filtrados, imputados, flaggeados o transformados)
+- Nulos imputados o filtrados
+- Columnas con alta correlación combinadas (promedio)
+- Muestreo aplicado si el dataset era muy grande
+
+> 🐥 Todas las decisiones son **rastreables** a través de los logs. Revisa la consola para ver exactamente qué se aplicó a cada columna.
 
 ---
 
@@ -130,9 +168,42 @@ eda:
       enable: True
       top_n: # Si no se proporciona un top_n, el valor será 2
       rare_threshold_percent: # Si no se da un umbral, el valor será 0,01
+
+ml_preprocessing: 
+  auto_preprocessing: True
+  
+  columns: # si es None, se utilizarán todas las columnas
+  
+  sampling: # si no se proporciona el valor, se utilizará 'random'
+  representative_column: #use cuando se selecciona "representative"
+  
+  null_num_handler: # si no se da el valor, se utilizará 'median'
+  null_cat_handler: # si no se proporciona el valor, se utilizará 'constantValue'
+  null_cat_handler_value: # Si no se proporciona ningún valor, se utilizará "Unknown"
+  
+  scaler: # si no hay ninguno, se utilizará auto, el algoritmo decidirá
+  
+  distribution: 
+    transformer: 
+  
+  outlier: 
+    strategy: # si no se proporciona "iqr" será la estrategia utilizada
+    filter: 
+    impute_outliers: 
+    flag: # Bool True/False
+    transform: 
+  
+  correlation:
+    high_correlation: # si None, entonces join será la operación
+    remove_column: # solo si se selecciona high_correlation, si no, join será la operación automática para no eliminar ninguna columna
+  
+  category: # ESTO FALTA
+    operation: # si no se proporciona el valor, se proporcionará la operación "Group"
+    encoder: # Puede ser automático, si es automático, cada columna tendrá su codificador, si no, todas las columnas tendrán el codificador que seleccionó
+    name_operation_value: # Valor para la operación, si es Ninguno, entonces "Unknown" será el valor automático dado
 ```
 
-### [config_analysis_values.yml](config/config_analysis_values.yml) (decisiones ML)
+### [config_analysis_values.yml](config/config_analysis_values.yml) (decisiones de análisis)
 
 ```yaml
 distribution_decision_maker: 
@@ -149,6 +220,31 @@ outlier_decision_maker:
   # ... más configuraciones
 ```
 
+### [config_preprocessing.yml](config/config_preprocessing.yml) (decisiones de preprocesamiento para outliers)
+
+```yaml
+sample_data:
+  min_sample: # < min_sample
+    max_files: 10000
+  
+  medium_sample: # min_sample entre medium_sample
+    max_files: 100000
+    percent: 0.2
+  
+  many_sample: # medium_sample entre many_sample
+    max_files: 1000000
+    percent: 0.05
+  
+  too_much_sample: # > many_sample
+    percent: 0.01
+
+preprocessing_outlier_rules:
+  filter_percent: 1 # % < filter_percent
+  impute_percent: 5 # % < impute_percent
+  transform_percent: 5 # % > transform_percent
+  flag_percent: 10 # % > flag_percent
+```
+
 > 🐥 Puedes ajustar umbrales, métodos y sugerencias según tu criterio.
 
 ---
@@ -157,7 +253,7 @@ outlier_decision_maker:
 
 ```bash
 # Run EDA con tu config
-python main.py --config config.yml
+python main.py 
 ```
 
 ### 📦 Outputs generados
@@ -200,43 +296,6 @@ GENERAL INFO
 
 ---
 
-## 🧱 Estructura del proyecto
-
-```text
-📂 data_alchemist/
-├── 📂 config 
-│   └── config_analysis_values.yml    # Configuración ML
-│   └── config.yml                    # Configuración principal
-├── 📂 data                           # Datasets
-├── 📂 eda_analysis                   # Reportes por fechas
-├── 📂 src/
-│   ├── 📂 eda/
-│   │   ├── eda_general_info.py       # Dimensiones, tipos, estadísticas
-│   │   ├── eda_null_val.py           # Análisis de nulos
-│   │   ├── eda_analysis_data.py      # Distribución, outliers, correlaciones, categóricas
-│   │   └── pipeline_eda.py           # Orquestador del pipeline
-│   ├── 📂 io/
-│   │   └── folder_file_manager.py    # Gestión de outputs (JSON/TXT)
-│   ├── 📂 strategies/
-│   │   └── strategies.py                 # Enums para estrategias de validación
-│   │   └── pre_processing_strategies.py  # Enums para estrategias de feature engineering
-│   ├── 📂 validation/
-|   |   ├── 📂 validation_analysis_values/
-│   │   |   ├── validation.py                  # Validación de configuración para ML
-│   │   └── eda_validation.py                  # Validación de configuración general
-│   │   └── read_validation.py                 # Lectura de validaciones
-│   │   └── validation.py                      # Orquestador de validaciones
-│   └── get_frame.py                           # Carga de datos (eager)
-├── .gitinore
-├── LICENSE
-├── README-ESP.md
-├── README.md
-├── main.py
-└── requirements.txt
-```
-
----
-
 ## 🛠️ Tecnologías usadas
 
 | **Librería** | **Versión** |	**¿Para qué?**                               |
@@ -249,6 +308,56 @@ GENERAL INFO
 | **pathlib**	 | built-in    | Manejo de rutas                               |
 | **psutil**	 | -	         | Monitoreo de recursos (futuro)                | 
 | **datetime** | built-in    | Timestamps en reportes                        |
+
+---
+
+## 🧱 Estructura del proyecto
+
+```text
+📂 data_alchemist/
+├── 📂 config 
+│   └── config_analysis_values.yml    # Configuración análisis
+│   └── config_preprocessing.yml      # Configuración preprocesamiento
+│   └── config.yml                    # Configuración principal
+├── 📂 data                           # Datasets
+├── 📂 eda_analysis                   # Reportes por fechas
+├── 📂 src/
+│   ├── 📂 eda/
+│   │   ├── eda_general_info.py       # Dimensiones, tipos, estadísticas
+│   │   ├── eda_null_val.py           # Análisis de nulos
+│   │   ├── eda_analysis_data.py      # Distribución, outliers, correlaciones, categóricas
+│   │   └── pipeline_eda.py           # Orquestador del pipeline
+│   ├── 📂 io/
+│   │   └── folder_file_manager.py    # Gestión de outputs (JSON/TXT)
+│   ├── 📂 ml_process/
+|   |   ├── 📂 preprocessing/
+|   |   |   ├── 📂 operations/
+│   │   |   |   ├── null.py           # Expresiones para nulos
+│   │   |   |   └── transformers.py   # Expresiones para transformadores       
+│   │   |   ├── correlation.py        # Expresiones para el análisis de correlación  
+│   │   |   ├── distribution.py       # Expresiones para el análisis de distribución   
+│   │   |   ├── outliers.py           # DataFrame con datos limpios de Outliers
+│   │   └────── pipeline.py           # Orquestador de preprocesamiento
+│   ├── 📂 strategies/
+│   │   └── strategies.py                 # Enums para estrategias de validación
+│   │   └── pre_processing_strategies.py  # Enums para estrategias de feature engineering
+│   ├── 📂 validation/
+|   |   ├── 📂 validation_analysis_values/
+│   │   |   └── validation.py               # Validación de configuración para eda analysis
+|   |   ├── 📂 validation_preprocessing/
+│   │   |   └── validation.py               # Validación de configuración para ML
+│   │   └── eda_validation.py               # Validación de configuración general
+│   │   └── pre_processing_validation.py    # Validación de configuración para preprocesamiento
+│   │   └── read_validation.py              # Lectura de validaciones
+│   │   └── validation.py                   # Orquestador de validaciones
+│   └── get_frame.py                        # Carga de datos (eager)
+├── .gitinore
+├── LICENSE
+├── README-ESP.md
+├── README.md
+├── main.py
+└── requirements.txt
+```
 
 ---
 
