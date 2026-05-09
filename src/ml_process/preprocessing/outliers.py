@@ -1,4 +1,4 @@
-from ...strategies.strategies import analysis_outliers
+from ...strategies.strategies import AnalysisOutliers
 from ...strategies.pre_processing_strategies import OutlierImpute, OutlierFilter, OutlierTransform
 from .operations.transformers import TransformationOperation
 
