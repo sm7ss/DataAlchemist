@@ -1,17 +1,5 @@
 from enum import Enum
 
-# 🚨🚨🚨
-class Scaler(str, Enum): 
-    ROBUSTSCALER= 'robustScaler'
-    STANDARDSCALER= 'standarScaler'
-    MINMAXSCALER= 'minMaxScaler'
-
-# 🚨🚨🚨
-class Encoder(str, Enum): 
-    ORDINALENCODER= 'ordinalEncoder'
-    TARGETENCODER= 'targetEncoder'
-    ONEHOTENCODER= 'oneHotEncoder'
-
 class NullNumericHandler(str, Enum): 
     FILTER= 'filter'
     MEDIAN= 'median'
