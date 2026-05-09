@@ -11,6 +11,7 @@ logger= logging.getLogger(__name__)
 from .validation import validation
 from .validation_analysis_values.validation import validator_analysis_values
 from .validation_preprocessing.validation import preprocessing_validation
+from .validation_modeling.validation import modeling_val
 
 class ReadConfig: 
     @staticmethod
@@ -50,6 +51,7 @@ class ReadConfig:
         config= Path(__file__).resolve().parent.parent.parent / 'config' / 'config.yml'
         config_var= Path(__file__).resolve().parent.parent.parent / 'config' / 'config_analysis_values.yml'
         config_preprocessing= Path(__file__).resolve().parent.parent.parent / 'config' / 'config_preprocessing.yml'
+        config_modeling= Path(__file__).resolve().parent.parent.parent / 'config' / 'config_modeling.yml'
         
         dict_configs= {}
         
@@ -67,6 +69,11 @@ class ReadConfig:
             dict_configs['preprocessing']= cls.yaml_read(config=config_preprocessing, callable=preprocessing_validation)
         else:
             dict_configs['preprocessing']= cls.toml_read(config=config_preprocessing, callable=preprocessing_validation)
+        
+        if config_modeling.suffix in ['.yml', '.yaml']: 
+            dict_configs['modeling']= cls.yaml_read(config=config_modeling, callable=modeling_val)
+        else: 
+            dict_configs['modeling']= cls.toml_read(config=config_modeling, callable=modeling_val)
         
         return dict_configs
 
