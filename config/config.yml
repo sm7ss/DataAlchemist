@@ -1,5 +1,5 @@
 path: 
-  data: 'users_behavior.csv'
+  data: 'users_behavior.csv' # crime.parquet
   overhead_percent: 1.8
   sample_data_percent: 0.1 #percent data analysis, this can change by system to be optimal, not used now, until laz and streaming is added
 
@@ -37,8 +37,6 @@ ml_preprocessing:
   null_cat_handler: # if not value given 'constantValue' will be used
   null_cat_handler_value: # if not value is given "Unknown" will be used
   
-  scaler: # if none, auto will be use, the algorithm will decide
-  
   distribution: 
     transformer: 
   
@@ -55,10 +53,7 @@ ml_preprocessing:
   
   category: # THIS IS MISSING
     operation: # if not value given, "Group" operation will be given
-    encoder: # Can be auto, if auto, every column will have their encoder, if not all colulmns will have the encoder you selected
     name_operation_value: # Value for operation, if None, then "Unknown" will be the auto value given
-
-
 
 
 
