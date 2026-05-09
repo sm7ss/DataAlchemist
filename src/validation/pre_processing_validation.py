@@ -1,6 +1,6 @@
-from ..strategies.pre_processing_strategies import Scaler, Encoder, NullCategoricHandler, NullNumericHandler, DistributionTransformer, OutlierFilter, OutlierImpute, OutlierTransform, CorrSampling, HighCorrelationActions, CategoryOperation
+from ..strategies.pre_processing_strategies import NullCategoricHandler, NullNumericHandler, DistributionTransformer, OutlierFilter, OutlierImpute, OutlierTransform, CorrSampling, HighCorrelationActions, CategoryOperation
 
-from ..strategies.strategies import analysis_outliers
+from ..strategies.strategies import AnalysisOutliers
 
 from pydantic import BaseModel, model_validator, field_validator
 from typing import List, Union, Optional
@@ -14,7 +14,7 @@ class distribution_val(BaseModel):
     transformer: Optional[DistributionTransformer]
 
 class outlier_val(BaseModel): 
-    strategy: Optional[analysis_outliers]
+    strategy: Optional[AnalysisOutliers]
     filter: Optional[OutlierFilter]
     impute_outliers: Optional[OutlierImpute]
     flag: Optional[bool]
@@ -49,7 +49,6 @@ class correlation_val(BaseModel):
 
 class category_val(BaseModel): 
     operation: Optional[CategoryOperation]
-    encoder: Optional[Encoder]
     name_operation_value: Optional[str]
     
     @field_validator('operation')
@@ -79,8 +78,6 @@ class ml_preprocessing_val(BaseModel):
     null_num_handler: Optional[NullNumericHandler]
     null_cat_handler: Optional[NullCategoricHandler]
     null_cat_handler_value: Optional[str]
-    
-    scaler: Optional[Scaler]
     
     distribution: distribution_val
     outlier: outlier_val
@@ -132,7 +129,6 @@ class ml_preprocessing_val(BaseModel):
             self.correlation.high_correlation,
             self.correlation.remove_column,
             self.category.operation,
-            self.category.encoder,
             self.category.name_operation_value
         ]
         
