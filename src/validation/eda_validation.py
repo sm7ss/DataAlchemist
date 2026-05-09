@@ -1,6 +1,7 @@
 from pydantic import BaseModel, field_validator, model_validator, Field
-from ..strategies.strategies import analysis_outliers, category_dominance_rtp, category_dominance_tn
 from typing import Dict, Any, Optional
+
+from ..strategies.strategies import AnalysisOutliers, CategoryDominanceRtp, CategoryDominance
 
 import logging
 
@@ -37,15 +38,15 @@ class eda_val(BaseModel):
     def outlier_val(cls, v): 
         outliers= v['outliers']['method']
         if not outliers:
-            logger.info(f'The value for the outlier method cant be a None, the new value is {analysis_outliers.IQR.value}')
-            v['outliers']['method']= analysis_outliers.IQR.value
+            logger.info(f'The value for the outlier method cant be a None, the new value is {AnalysisOutliers.IQR.value}')
+            v['outliers']['method']= AnalysisOutliers.IQR.value
             return v
         
         if not isinstance(outliers, str): 
             logger.error('The outlier method should be an string')
             raise ValueError('The outlier method should be an string')
         
-        outlier_enums= [v.value for v in analysis_outliers]
+        outlier_enums= [v.value for v in AnalysisOutliers]
         if outliers not in outlier_enums: 
             logger.error(f'The outlier method should be: {outlier_enums}')
             raise ValueError(f'The outlier method should be: {outlier_enums}')
@@ -58,18 +59,18 @@ class eda_val(BaseModel):
         rare_threshold_percent= v['category_dominance']['rare_threshold_percent']
         
         if not top_n: 
-            logger.info(f'The value of top_n cant be a None, so the new value is: {category_dominance_tn.MIN.value}')
-            v['category_dominance']['top_n']= category_dominance_tn.MIN.value
-        elif top_n <= category_dominance_tn.MIN.value or top_n >= category_dominance_tn.MAX.value: 
-            logger.error(f'Top_n cant be less or equal than {category_dominance_tn.MIN.value} and greater or equal than {category_dominance_tn.MAX.value}')
-            raise ValueError(f'Top_n cant be less or equal than {category_dominance_tn.MIN.value} and greater or equal than {category_dominance_tn.MAX.value}')
+            logger.info(f'The value of top_n cant be a None, so the new value is: {CategoryDominance.MIN.value}')
+            v['category_dominance']['top_n']= CategoryDominance.MIN.value
+        elif top_n <= CategoryDominance.MIN.value or top_n >= CategoryDominance.MAX.value: 
+            logger.error(f'Top_n cant be less or equal than {CategoryDominance.MIN.value} and greater or equal than {CategoryDominance.MAX.value}')
+            raise ValueError(f'Top_n cant be less or equal than {CategoryDominance.MIN.value} and greater or equal than {CategoryDominance.MAX.value}')
         
         if not rare_threshold_percent: 
             logger.info(f'The value of the percent threshold cant be a None, so the new value is: {0.01}')
             v['category_dominance']['rare_threshold_percent']= 0.01
-        elif rare_threshold_percent <= category_dominance_rtp.MIN.value or rare_threshold_percent >= category_dominance_rtp.MAX.value: 
-            logger.error(f'Top_n cant be less or equal than {category_dominance_rtp.MIN.value} and greater or equal than {category_dominance_rtp.MAX.value}')
-            raise ValueError(f'Top_n cant be less or equal than {category_dominance_rtp.MIN.value} and greater or equal than {category_dominance_rtp.MAX.value}')
+        elif rare_threshold_percent <= CategoryDominanceRtp.MIN.value or rare_threshold_percent >= CategoryDominanceRtp.MAX.value: 
+            logger.error(f'Top_n cant be less or equal than {CategoryDominanceRtp.MIN.value} and greater or equal than {CategoryDominanceRtp.MAX.value}')
+            raise ValueError(f'Top_n cant be less or equal than {CategoryDominanceRtp.MIN.value} and greater or equal than {CategoryDominanceRtp.MAX.value}')
         
         return v
 
