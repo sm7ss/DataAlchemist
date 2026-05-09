@@ -1,13 +1,13 @@
 from enum import Enum
 
-class analysis_outliers(str, Enum): 
+class AnalysisOutliers(str, Enum): 
     IQR = 'iqr'
 
-class category_dominance_tn(int, Enum):
+class CategoryDominance(int, Enum):
     MAX = 100
     MIN = 2
 
-class category_dominance_rtp(float, Enum): 
+class CategoryDominanceRtp(float, Enum): 
     MAX = 1
     MIN = 0.0
 
