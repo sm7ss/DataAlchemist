@@ -55,7 +55,15 @@ ml_preprocessing:
     operation: # if not value given, "Group" operation will be given
     name_operation_value: # Value for operation, if None, then "Unknown" will be the auto value given
 
-
+ml_training: # Encoder & Scaler not working
+  target: 'is_ultra'
+  
+  train_temp: 0.3
+  test_val: 0.5
+  random_state: 42
+  
+  encoder: # 🚨 NOT AVAILABLE 🚨 Can be auto, if auto, every column will have their encoder, if not all colulmns will have the encoder you selected 
+  scaler: # 🚨 NOT AVAILABLE 🚨 if none, auto will be use, the algorithm will decide
 
 
 
