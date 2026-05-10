@@ -1,6 +1,4 @@
-from ...strategies.modeling_strategies import RegressionScoring
-
-#from sklearn.metrics import get_scorer_names
+from sklearn.metrics import get_scorer_names
 from typing import List, Dict, Optional
 from pydantic import BaseModel, field_validator, Field
 
@@ -76,8 +74,22 @@ class models_hyperparameters_val(BaseModel):
 
 class grid_search_cv_val(BaseModel): 
     cv: int= Field(ge=1, le=10)
-    scoring: Dict[str, RegressionScoring]
+    scoring: Dict[str, str]
     n_jobs: int= Field(ge=1)
+    
+    @field_validator('scoring')
+    def scoring_val(cls, v): 
+        list_metrics= get_scorer_names()
+        
+        for key, value in v.items(): 
+            if key != value: 
+                logger.error(f'the key {key} must equal the value {value}')
+                raise ValueError(f'the key {key} must equal the value {value}')
+            if value not in list_metrics: 
+                logger.error(f'Value {value} must be in the available metrics: \n{list_metrics}')
+                raise ValueError(f'Value {value} must be in the available metrics: \n{list_metrics}')
+        
+        return v
     
     @field_validator('n_jobs')
     def n_jobs_val(cls, v): 
@@ -92,16 +104,3 @@ class grid_search_cv_val(BaseModel):
 class modeling_val(BaseModel): 
     models_hyperparameters: models_hyperparameters_val
     grid_search_cv: grid_search_cv_val
-
-
-
-
-
-
-
-
-
-
-
-
-
