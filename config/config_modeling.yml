@@ -20,5 +20,5 @@ grid_search_cv:
     neg_mean_absolute_error: 'neg_mean_absolute_error'
     neg_mean_squared_error: 'neg_mean_squared_error' 
     neg_root_mean_squared_error: 'neg_root_mean_squared_error'
-    R2: 'r2'
+    r2: 'r2'
   n_jobs: 2 # how many cores are thrown into the system
