@@ -8,6 +8,7 @@ logger= logging.getLogger(__name__)
 
 from .eda_validation import eda_val
 from .pre_processing_validation import ml_preprocessing_val
+from .ml_validation import ml_training_val
 
 class path_validation(BaseModel): 
     data: str
@@ -29,6 +30,7 @@ class validation(BaseModel):
     path: path_validation
     eda: eda_val
     ml_preprocessing: ml_preprocessing_val
+    ml_training: ml_training_val
     
     @model_validator(mode='after')
     def columns_analysis_val(self): 
@@ -198,6 +200,23 @@ class validation(BaseModel):
                         raise ValueError(f'Column {columns_representative} were not found in available columns.\nAvailable columns: {frame_columns}')
             else: 
                 logger.error(f'Column/s should be selected to be representative')
+        
+        return self
+    
+    @model_validator(mode='after')
+    def column_ml_training(self): 
+        path= self.path.data
+        
+        if path.suffix == '.csv': 
+            frame_columns= pl.read_csv(path, n_rows=1000, null_values=['tbd', 'TBD', 'N/A', 'nan']).columns
+        else: 
+            frame_columns= pl.read_parquet(path, n_rows=1000).columns
+        
+        target= self.ml_training.target
+        
+        if target not in frame_columns: 
+            logger.error(f'The target column "{target}" must be in the Frame. Available columns:\n{frame_columns}')
+            raise ValueError(f'The target column "{target}" must be in the Frame. Available columns:\n{frame_columns}')
         
         return self
 

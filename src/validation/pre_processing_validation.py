@@ -118,7 +118,12 @@ class ml_preprocessing_val(BaseModel):
     
     @model_validator(mode='after')
     def ml_validation_values(self): 
-        # VALIDATION AUTO PREPROCESSING
+        ap= self.auto_preprocessing
+        if ap == False: 
+            logger.error('Manual preprocessing is not available. Just Auto preprocessing.')
+            raise ValueError('Manual preprocessing is not available. Just Auto preprocessing.')
+        
+        """# VALIDATION AUTO PREPROCESSING
         ap= self.auto_preprocessing
         vals= [
             self.distribution.transformer,
@@ -136,7 +141,7 @@ class ml_preprocessing_val(BaseModel):
             for value in vals: 
                 if value == None: 
                     logger.error('The values cant be None if "auto_preprocessing" is False')
-                    raise ValueError('The values cant be None if "auto_preprocessing" is False')
+                    raise ValueError('The values cant be None if "auto_preprocessing" is False')"""
         
         return self
 
