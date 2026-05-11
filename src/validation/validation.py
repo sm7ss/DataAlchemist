@@ -206,6 +206,7 @@ class validation(BaseModel):
     @model_validator(mode='after')
     def column_ml_training(self): 
         path= self.path.data
+        columns_pre= self.ml_preprocessing.columns
         
         if path.suffix == '.csv': 
             frame_columns= pl.read_csv(path, n_rows=1000, null_values=['tbd', 'TBD', 'N/A', 'nan']).columns
@@ -217,6 +218,10 @@ class validation(BaseModel):
         if target not in frame_columns: 
             logger.error(f'The target column "{target}" must be in the Frame. Available columns:\n{frame_columns}')
             raise ValueError(f'The target column "{target}" must be in the Frame. Available columns:\n{frame_columns}')
+        
+        if target not in columns_pre: 
+            logger.info(f'Target column "{target}" must exists in available columns {columns_pre}')
+            raise ValueError(f'Target column "{target}" must exists in available columns {columns_pre}')
         
         return self
 
