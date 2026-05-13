@@ -62,8 +62,9 @@ ml_training: # Encoder & Scaler not working
   train_test_final: 0.25 # 🚨 NOT AVAILABLE 🚨
   random_state: 42
   
-  encoder: # 🚨 NOT AVAILABLE 🚨 Can be auto, if auto, every column will have their encoder, if not all colulmns will have the encoder you selected 
+  encoder: # 🚨 NOT AVAILABLE 🚨 if None=Auto (Rules in config_modeling), if not all columns will have the encoder you selected 
   scaler: # 🚨 NOT AVAILABLE 🚨 if none, auto will be use, the algorithm will decide
+  scaler_outlier_method: # 🚨 NOT AVAILABLE 🚨 if none, iqr will be used
 
 
 
