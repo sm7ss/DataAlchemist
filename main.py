@@ -9,6 +9,7 @@ config= ReadConfig().read_config()
 
 config_var= config['config_vars']
 config_preprocessing= config['preprocessing']
+config_modeling= config['modeling']
 config= config['config']
 
 frame= get_frame(file=config.path.data)
@@ -23,6 +24,6 @@ frame= frame.with_row_index()
 
 preprocessing= AutoPipeline(frame=frame, analysis=file, config=config, config_pre=config_preprocessing)
 
-new_frame= preprocessing.auto_frame_tests()
+pre_processing_frame= preprocessing.auto_frame_tests()
 
 
