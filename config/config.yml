@@ -4,7 +4,6 @@ path:
   sample_data_percent: 0.1 #percent data analysis, this can change by system to be optimal, not used now, until laz and streaming is added
 
 eda: 
-  general_information: True
   null_values: True
   null_values_percent_column: 0.65
   null_values_percent_row: 0.40
@@ -25,9 +24,17 @@ eda:
       top_n: #if a top_n is not given, the value will be 2
       rare_threshold_percent: #if a threshold is not given, the value will be 0.01
 
-ml_preprocessing: 
-  auto_preprocessing: True
+cleaning: 
+  rename_columns: 
+  change_datatypes: 
+  duplicates: True # Deleate duplicated rows
+  drop_columns: 
   
+  null_values: 
+    null_impute_numerics: # if None -> the median will be used if nulls are found
+    null_impute_categorics: # if None -> the mode will be used if nulls are found
+
+ml_preprocessing: 
   columns: # if None, all columns will be used
   
   sampling: # if not value given 'random' will be used
