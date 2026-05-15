@@ -1,12 +1,16 @@
 from pydantic import BaseModel, Field, field_validator, model_validator
 from pathlib import Path
+
 import polars as pl 
 import logging
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
 logger= logging.getLogger(__name__)
 
+from ..strategies.cleaning_strategies import DataTypes
+
 from .eda_validation import eda_val
+from .cleaning_validation import cleaning_val
 from .pre_processing_validation import ml_preprocessing_val
 from .ml_validation import ml_training_val
 
@@ -29,6 +33,7 @@ class path_validation(BaseModel):
 class validation(BaseModel): 
     path: path_validation
     eda: eda_val
+    cleaning: cleaning_val
     ml_preprocessing: ml_preprocessing_val
     ml_training: ml_training_val
     
@@ -143,6 +148,49 @@ class validation(BaseModel):
             else: 
                 logger.error('The columns should be on a list or should be a string')
                 raise ValueError('The columns should be on a list or should be a string')
+        
+        return self
+    
+    @model_validator(mode='after')
+    def columns_cleaning_val(self): 
+        path= self.path.data
+        cleaning_columns_name= self.cleaning.rename_columns
+        change_datatypes= self.cleaning.change_datatypes
+        drop_columns= self.cleaning.drop_columns
+        
+        if path.suffix == '.csv': 
+            frame= pl.read_csv(path, n_rows=10, null_values=['tbd', 'TBD', 'N/A', 'nan'])
+        else: 
+            frame= pl.read_parquet(path, n_rows=10)
+        
+        frame_cols= frame.columns
+        # COLUMN NAMES
+        if cleaning_columns_name:
+            for key in cleaning_columns_name: 
+                if key not in frame_cols: 
+                    logger.error(f'Column "{key}" doesnt exist on DataFrame. Available columns:\n{frame_cols}')
+                    raise ValueError(f'Column "{key}" doesnt exist on DataFrame. Available columns:\n{frame_cols}')
+        
+        categoric_columns= frame.select(pl.selectors.string()).columns
+        # CHANGE DATATYPES  
+        if change_datatypes:
+            try: 
+                for key, value in change_datatypes.items(): 
+                    if key not in frame_cols: 
+                        logger.error(f'Column "{key}" doesnt exist on DataFrame. Available columns:\n{frame_cols}')
+                        raise ValueError(f'Column "{key}" doesnt exist on DataFrame. Available columns:\n{frame_cols}')
+                    if value in [DataTypes.INT32, DataTypes.INT64, DataTypes.FLOAT32] and key in categoric_columns: 
+                        frame= frame.with_columns(pl.col(key).cast(pl.Utf8))
+                        logger.info(f'Column "{key}" that is a string type can be a numeric type')
+            except: 
+                logger.error(f'The "{key}" column cannot be changed from string to numeric')
+                raise TypeError(f'The "{key}" column cannot be changed from string to numeric')
+            
+            # DROP COLUMNS
+            if drop_columns: 
+                for col in drop_columns: 
+                    logger.error(f'Column "{col}" doesnt exist on DataFrame. Available columns:\n{frame_cols}')
+                    raise ValueError(f'Column "{col}" doesnt exist on DataFrame. Available columns:\n{frame_cols}')
         
         return self
     
