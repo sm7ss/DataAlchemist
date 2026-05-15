@@ -12,7 +12,7 @@ class sacler_rules_val(BaseModel):
     robust_scaler_percent: float= Field(ge=0.01, le=1.0)
     standard_scaler_percent: float= Field(ge=0.01, le=1.0)
 
-class best_model_rules: 
+class best_model_rules(BaseModel): 
     cv_fold: int= Field(ge=0, le=10)
     train_test_difference_percent: float= Field(ge=0.01, le=1.00)
     unstable_cross_validation_percent: float= Field(ge=0.01, le=1.00)
@@ -112,5 +112,6 @@ class grid_search_cv_val(BaseModel):
 
 class modeling_val(BaseModel): 
     scaler_rules: sacler_rules_val
+    best_model_rules: best_model_rules
     models_hyperparameters: models_hyperparameters_val
     grid_search_cv: grid_search_cv_val
