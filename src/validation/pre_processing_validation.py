@@ -68,8 +68,6 @@ class category_val(BaseModel):
         return v
 
 class ml_preprocessing_val(BaseModel): 
-    auto_preprocessing: bool
-    
     columns: Union[List[str], str, None]
     
     representative_column: Union[str, List[str], None]
@@ -115,42 +113,4 @@ class ml_preprocessing_val(BaseModel):
             return 'Unknown'
         else: 
             return v
-    
-    @model_validator(mode='after')
-    def ml_validation_values(self): 
-        ap= self.auto_preprocessing
-        if ap == False: 
-            logger.error('Manual preprocessing is not available. Just Auto preprocessing.')
-            raise ValueError('Manual preprocessing is not available. Just Auto preprocessing.')
-        
-        """# VALIDATION AUTO PREPROCESSING
-        ap= self.auto_preprocessing
-        vals= [
-            self.distribution.transformer,
-            self.outlier.filter,
-            self.outlier.impute_outliers,
-            self.outlier.flag,
-            self.outlier.transform,
-            self.correlation.high_correlation,
-            self.correlation.remove_column,
-            self.category.operation,
-            self.category.name_operation_value
-        ]
-        
-        if not ap:
-            for value in vals: 
-                if value == None: 
-                    logger.error('The values cant be None if "auto_preprocessing" is False')
-                    raise ValueError('The values cant be None if "auto_preprocessing" is False')"""
-        
-        return self
-
-
-
-
-
-
-
-
-
 

@@ -9,7 +9,6 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(mess
 logger= logging.getLogger(__name__)
 
 class eda_val(BaseModel): 
-    general_information: Optional[bool]
     null_values: Optional[bool]
     null_values_percent_column: Optional[float] = Field(gt=0.0, le=95.0)
     null_values_percent_row: Optional[float] = Field(gt=0.0, le=95.0)
@@ -18,7 +17,6 @@ class eda_val(BaseModel):
     @model_validator(mode='after')
     def bool_analysis_val(self): 
         #This is for general information
-        self.general_information= False if not self.general_information else self.general_information
         self.null_values= False if not self.null_values else self.null_values
         
         #This is for analysis basic information
