@@ -1,6 +1,6 @@
 from ..strategies.cleaning_strategies import NumericNulls, CategoricNulls, DataTypes
 
-from typing import Optional, Dict, List
+from typing import Optional, Dict, Union, List
 from pydantic import BaseModel, field_validator
 
 import logging 
@@ -9,8 +9,8 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(mess
 logger= logging.getLogger(__name__)
 
 class null_values_val(BaseModel): 
-    null_impute_numerics: Optional[NumericNulls]
-    null_impute_categorics: Optional[CategoricNulls]
+    null_impute_numerics: Union[NumericNulls, int, float, None]
+    null_impute_categorics: Union[CategoricNulls, str, None]
     
     @field_validator('null_impute_numerics')
     def null_num_imp_val(cls, v): 
