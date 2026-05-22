@@ -12,6 +12,7 @@ from .validation import validation
 from .validation_analysis_values.validation import validator_analysis_values
 from .validation_preprocessing.validation import preprocessing_validation
 from .validation_modeling.validation import modeling_val
+from .validation_cleaning.validation import config_cleaning
 
 class ReadConfig: 
     @staticmethod
@@ -46,12 +47,45 @@ class ReadConfig:
             logger.error(f'There is an error:\n{e}')
             raise ValueError(f'There is an error:\n{e}')
     
+    @staticmethod
+    def yaml_read_cleaning(config: Path) -> BaseModel: 
+        try: 
+            with open(config, 'r') as c: 
+                read= yaml.safe_load(c)
+                logger.info(f'The file {config.name} was readed correctly')
+            val= config_cleaning(**read['threshold_nulls'])
+            logger.info(f'The file {config.name} was validated correctly')
+            return val
+        except yaml.YAMLError: 
+            logger.error(f'The yaml file {config.name} is corrupted')
+            raise ValueError(f'The yaml file {config.name} is corrupted')
+        except Exception as e: 
+            logger.error(f'There is an error:\n{e}')
+            raise ValueError(f'There is an error:\n{e}')
+    
+    @staticmethod
+    def toml_read_cleaning(config: Path) -> BaseModel: 
+        try: 
+            with open(config, 'rb') as c: 
+                read= tomli.load(c)
+                logger.info(f'The file {config.name} was readed correctly')
+            val= config_cleaning(**read['threshold_nulls'])
+            logger.info(f'The file {config.name} was validated correctly')
+            return val
+        except tomli.TOMLDecodeError: 
+            logger.error(f'The toml file {config.name} is corrupted')
+            raise ValueError(f'The toml file {config.name} is corrupted')
+        except Exception as e: 
+            logger.error(f'There is an error:\n{e}')
+            raise ValueError(f'There is an error:\n{e}')
+    
     @classmethod
     def read_config(cls) -> Dict[str, Any]: 
         config= Path(__file__).resolve().parent.parent.parent / 'config' / 'config.yml'
         config_var= Path(__file__).resolve().parent.parent.parent / 'config' / 'config_analysis_values.yml'
         config_preprocessing= Path(__file__).resolve().parent.parent.parent / 'config' / 'config_preprocessing.yml'
         config_modeling= Path(__file__).resolve().parent.parent.parent / 'config' / 'config_modeling.yml'
+        config_cleaning= Path(__file__).resolve().parent.parent.parent / 'config' / 'config_cleaning.yml'
         
         dict_configs= {}
         
@@ -74,6 +108,11 @@ class ReadConfig:
             dict_configs['modeling']= cls.yaml_read(config=config_modeling, callable=modeling_val)
         else: 
             dict_configs['modeling']= cls.toml_read(config=config_modeling, callable=modeling_val)
+        
+        if config_cleaning.suffix in ['.yml', '.yaml']: 
+            dict_configs['cleaning']= cls.yaml_read_cleaning(config=config_cleaning)
+        else: 
+            dict_configs['cleaning']= cls.toml_read_cleaning(config=config_cleaning)
         
         return dict_configs
 
