@@ -550,14 +550,13 @@ class EdaPipeline:
         return self.eda_analysis.analysis_data()
     
     def pipeline_eda(self) -> Dict[str, Path]: 
-        enable_general_eda= self.config_eda.general_information
         enable_null_analysis= self.config_eda.null_values
         report= ''
         
         dict_eda={}
         
-        if enable_general_eda: 
-            general_eda= self.eda_general_info()
+        general_eda= self.eda_general_info()
+        if general_eda:
             general_report= True
             dict_eda['general_eda']= general_eda
         else: 
