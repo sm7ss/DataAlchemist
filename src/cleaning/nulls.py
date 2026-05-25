@@ -55,13 +55,13 @@ class DeleteData:
     def delete_row_expr(index_list: List[Union[int, float]]) -> pl.Expr: 
         return ~pl.col('index').is_in(index_list)
 
-class NullAnalyseDelete: 
+class NullGetExpressions: 
     def __init__(self, frame: pl.DataFrame, JSON: Dict[str, Any], model: BaseModel, model_cleaning: BaseModel):
         self.frame= frame
         
         self.JSON= JSON.get('null_analysis', None)
         self.model= model
-        self.model_cleaning= model_cleaning.threshold_nulls
+        self.model_cleaning= model_cleaning
         
         self.cat= CatNullExpr(model=self.model)
         self.num= NumNullExpr(model=model)
@@ -82,8 +82,7 @@ class NullAnalyseDelete:
         if percent_nulls < self.model_cleaning.columns_percent: 
             row_nulls= nulls.with_columns(
                 sum_nulls= pl.sum_horizontal(pl.col('*').is_null().cast(pl.Int32))
-                .filter(pl.col('sum_nulls') > self.model_cleaning.rows_percent)
-            )
+            ).filter(pl.col('sum_nulls') > self.model_cleaning.rows_percent)
             if row_nulls.height < 1: 
                 logger.info(f'For column {col} rows will be imputed')
                 numeric_cols= self.frame.select(pl.selectors.numeric())
@@ -106,8 +105,8 @@ class NullAnalyseDelete:
             logger.info(f'Column {col} will be removed')
             return col
     
-    def obtain_null_actions(self) -> Optional[Tuple[List[str]]]: 
-        if not self.JSON: 
+    def obtain_null_actions(self) -> Optional[Dict[str, Any]]: 
+        if not self.JSON['null_analysis']: 
             logger.info('No nulls were found')
             return None
         
@@ -129,9 +128,12 @@ class NullAnalyseDelete:
                         logger.info(f'Datatype for column {col} will not be processed, just strings or numeric types.')
                         continue
                     else:
-                        list_expr.append(col)
+                        list_expr.append(analyse)
         
-        return list_expr
+        return {
+            'delete_columns': columns_removed if columns_removed else None, 
+            'expressions': list_expr if list_expr else None
+        }
 
 
 
