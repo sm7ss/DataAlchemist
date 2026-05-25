@@ -1,6 +1,6 @@
 from ..strategies.cleaning_strategies import NumericNulls, CategoricNulls
 
-from typing import List, Optional, Tuple, Dict, Any
+from typing import List, Optional, Tuple, Dict, Any, Union
 from pydantic import BaseModel
 
 import polars as pl 
@@ -52,9 +52,8 @@ class DeleteData:
         return frame.drop(list_col)
     
     @staticmethod
-    def delete_row_expr(frame: pl.DataFrame) -> pl.Expr: 
-        columna = frame.get_column('index').to_list()
-        return ~pl.col('index').is_in(columna)
+    def delete_row_expr(index_list: List[Union[int, float]]) -> pl.Expr: 
+        return ~pl.col('index').is_in(index_list)
 
 class NullAnalyseDelete: 
     def __init__(self, frame: pl.DataFrame, JSON: Dict[str, Any], model: BaseModel, model_cleaning: BaseModel):
@@ -62,6 +61,7 @@ class NullAnalyseDelete:
         
         self.JSON= JSON.get('null_analysis', None)
         self.model= model
+        self.model_cleaning= model_cleaning.threshold_nulls
         
         self.cat= CatNullExpr(model=self.model)
         self.num= NumNullExpr(model=model)
@@ -73,38 +73,65 @@ class NullAnalyseDelete:
     def num_impute(self, col: str) -> pl.Expr: 
         return self.num.input_num_data(col_num=col)
     
-    def delete(self, col: str) -> pl.Expr: 
+    def analyse(self, col: str) -> Union[pl.Expr, str, None]: 
         frame= self.frame.with_row_index()
         
-        # AQUI AGREGAR LA LOGICA DE INDEX PARA ELIMINAR SEA COLUMNA O ROW 
-        # AGREGARELO A UNA LISTA O DICCIONARIO Y PASARLO A OBTAIN_NULL_ACTION
+        nulls= frame.filter(pl.col(col).is_null())
+        percent_nulls= (nulls.height/ frame.height)*100
         
-        
-        
+        if percent_nulls < self.model_cleaning.columns_percent: 
+            row_nulls= nulls.with_columns(
+                sum_nulls= pl.sum_horizontal(pl.col('*').is_null().cast(pl.Int32))
+                .filter(pl.col('sum_nulls') > self.model_cleaning.rows_percent)
+            )
+            if row_nulls.height < 1: 
+                logger.info(f'For column {col} rows will be imputed')
+                numeric_cols= self.frame.select(pl.selectors.numeric())
+                categoric_cols= self.frame.select(pl.selectors.string())
+                
+                if col in numeric_cols: 
+                    expr= self.num_impute(col=col)
+                elif col in categoric_cols: 
+                    expr= self.cat_impute(col=col)
+                else: 
+                    return None
+                
+                return expr
+            else: 
+                logger.info(f'For column {col} rows will be removed')
+                index_rows= row_nulls.get_column('index').to_list()
+                expr= self.delete.delete_row_expr(index_list=index_rows)
+                return expr
+        else:
+            logger.info(f'Column {col} will be removed')
+            return col
     
     def obtain_null_actions(self) -> Optional[Tuple[List[str]]]: 
         if not self.JSON: 
             logger.info('No nulls were found')
             return None
         
-        delete_columns_or_row= []
-        analyse_columns= []
+        columns_removed= []
+        list_expr= []
         
         for col in self.JSON: 
             if col != 'total_nulls': 
                 action= self.JSON[col]['action']
+                analyse= self.analyse(col=col)
                 
-                if action == 'delete': 
-                    logger.info(f'Column or row {col} will be deleated')
-                    delete_columns_or_row.append(col)
-                elif action == 'analyse': 
-                    logger.info(f'Column {col} will be analysed')
-                    analyse_columns.append(col)
-                else: 
+                if action=='keep': 
                     logger.info(f'Column {col} will be keeped')
                     continue
+                else: 
+                    if isinstance(analyse, str): 
+                        columns_removed.append(col)
+                    elif analyse is None:
+                        logger.info(f'Datatype for column {col} will not be processed, just strings or numeric types.')
+                        continue
+                    else:
+                        list_expr.append(col)
         
-        return (delete_columns_or_row, analyse_columns)
+        return list_expr
 
 
 
