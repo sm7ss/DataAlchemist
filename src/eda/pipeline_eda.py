@@ -363,6 +363,10 @@ class SummaryInfo:
     
     def outlier_summary(self) -> None: 
         dict_eda= self.eda['analysis_data']['outliers']
+        if not dict_eda: 
+            logger.info('No outliers were found')
+            return None
+        
         var='n_outliers'
         cols= self.columns(dict_eda=dict_eda, var=var)
         
@@ -376,6 +380,10 @@ class SummaryInfo:
     
     def correlation_summary(self) -> None: 
         corr= self.eda['analysis_data']['correlation']['high_correlations']
+        if not corr: 
+            logger.info('No correlations were detected')
+            return None
+        
         columns= []
         
         for i in range(len(corr)): 
@@ -392,6 +400,10 @@ class SummaryInfo:
     
     def categoric_summary(self) -> None: 
         dict_eda= self.eda['analysis_data']['category_dominance']
+        if not dict_eda: 
+            logger.info('No category dominance were found')
+            return None
+        
         columns= []
         
         for col in dict_eda:
