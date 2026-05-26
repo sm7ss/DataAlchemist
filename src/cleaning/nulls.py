@@ -57,7 +57,7 @@ class DeleteData:
 
 class CleanDataFrame: 
     def __init__(self, frame: pl.DataFrame, JSON: Dict[str, Any], model: BaseModel, model_cleaning: BaseModel):
-        self.frame= frame
+        self.frame= frame.with_row_index()
         
         self.JSON= JSON.get('null_analysis', None)
         self.model= model
@@ -74,10 +74,13 @@ class CleanDataFrame:
         return self.num.input_num_data(col_num=col)
     
     def analyse(self, col: str) -> Union[pl.Expr, str, None]: 
-        frame= self.frame.with_row_index()
+        frame= self.frame
         
         umbral= (self.model_cleaning.rows_percent/100)*self.frame.width
-        total_nulls= self.JSON['null_analysis']['col']['total_nulls_column']
+        total_nulls= self.JSON[col]['total_nulls_column']
+        if total_nulls == 0: 
+            logger.info(f'Total of nulls for column {col} is equal to 0')
+            return None
         
         nulls= frame.filter(pl.col(col).is_null())
         percent_nulls= (nulls.height/ frame.height)*100
@@ -87,11 +90,9 @@ class CleanDataFrame:
             row_nulls= nulls.with_columns(
                 sum_nulls= pl.sum_horizontal(pl.col('*').is_null().cast(pl.Int32))
             ).filter(pl.col('sum_nulls') > umbral)
-            
             percent_null_rows= (row_nulls.height/total_nulls)*100
             
             if percent_null_rows < self.model_cleaning.rows_percent: 
-                
                 logger.info(f'For column {col} rows will be imputed')
                 numeric_cols= self.frame.select(pl.selectors.numeric())
                 categoric_cols= self.frame.select(pl.selectors.string())
@@ -114,7 +115,7 @@ class CleanDataFrame:
             return col
     
     def obtain_null_actions(self) -> Optional[Dict[str, Any]]: 
-        if not self.JSON['null_analysis']: 
+        if not self.JSON: 
             logger.info('No nulls were found')
             return None
         
@@ -144,16 +145,20 @@ class CleanDataFrame:
         }
     
     def clean_dataframe(self) -> pl.DataFrame: 
-        dict_null_actions= self.dict_null_actions.obtain_null_actions()
+        frame= self.frame
         
+        dict_null_actions= self.obtain_null_actions()
         delete_columns= dict_null_actions['delete_columns']
         expressions= dict_null_actions['expressions']
         
         if delete_columns: 
-            
-        else: 
-            
-    
+            frame= frame.drop(delete_columns)
+            logger.info(f'Columns: {delete_columns}. Were removed')
+        if expressions: 
+            frame= frame.with_columns(expressions)
+            logger.info(f'Frame was cleaned')
+        
+        return frame.drop('index')
 
 
 
