@@ -1,0 +1,84 @@
+from .columns_name import rename_columns
+from .datatypes import DataTypeListExpr
+from .duplicated import duplicated_rows
+from .drop_columns import drop_columns
+from .nulls import CleanNulls
+
+from pydantic import BaseModel
+from typing import List, Dict, Any
+
+import polars as pl 
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
+logger= logging.getLogger(__name__)
+
+class CleanDataFrame: 
+    def __init__(self, frame: pl.DataFrame, config: BaseModel, config_clean: BaseModel, JSON: Dict[str, Any]):
+        self.frame= frame
+        
+        self.config= config
+        self.conig_clean= config_clean
+        
+        self.JSON= JSON
+    
+    def _rename_columns(self, frame: pl.DataFrame, rename_dict: Dict[str, str]) -> pl.DataFrame:
+        class_rename_columns= rename_columns(frame=frame, rename_dict=rename_dict)
+        
+        return class_rename_columns
+    
+    def _change_datatypes(self, frame: pl.DataFrame) -> pl.DataFrame: 
+        class_change_datatypes= DataTypeListExpr(frame=frame, config=self.config)
+        
+        expr_datatypes= class_change_datatypes.list_expr_cast()
+        new_frame= frame.with_columns(expr_datatypes)
+        logger.info('Datypes were applied')
+        
+        return new_frame
+    
+    def _duplicates(self, frame: pl.DataFrame) -> pl.DataFrame: 
+        class_duplicates= duplicated_rows(frame=frame)
+        return class_duplicates
+    
+    def _drop_columns(self, frame: pl.DataFrame, list_drop: List[str]) -> pl.DataFrame: 
+        class_drop_columns= drop_columns(frame=frame, list_drop=list_drop)
+        return class_drop_columns
+    
+    def _nulls(self, frame: pl.DataFrame) -> pl.DataFrame:
+        class_null_list_expr= CleanNulls(
+            frame=frame, 
+            JSON=self.JSON, 
+            model=self.config, 
+            model_cleaning=self.conig_clean
+        )
+        
+        frame= class_null_list_expr.clean_dataframe()
+        return frame
+    
+    def clean_dataframe(self) -> pl.DataFrame: 
+        frame= self.frame.with_row_index()
+        
+        rename_columns= self.config.cleaning.rename_columns
+        change_datatypes= self.config.cleaning.change_datatypes
+        duplicates= self.config.cleaning.duplicates
+        drop_columns= self.config.cleaning.drop_columns
+        
+        if rename_columns: 
+            frame= self._rename_columns(frame=frame, rename_dict=rename_columns)
+        
+        if change_datatypes: 
+            frame= self._change_datatypes(frame=frame)
+        
+        if duplicates: 
+            frame= self._duplicates(frame=frame)
+        
+        if drop_columns: 
+            frame= self._drop_columns(frame=frame, list_drop=drop_columns)
+        
+        frame=self._nulls(frame=frame)
+        logger.info('DataFrame is cleaned')
+        
+        return frame.drop('index')
+
+
+
