@@ -55,9 +55,9 @@ class DeleteData:
     def delete_row_expr(index_list: List[Union[int, float]]) -> pl.Expr: 
         return ~pl.col('index').is_in(index_list)
 
-class CleanDataFrame: 
+class CleanNulls: 
     def __init__(self, frame: pl.DataFrame, JSON: Dict[str, Any], model: BaseModel, model_cleaning: BaseModel):
-        self.frame= frame.with_row_index()
+        self.frame= frame
         
         self.JSON= JSON.get('null_analysis', None)
         self.model= model
@@ -144,7 +144,7 @@ class CleanDataFrame:
             'expressions': list_expr if list_expr else None
         }
     
-    def clean_dataframe(self) -> pl.DataFrame: 
+    def clean_dataframe(self) -> pl.DataFrame:
         frame= self.frame
         
         dict_null_actions= self.obtain_null_actions()
@@ -158,7 +158,7 @@ class CleanDataFrame:
             frame= frame.with_columns(expressions)
             logger.info(f'Frame was cleaned')
         
-        return frame.drop('index')
+        return frame
 
 
 
