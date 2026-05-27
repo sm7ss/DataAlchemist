@@ -26,7 +26,7 @@ class DataTypeExpr:
     def cast_utf(col: str) -> pl.Expr: 
         return pl.col(col).cast(pl.Utf8).alias(col)
 
-class DataTypeOperations:
+class DataTypeListExpr:
     def __init__(self, frame: pl.DataFrame, config: BaseModel):
         self.frame= frame
         self.c_datatypes= config.cleaning.change_datatypes
