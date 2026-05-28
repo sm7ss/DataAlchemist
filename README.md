@@ -30,7 +30,7 @@ Upload your data, select your target, and the platform:
 | Module                               | Status           | What it does                                                                 |
 |--------------------------------------|------------------|------------------------------------------------------------------------------|
 | **EDA**                              | ✅ Completed     | General analysis, nulls, distributions, outliers, correlations, categorical  |
-| **Cleaning**                         | 🚧 In development| Applying cleaning suggestions                                                |
+| **Cleaning**                         | ✅ Completed     | Nulls (with EDA), duplicates, drop columns, data types, rename columns       |
 | **Preprocessing (numeric)**          | ✅ Completed     | Correlation, distribution, and outliers                                      |
 | **Preprocessing (categorical)**      | 🚧 In development| Categorical dominance                                                        |
 | **Scaling & Encoding**               | 🚧 Next          | Encoding and Scaling                                                         |
@@ -85,6 +85,35 @@ Upload your data, select your target, and the platform:
   - `targetEncoder` (many categories / high cardinality)
   - `oneHotEncoder` (grouped rare values)
   - Null handling for categorical columns
+
+---
+
+## ✨ Cleaning Features
+
+The cleaning pipeline prepares your data **before** preprocessing. All operations are configurable via YAML and integrate automatically into the main flow.
+
+### 🔄 Available Operations
+
+| Operation                  | What it does                                    | How to configure                                 |
+|----------------------------|-------------------------------------------------|--------------------------------------------------|
+| **Rename columns**         | Changes column names                            | `rename_columns` dict in `config.yml`            |
+| **Change data types**      | Cast to Int32, Int64, Float32, Utf8             | `change_datatypes` dict in `config.yml`          |
+| **Remove duplicates**      | Deletes duplicate rows                          | `duplicates` boolean in `config.yml`             |
+| **Drop columns**           | Deletes entire columns                          | `drop_columns` list in `config.yml`              |
+| **Null handling**          | Imputes or removes based on EDA analysis        | Uses `JSON_analysis.json` + `config_cleaning.yml`|
+
+### 🧠 Smart Null Handling
+
+Null cleaning is **not blind**. It uses EDA analysis to decide:
+
+1. **keep** → column has no nulls, do nothing
+2. **delete** → column has too many nulls (>65% by default), drop it
+3. **analyse** → column has some nulls, evaluate:
+   - If column nulls < `columns_percent` → impute or remove rows
+   - If rows with nulls > `rows_percent` → remove those rows
+   - Otherwise → impute with **median** (numeric) or **mode** (categorical)
+
+> 🐥 All values have Pydantic-validated defaults. If you don't define something, it still works.
 
 ---
 
@@ -208,7 +237,7 @@ preprocessing_outlier_rules:
 ## 🖥️ Current Usage (terminal)
 
 ```bash 
-# Run EDA with your config
+# Run Pipeline with your config
 python main.py 
 ```
 
@@ -267,44 +296,65 @@ GENERAL INFO
 ## 🧱 Project Structure
 
 ```text 
-📂 data_alchemist/
+📂 Alchemist_date/
 ├── 📂 config 
-│   └── config_analysis_values.yml    # Analysis configuration
-│   └── config_preprocessing.yml      # Preprocessing configuration
+│   ├── config_analysis_values.yml    # Analysis configuration
+│   ├── config_cleaning.yml           # Cleaning configuration
+│   ├── config_modeling.yml           # Modeling configuration (NOT AVAILABLE)
+│   ├── config_preprocessing.yml      # Preprocessing configuration
 │   └── config.yml                    # Main configuration
-├── 📂 data                           # Datasets
-├── 📂 eda_analysis                   # Reports by date
+├── 📂 data # Datasets
+├── 📂 eda_analysis                   # Reports by dates
 ├── 📂 src/
+│   ├── 📂 cleaning/
+│   │   ├── columns_name.py      # Rename columns
+│   │   ├── datatypes.py         # Change column data type
+│   │   ├── drop_columns.py      # Delete columns
+│   │   ├── duplicated.py        # Remove duplicates
+│   │   ├── nulls.py             # Imputs, deletes and analyzes nulls 
+│   │   ├── pipeline.py          # Cleaning Orchestrator
 │   ├── 📂 eda/
-│   │   ├── eda_general_info.py       # Dimensions, types, statistics
-│   │   ├── eda_null_val.py           # Null analysis
-│   │   ├── eda_analysis_data.py      # Distribution, outliers, correlations, categorical
-│   │   └── pipeline_eda.py           # Pipeline orchestrator
+│   │   ├── eda_general_info.py     # Dimensions, types, statistics
+│   │   ├── eda_null_val.py         # Null analysis
+│   │   ├── eda_analysis_data.py    # Distribution, outliers, correlations, categorical
+│   │   └── pipeline_eda.py         # Pipeline orchestrator
 │   ├── 📂 io/
-│   │   └── folder_file_manager.py    # Output management (JSON/TXT)
+│   │   └── folder_file_manager.py  # Output management (JSON/TXT)
 │   ├── 📂 ml_process/
+|   |   ├── 📂 modeling/
+│   │   |   ├── best_model.py     # Selection of the best model 
+│   │   |   ├── models.py         # Models available  
+│   │   |   └── scaler.py         # Climbers available
 |   |   ├── 📂 preprocessing/
 |   |   |   ├── 📂 operations/
 │   │   |   |   ├── null.py           # Expressions for nulls
-│   │   |   |   └── transformers.py   # Expressions for transformers
-│   │   |   ├── correlation.py        # Correlation handling
-│   │   |   ├── distribution.py       # Distribution transformations
-│   │   |   ├── outliers.py           # Outlier cleaning
-│   │   └────── pipeline.py           # Preprocessing orchestrator
+│   │   |   |   └── transformers.py   # Expressions for transformers       
+│   │   |   ├── correlation.py        # Expressions for correlation analysis  
+│   │   |   ├── distribution.py       # Expressions for distribution analysis   
+│   │   |   ├── outliers.py           # DataFrame with clean data from Outliers
+│   │   |   └── pipeline.py           # Preprocessing Orchestrator
 │   ├── 📂 strategies/
-│   │   └── strategies.py                 # Enums for validation strategies
-│   │   └── pre_processing_strategies.py  # Enums for feature engineering strategies
+│   │   ├── cleaning_strategies.py          # Enums for cleaning strategies
+│   │   ├── modeling_strategies.py          # Enums for modeling strategies (NOT AVAILABLE)
+│   │   ├── pre_processing_strategies.py    # Enums for feature engineering strategies
+│   │   └── strategies.py                   # Enums for validation strategies
 │   ├── 📂 validation/
 |   |   ├── 📂 validation_analysis_values/
-│   │   |   └── validation.py               # Config validation for EDA analysis
+│   │   |   └── validation.py             # Configuration validation for eda analysis
+|   |   ├── 📂 validation_cleaning/
+│   │   |   └── validation.py             # Configuration validation for cleaning
+|   |   ├── 📂 validation_modeling/
+│   │   |   └── validation.py             # Configuration validation for modeling (NOT AVAILABLE)
 |   |   ├── 📂 validation_preprocessing/
-│   │   |   └── validation.py               # Config validation for ML
-│   │   └── eda_validation.py               # General config validation
-│   │   └── pre_processing_validation.py    # Config validation for preprocessing
-│   │   └── read_validation.py              # Validation reader
-│   │   └── validation.py                   # Validation orchestrator
-│   └── get_frame.py                        # Data loading (eager)
-├── .gitignore
+│   │   |   └── validation.py             # Configuration validation for ML
+│   │   ├── cleaning_validation.py        # Cleaning configuration validation
+│   │   ├── eda_validation.py             # General configuration validation
+│   │   ├── ml_validation.py              # Modeled configuration validation (NOT AVAILABLE)
+│   │   ├── pre_processing_validation.py  # Configuration validation for preprocessing
+│   │   ├── read_validation.py            # Reading validations
+│   │   └── validation.py                 # Validation orchestrator
+│   └── get_frame.py                      # Data load (eager)
+├── .screams
 ├── LICENSE
 ├── README-ESP.md
 ├── README.md
