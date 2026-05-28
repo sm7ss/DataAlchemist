@@ -52,7 +52,7 @@ class DeleteData:
         return frame.drop(list_col)
     
     @staticmethod
-    def delete_row_expr(index_list: List[Union[int, float]]) -> pl.Expr: 
+    def delete_row_expr(index_list: List[Union[int]]) -> pl.Expr: 
         return ~pl.col('index').is_in(index_list)
 
 class CleanNulls: 
@@ -148,6 +148,9 @@ class CleanNulls:
         frame= self.frame
         
         dict_null_actions= self.obtain_null_actions()
+        if not dict_null_actions: 
+            return frame
+        
         delete_columns= dict_null_actions['delete_columns']
         expressions= dict_null_actions['expressions']
         
