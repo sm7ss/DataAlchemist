@@ -29,23 +29,23 @@ con ML sin preocuparse por la infraestructura.
 
 ## 📍 Estado del proyecto
 
-| Módulo                            | Estado           | ¿Qué hace?                                                                    |
-|-----------------------------------|------------------|-------------------------------------------------------------------------------|
-| **EDA**                           | ✅ Completado    | Análisis general, nulos, distribuciones, outliers, correlaciones, categóricas |
-| **Limpieza**                      | 🚧 En desarrollo | Aplicación de sugerencias de limpieza                                         |
-| **Preprocesamiento (numérico)**   | ✅ Completado    | Correlación, distribución y outliers                                          |
-| **Preprocesamiento (categórico)** | 🚧 En desarrollo | Dominancia categórica                                                         |
-| **Scaling & Encoding**            | 🚧 Siguiente     | Encoding y Scaler                                                             |
-| **Modelado**                      | 🚧 En desarrollo | Selección de algoritmos, ajuste de hiperparámetros                            |
-| **Entrenamiento**                 | 🚧 En desarrollo | Métricas, curvas de aprendizaje, comparativas                                 |
-| **Exportación**                   | 🚧 En desarrollo | Modelo entrenado + datos procesados (Parquet)                                 |
-| **Dashboard visual**              | 📝 Planificado   | Interfaz con sliders y panel principal interactivo                            |
+| Módulo                            | Estado           | ¿Qué hace?                                                                        |
+|-----------------------------------|------------------|-----------------------------------------------------------------------------------|
+| **EDA**                           | ✅ Completado    | Análisis general, nulos, distribuciones, outliers, correlaciones, categóricas     |
+| **Limpieza**                      | ✅ Completado    | Nulos (con EDA), duplicados, elimina columnas, tipos de dato y renombrar columnas |
+| **Preprocesamiento (numérico)**   | ✅ Completado    | Correlación, distribución y outliers                                              |
+| **Preprocesamiento (categórico)** | 🚧 En desarrollo | Dominancia categórica                                                             |
+| **Scaling & Encoding**            | 🚧 Siguiente     | Encoding y Scaler                                                                 |
+| **Modelado**                      | 🚧 En desarrollo | Selección de algoritmos, ajuste de hiperparámetros                                |
+| **Entrenamiento**                 | 🚧 En desarrollo | Métricas, curvas de aprendizaje, comparativas                                     |
+| **Exportación**                   | 🚧 En desarrollo | Modelo entrenado + datos procesados (Parquet)                                     |
+| **Dashboard visual**              | 📝 Planificado   | Interfaz con sliders y panel principal interactivo                                |
 
 > 🐥 **Ya puedes ejecutar el EDA desde terminal y obtener reportes en JSON + TXT.**
 
 ---
 
-## ✨ Características actuales (EDA)
+## ✨ Características de EDA
 
 ### 📊 Análisis General
 
@@ -99,19 +99,40 @@ con ML sin preocuparse por la infraestructura.
 
 ---
 
+## ✨ Características de Limpieza
+
+El pipeline de limpieza prepara tus datos **antes** del preprocesamiento. Todas las operaciones son configurables vía YAML y se integran automáticamente en el flujo principal.
+
+### 🔄 Operaciones disponibles
+
+| Operación                  | ¿Qué hace?                              | ¿Cómo se configura?                              |
+|----------------------------|-----------------------------------------|--------------------------------------------------|
+| **Renombrar columnas**     | Cambia nombres de columnas              | Diccionario `rename_columns` en `config.yml`     |
+| **Cambiar tipos de datos** | Casting a Int32, Int64, Float32, Utf8   | Diccionario `change_datatypes` en `config.yml`   |
+| **Eliminar duplicados**    | Borra filas duplicadas                  | Booleano `duplicates` en `config.yml`            |
+| **Eliminar columnas**      | Borra columnas completas                | Lista `drop_columns` en `config.yml`             |
+| **Manejo de nulos**        | Imputa o elimina según análisis del EDA | Usa `JSON_analysis.json` + `config_cleaning.yml` |
+
+### 🧠 Manejo inteligente de nulos
+
+La limpieza de nulos **no es a ciegas**. Utiliza el análisis del EDA para decidir:
+
+1. **keep** -> la columna no tiene nulos, no se hace nada
+2. **delete** -> la columna tiene muchos nulos (>65% por defecto), se elimina entera
+3. **analyse** -> la columna tiene algunos nulos, se evalúa:
+   - ¿% nulos por columna < `columns_percent`? -> se imputan o eliminan filas
+   - ¿% filas con nulos > `rows_percent`? -> se eliminan esas filas
+   - Si no -> se imputan con **mediana** (numéricas) o **moda** (categóricas)
+
+> 🐥 Todos los valores tienen defaults validados con Pydantic. Si no defines algo, funciona igual.
+
+--- 
+
 ## ✨ Características Feature Engineering
 
-Una vez que el EDA genera el reporte `JSON_analysis.json`, el pipeline de preprocesamiento puede **aplicar automáticamente** las transformaciones, imputaciones y filtros sugeridos — sin intervención manual (aún).
+Una vez que el EDA genera el reporte `JSON_analysis.json`, el pipeline de preprocesamiento puede **aplicar automáticamente** las transformaciones, imputaciones y filtros sugeridos.
 
-> 🐥🚨 Unicamente ahora disponible auto mode, el modo manual aún esta en desarrollo
-
-### 🔄 Flujo del Pipeline
-
-```text
-VALIDACIÓN DE CONFIGS -> EDA -> REPORTES JSON/TXT -> PREPROCESAMIENTO -> DATAFRAME PARA PROCESAMIENTO (sampleado)
-```
-
-### 🧠 ¿Qué hace automáticamente?
+### 🧠 ¿Qué hace?
 
 | Paso	                             | ¿Qué hace?	                                      | ¿En qué se basa?                                                             |
 |------------------------------------|--------------------------------------------------|------------------------------------------------------------------------------|
@@ -123,7 +144,7 @@ VALIDACIÓN DE CONFIGS -> EDA -> REPORTES JSON/TXT -> PREPROCESAMIENTO -> DATAFR
 
 ### 📊 Salida 
 
-Un **DataFrame de Polars limpio** con:
+Un **DataFrame de Polars preprocesado** con:
 
 - Transformaciones aplicadas (distribución)
 - Outliers manejados (filtrados, imputados, flaggeados o transformados)
@@ -139,16 +160,17 @@ Un **DataFrame de Polars limpio** con:
 
 Todo el comportamiento del EDA es **totalmente configurable** sin tocar el código.
 
+> 🐥 Puedes ajustar umbrales, métodos y sugerencias según tu criterio.
+
 ### [config.yml](config/config.yml) (principal)
 
 ```yaml
 path: 
   data: 'users_behavior.csv'
   overhead_percent: 1.8
-  sample_data_percent: 0.1 
+  sample_data_percent: 0.1 # porcentaje análisis de datos, esto puede cambiar según el sistema para que sea óptimo, no se usa ahora, hasta que se agregue laz y streaming
 
 eda: 
-  general_information: True
   null_values: True
   null_values_percent_column: 0.65
   null_values_percent_row: 0.40
@@ -169,9 +191,17 @@ eda:
       top_n: # Si no se proporciona un top_n, el valor será 2
       rare_threshold_percent: # Si no se da un umbral, el valor será 0,01
 
-ml_preprocessing: 
-  auto_preprocessing: True
+cleaning: 
+  rename_columns: 
+  change_datatypes: 
+  duplicates: True # # Eliminar filas duplicadas si True
+  drop_columns: 
   
+  null_values: 
+    null_impute_numerics: # # si Ninguno -> se utilizará la median si se encuentran valores nulos
+    null_impute_categorics: #  si None -> el mode se utilizará si se encuentran valores nulos
+
+ml_preprocessing: 
   columns: # si es None, se utilizarán todas las columnas
   
   sampling: # si no se proporciona el valor, se utilizará 'random'
@@ -180,8 +210,6 @@ ml_preprocessing:
   null_num_handler: # si no se da el valor, se utilizará 'median'
   null_cat_handler: # si no se proporciona el valor, se utilizará 'constantValue'
   null_cat_handler_value: # Si no se proporciona ningún valor, se utilizará "Unknown"
-  
-  scaler: # si no hay ninguno, se utilizará auto, el algoritmo decidirá
   
   distribution: 
     transformer: 
@@ -199,8 +227,18 @@ ml_preprocessing:
   
   category: # ESTO FALTA
     operation: # si no se proporciona el valor, se proporcionará la operación "Group"
-    encoder: # Puede ser automático, si es automático, cada columna tendrá su codificador, si no, todas las columnas tendrán el codificador que seleccionó
     name_operation_value: # Valor para la operación, si es Ninguno, entonces "Unknown" será el valor automático dado
+
+ml_training: # El codificador y el escalador no funcionan
+  target: 'is_ultra'
+  
+  train_test_search: 0.2
+  train_test_final: 0.25 # 🚨 NO DISPONIBLE 🚨
+  random_state: 42
+  
+  encoder: # 🚨 NO DISPONIBLE 🚨 si None=Auto (Reglas en config_modeling), si no, todas las columnas tendrán el codificador que seleccionó 
+  scaler: # 🚨 NO DISPONIBLE 🚨 si no hay ninguno, se utilizará auto, el algoritmo decidirá
+  scaler_outlier_method: # 🚨 NO DISPONIBLE 🚨 si no hay ninguno, se utilizará iqr
 ```
 
 ### [config_analysis_values.yml](config/config_analysis_values.yml) (decisiones de análisis)
@@ -218,6 +256,14 @@ outlier_decision_maker:
     none: 10.0
     trim: 2.0
   # ... más configuraciones
+```
+
+### [config_cleaning.yml](config/config_cleaning.yml) (decisiones de limpieza para nulos)
+
+```yaml
+threshold_nulls:
+  rows_percent: 40
+  columns_percent: 65
 ```
 
 ### [config_preprocessing.yml](config/config_preprocessing.yml) (decisiones de preprocesamiento para outliers)
@@ -244,8 +290,6 @@ preprocessing_outlier_rules:
   transform_percent: 5 # % > transform_percent
   flag_percent: 10 # % > flag_percent
 ```
-
-> 🐥 Puedes ajustar umbrales, métodos y sugerencias según tu criterio.
 
 ---
 
@@ -329,11 +373,20 @@ GENERAL INFO
 📂 data_alchemist/
 ├── 📂 config 
 │   └── config_analysis_values.yml    # Configuración análisis
+│   └── config_cleaning.yml           # Configuración limpieza
+│   └── config_modeling.yml           # Configuración modelado (NO DISPONIBLE)
 │   └── config_preprocessing.yml      # Configuración preprocesamiento
 │   └── config.yml                    # Configuración principal
 ├── 📂 data                           # Datasets
 ├── 📂 eda_analysis                   # Reportes por fechas
 ├── 📂 src/
+│   ├── 📂 cleaning/
+│   │   ├── columns_name.py           # Renombra columnas
+│   │   ├── datatypes.py              # Cambia tipo de datos de columnas
+│   │   ├── drop_columns.py           # Elimina columnas
+│   │   ├── duplicated.py             # Elimina duplicados
+│   │   ├── nulls.py                  # Imputa, elimina y analiza nulos 
+│   │   ├── pipeline.py               # Orquestador de limpieza
 │   ├── 📂 eda/
 │   │   ├── eda_general_info.py       # Dimensiones, tipos, estadísticas
 │   │   ├── eda_null_val.py           # Análisis de nulos
@@ -351,14 +404,22 @@ GENERAL INFO
 │   │   |   ├── outliers.py           # DataFrame con datos limpios de Outliers
 │   │   └────── pipeline.py           # Orquestador de preprocesamiento
 │   ├── 📂 strategies/
-│   │   └── strategies.py                 # Enums para estrategias de validación
+│   │   └── cleaning_strategies.py        # Enums para estrategias de limpieza
+│   │   └── modeling_strategies.py        # Enums para estrategias de modelado (NO DISPONIBLES)
 │   │   └── pre_processing_strategies.py  # Enums para estrategias de feature engineering
+│   │   └── strategies.py                 # Enums para estrategias de validación
 │   ├── 📂 validation/
 |   |   ├── 📂 validation_analysis_values/
-│   │   |   └── validation.py               # Validación de configuración para eda analysis
+│   │   |   └── validation.py                 # Validación de configuración para eda analysis
+|   |   ├── 📂 validation_cleaning/
+│   │   |   └── validation.py                 # Validación de configuración para limpieza
+|   |   ├── 📂 validation_modeling/
+│   │   |   └── validation.py                 # Validación de configuración para modelado (NO DISPONIBLE)
 |   |   ├── 📂 validation_preprocessing/
-│   │   |   └── validation.py               # Validación de configuración para ML
+│   │   |   └── validation.py                 # Validación de configuración para ML
+│   │   └── cleaning_validation.py          # Validación de configuración limpieza
 │   │   └── eda_validation.py               # Validación de configuración general
+│   │   └── ml_validation.py                # Validación de configuración modelado (NO DISPONIBLE)
 │   │   └── pre_processing_validation.py    # Validación de configuración para preprocesamiento
 │   │   └── read_validation.py              # Lectura de validaciones
 │   │   └── validation.py                   # Orquestador de validaciones
@@ -381,12 +442,12 @@ GENERAL INFO
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │  1. CARGA DE DATOS (Polars)                                 │
-│     └── pl.read_csv() → detección de tipos, memoria         │
+│     └── pl.read_csv() -> detección de tipos, memoria        │
 │                                                             │
 │  2. EDA Y LIMPIEZA (Polars)                                 │
 │     └── nulos, distribuciones, outliers (tu framework)      │
 │                                                             │
-│  3. PRE-PROCESAMIENTO (Polars → numpy)                      │
+│  3. PRE-PROCESAMIENTO (Polars -> numpy)                     │
 │     └── .to_numpy() / .to_pandas() para Scikit-learn        │
 │                                                             │
 │  4. MODELADO (Scikit-learn)                                 │
