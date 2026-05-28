@@ -296,7 +296,7 @@ preprocessing_outlier_rules:
 ## 🖥️ Uso actual (terminal)
 
 ```bash
-# Run EDA con tu config
+# Corre Pipeline con tu config
 python main.py 
 ```
 
@@ -372,10 +372,10 @@ GENERAL INFO
 ```text
 📂 data_alchemist/
 ├── 📂 config 
-│   └── config_analysis_values.yml    # Configuración análisis
-│   └── config_cleaning.yml           # Configuración limpieza
-│   └── config_modeling.yml           # Configuración modelado (NO DISPONIBLE)
-│   └── config_preprocessing.yml      # Configuración preprocesamiento
+│   ├── config_analysis_values.yml    # Configuración análisis
+│   ├── config_cleaning.yml           # Configuración limpieza
+│   ├── config_modeling.yml           # Configuración modelado (NO DISPONIBLE)
+│   ├── config_preprocessing.yml      # Configuración preprocesamiento
 │   └── config.yml                    # Configuración principal
 ├── 📂 data                           # Datasets
 ├── 📂 eda_analysis                   # Reportes por fechas
@@ -395,6 +395,10 @@ GENERAL INFO
 │   ├── 📂 io/
 │   │   └── folder_file_manager.py    # Gestión de outputs (JSON/TXT)
 │   ├── 📂 ml_process/
+|   |   ├── 📂 modeling/
+│   │   |   ├── best_model.py        # Seleccion del mejor modelo 
+│   │   |   ├── models.py            # Modelos disponibles  
+│   │   |   └── scaler.py            # Escaladores disponibles
 |   |   ├── 📂 preprocessing/
 |   |   |   ├── 📂 operations/
 │   │   |   |   ├── null.py           # Expresiones para nulos
@@ -402,11 +406,11 @@ GENERAL INFO
 │   │   |   ├── correlation.py        # Expresiones para el análisis de correlación  
 │   │   |   ├── distribution.py       # Expresiones para el análisis de distribución   
 │   │   |   ├── outliers.py           # DataFrame con datos limpios de Outliers
-│   │   └────── pipeline.py           # Orquestador de preprocesamiento
+│   │   |   └── pipeline.py           # Orquestador de preprocesamiento
 │   ├── 📂 strategies/
-│   │   └── cleaning_strategies.py        # Enums para estrategias de limpieza
-│   │   └── modeling_strategies.py        # Enums para estrategias de modelado (NO DISPONIBLES)
-│   │   └── pre_processing_strategies.py  # Enums para estrategias de feature engineering
+│   │   ├── cleaning_strategies.py        # Enums para estrategias de limpieza
+│   │   ├── modeling_strategies.py        # Enums para estrategias de modelado (NO DISPONIBLES)
+│   │   ├── pre_processing_strategies.py  # Enums para estrategias de feature engineering
 │   │   └── strategies.py                 # Enums para estrategias de validación
 │   ├── 📂 validation/
 |   |   ├── 📂 validation_analysis_values/
@@ -417,11 +421,11 @@ GENERAL INFO
 │   │   |   └── validation.py                 # Validación de configuración para modelado (NO DISPONIBLE)
 |   |   ├── 📂 validation_preprocessing/
 │   │   |   └── validation.py                 # Validación de configuración para ML
-│   │   └── cleaning_validation.py          # Validación de configuración limpieza
-│   │   └── eda_validation.py               # Validación de configuración general
-│   │   └── ml_validation.py                # Validación de configuración modelado (NO DISPONIBLE)
-│   │   └── pre_processing_validation.py    # Validación de configuración para preprocesamiento
-│   │   └── read_validation.py              # Lectura de validaciones
+│   │   ├── cleaning_validation.py          # Validación de configuración limpieza
+│   │   ├── eda_validation.py               # Validación de configuración general
+│   │   ├── ml_validation.py                # Validación de configuración modelado (NO DISPONIBLE)
+│   │   ├── pre_processing_validation.py    # Validación de configuración para preprocesamiento
+│   │   ├── read_validation.py              # Lectura de validaciones
 │   │   └── validation.py                   # Orquestador de validaciones
 │   └── get_frame.py                        # Carga de datos (eager)
 ├── .gitinore
