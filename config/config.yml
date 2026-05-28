@@ -1,5 +1,5 @@
 path: 
-  data: 'users_behavior.csv' # crime.parquet
+  data: 'Churn.csv' # crime.parquet
   overhead_percent: 1.8
   sample_data_percent: 0.1 #percent data analysis, this can change by system to be optimal, not used now, until laz and streaming is added
 
@@ -63,7 +63,7 @@ ml_preprocessing:
     name_operation_value: # Value for operation, if None, then "Unknown" will be the auto value given
 
 ml_training: # Encoder & Scaler not working
-  target: 'is_ultra'
+  target: 'Exited'
   
   train_test_search: 0.2
   train_test_final: 0.25 # 🚨 NOT AVAILABLE 🚨
