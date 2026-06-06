@@ -59,10 +59,6 @@ class SelectScaler:
             return self.robust_scaler()
         else: 
             return self.min_max_scaler()
-    
-    # 🚨🚨🚨 the manual way is being tested, it is not stable 🚨🚨🚨
-    def manual(self, config: BaseModel) -> Callable: 
-        raise ValueError('MANUAL WAY NOT AVAILABLE')
 
 
 
