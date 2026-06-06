@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Union
 
 class min_sample(BaseModel): 
-    max_files: int= Field(ge=5000, le=10000)
+    max_files: int= Field(ge=5000, le=15000)
 
 class medium_sample(BaseModel): 
     max_files: int= Field(ge=10000, le=100000)
