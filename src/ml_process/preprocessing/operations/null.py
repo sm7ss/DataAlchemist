@@ -10,7 +10,7 @@ class NullNumHandler:
     
     @staticmethod
     def median(col: str) -> pl.Expr: 
-        return pl.median(col).alias(col)
+        return pl.col(col).fill_null(pl.median(col)).alias(col)
     
     @staticmethod
     def zero(col: str) -> pl.Expr: 
@@ -18,7 +18,7 @@ class NullNumHandler:
     
     @staticmethod
     def mean(col: str) -> pl.Expr: 
-        return pl.mean(col).alias(col)
+        return pl.col(col).fill_null(pl.mean(col)).alias(col)
     
     @classmethod
     def get_null_num_handler_expr(cls, col: str, null_method: NullNumericHandler) -> pl.Expr: 
