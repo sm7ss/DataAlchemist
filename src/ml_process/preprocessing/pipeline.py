@@ -248,131 +248,37 @@ class AutoPipeline:
         else: 
             return frame
     
-    def auto_frame_tests(self) -> Optional[pl.DataFrame]: 
+    def auto_frame_tests(self) -> Dict[str, pl.DataFrame]: 
         sample_frame= self.frame_sampling()
+        frame= self.frame
         
         nulls= self.nulls_frame(frame=sample_frame)
-        if nulls is not None: 
+        frame_nulls= self.nulls_frame(frame=frame)
+        if frame_nulls is not None: 
             analysis= self.analysis_frame(frame=nulls)
-            if analysis is not None: 
+            analysis_frame= self.analysis_frame(frame=frame)
+            if analysis_frame is not None: 
                 logger.info('Frame was obtained correctly')
-                return analysis
+                analysis= self.analysis_frame(frame=sample_frame)
+                analysis_frame= self.analysis_frame(frame=frame)
+                if analysis_frame is not None: 
+                    logger.info('Frame was obtained correctly')
+                    return {
+                        'sample': analysis.drop('index'), 
+                        'frame': analysis_frame.drop('index')
+                    }
         
         analysis= self.analysis_frame(frame=sample_frame)
-        if analysis is not None: 
+        analysis_frame= self.analysis_frame(frame=frame)
+        if analysis_frame is not None: 
             logger.info('Frame was obtained correctly')
-            return analysis.drop('index')
+            return {
+                'sample': analysis.drop('index'), 
+                'frame': analysis_frame.drop('index')
+            }
         else: 
-            return sample_frame.drop('index')
-
-# 🚨🚨🚨 the manual way is being tested, it is not stable 🚨🚨🚨
-"""class PreProcessingManual: 
-    def __init__(self, frame: pl.DataFrame, config: BaseModel, config_prep: BaseModel, analysis_dict: Dict[str, Any]):
-        self.frame= frame
-        
-        self.config= config
-        self.config_prep= config_prep
-        self.analysis_dict= analysis_dict
-    
-    def distribution(self) -> Optional[List[str]]: 
-        distribution_dict= self.analysis_dict.get('distribution', None)
-        if not distribution_dict: 
-            logger.info('No distribution analysis were detected or enabled')
-            return None
-        
-        distribution_expr= DistributionListExpr(frame=self.frame)
-        distribution_list= distribution_expr.manual_distribution(config=self.config)
-        
-        if distribution_list: 
-            logger.info('List of expresions for distribution were added into principal list expressions')
-            return distribution_list
-        else: 
-            logger.info('No expressions for distribution analisys were found')
-    
-    def outliers(self) -> Optional[List[str]]: 
-        outlier_dict= self.analysis_dict.get('outliers', None)
-        if not outlier_dict: 
-            logger.info(f'No outlier analysis were detected or enabled')
-            return None
-        
-        outlier_expr= OutlierExprList(frame=self.frame, config_outlier=self.config_prep, config=self.config)
-        list_expr= outlier_expr.iqr_manual_expr_method(config=self.config)
-        
-        if list_expr: 
-            logger.info('List of expresions for outliers were added into principal list expressions')
-            return list_expr
-        else: 
-            logger.info('No expressions for outliers analisys were found')
-    
-    def correlation(self) -> Union[pl.DataFrame, List[pl.Expr], None]: 
-        corr_dict= self.analysis_dict.get('correlation', None)
-        if not corr_dict: 
-            logger.info(f'No distribution analysis were detected or enabled')
-            return None
-        
-        correlation_op= CorrelationPreprocessing(frame=self.frame, corr_dict=corr_dict, config=self.config)
-        correlation_dict= correlation_op.manual_correlation()
-        
-        if correlation_dict: 
-            if isinstance(correlation_dict, dict):
-                logger.info('List of expresions for correlation were added into principal list expressions')
-                return correlation_dict
-            else: 
-                self.frame= correlation_dict
-                return correlation_dict
-        else: 
-            logger.info('No expressions for correlation analisys were found')
-    
-    def expressions(self) -> Optional[Dict[str, List[Any]]]: 
-        list_expr= []
-        drop_expr= []
-        
-        d_expr= self.distribution()
-        o_expr= self.outliers()
-        c_expr= self.correlation()
-        
-        if d_expr: 
-            list_expr.extend(d_expr)
-        if o_expr: 
-            list_expr.extend(o_expr)
-        if c_expr: 
-            if isinstance(c_expr, list):
-                list_expr.extend(c_expr)
-            else: 
-                drop= c_expr['drop']
-                expr= c_expr['expr']
-                
-                list_expr.extend(expr)
-                drop_expr.extend(drop)
-        
-        if list_expr: 
-            if drop_expr: 
-                return {
-                    'expr': list_expr, 
-                    'drop': drop_expr
-                }
-            else: 
-                return list_expr
-        else: 
-            logger.info(f'No expressions were found')
-            return None"""
-
-"""#this will be delated
-    def pipeline(self, 
-            method_anal: analysis_outliers, 
-            auto: bool, 
-            outlier_dict: Optional[Dict[str, Any]]= None
-        ) -> pl.DataFrame: 
-        
-        match method_anal: 
-            case analysis_outliers.IQR: 
-                if auto:
-                    list_expr= self.iqr_auto_expr_method(outlier_dict=outlier_dict)
-                else: 
-                    list_expr= self.iqr_manual_expr_method()
-        
-        frame= self.frame.with_columns(list_expr)
-        
-        return frame.drop('index')"""
-
+            return {
+                'sample': sample_frame.drop('index'),
+                'frame': frame.drop('index')
+            }
 
