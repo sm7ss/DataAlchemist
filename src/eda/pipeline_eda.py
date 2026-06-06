@@ -129,7 +129,7 @@ class InfoAnalysisNumericColumns:
             ml_scaler= self.dict_distribution[col]['suggestion']['scaler']
             
             if skew== 'positive': 
-                tail= 'Tail to the left. Higher values'
+                tail= 'Tail to the right. Higher values'
             elif skew == 'negative': 
                 tail= 'Tail to the left. Smaller values'
             else: 
