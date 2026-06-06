@@ -1,6 +1,5 @@
 import polars as pl 
-from typing import List, Dict, Any, Optional
-from pydantic import BaseModel
+from typing import List, Dict, Any
 import logging
 
 from .operations.transformers import TransformationOperation
@@ -43,22 +42,7 @@ class DistributionListExpr:
                 logging.info(f'Column {col} doesnt have transform suggestion')
         
         return list_expr
-    
-    def manual_distribution(self, config: BaseModel) -> Optional[List[pl.Expr]]: 
-        list_expr= []
-        
-        transform= config.ml_preprocessing.distribution.transformer
-        
-        if not transform: 
-            logger.info('No transformer was applied')
-            return None
-        
-        for col in self.num_frame.columns: 
-            logger.info(f'The column {col} has the transformer {transform}')
-            expr= self.transform(col=col, method=transform)
-            list_expr.append(expr)
-        
-        return list_expr
+
 
 
 
