@@ -1,5 +1,6 @@
 path: 
-  data: 'Churn.csv' # crime.parquet
+  data: 'gold_recovery_full.csv' # crime.parquet
+  aditional_dataset: ['gold_recovery_test.csv', 'gold_recovery_train.csv']
   overhead_percent: 1.8
   sample_data_percent: 0.1 #percent data analysis, this can change by system to be optimal, not used now, until laz and streaming is added
 
@@ -35,7 +36,7 @@ cleaning:
     null_impute_categorics: # if None -> the mode will be used if nulls are found
 
 ml_preprocessing: 
-  columns: # if None, all columns will be used
+  columns: 
   
   sampling: # if not value given 'random' will be used
   representative_column: #use when "representative" is selected
@@ -63,15 +64,15 @@ ml_preprocessing:
     name_operation_value: # Value for operation, if None, then "Unknown" will be the auto value given
 
 ml_training: # Encoder & Scaler not working
-  target: 'Exited'
+  target: ['rougher.output.recovery', 'final.output.recovery']
   
-  train_test_search: 0.2
+  train_test_search: 0.25 
   train_test_final: 0.25 # 🚨 NOT AVAILABLE 🚨
   random_state: 42
   
   encoder: # 🚨 NOT AVAILABLE 🚨 if None=Auto (Rules in config_modeling), if not all columns will have the encoder you selected 
   scaler: # 🚨 NOT AVAILABLE 🚨 if none, auto will be use, the algorithm will decide
-  scaler_outlier_method: # 🚨 NOT AVAILABLE 🚨 if none, iqr will be used
+  scaler_outlier_method: # if none, iqr will be used
 
 
 
