@@ -19,7 +19,7 @@ class FolderAndFile:
         return path
     
     def folder_date(self) -> Path: 
-        now= datetime.now().strftime('%Y-%m-%d')
+        now= datetime.now().strftime('%Y-%m-%d/%H-%M-%S')
         folder= f'analysis_{now}'
         path= self.folder_analysis() / folder
         path.mkdir(parents=True, exist_ok=True)
