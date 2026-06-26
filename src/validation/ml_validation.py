@@ -1,10 +1,10 @@
 from ..strategies.strategies import AnalysisOutliers
 
-from typing import Optional
+from typing import Optional, List, Union
 from pydantic import BaseModel, Field, field_validator
 
 class ml_training_val(BaseModel): 
-    target: str
+    target: Union[List[str], str]
     
     train_test_search: float= Field(gt=0.0, le=1.0)
     train_test_final: float= Field(gt=0.0, le=1.0)

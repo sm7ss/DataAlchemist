@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field, field_validator, model_validator
+from typing import Union, List
 from pathlib import Path
 
 import polars as pl 
@@ -16,6 +17,7 @@ from .ml_validation import ml_training_val
 
 class path_validation(BaseModel): 
     data: str
+    aditional_dataset: Union[str, List[str], None]
     overhead_percent: float= Field(ge=1.0, le=3.0)
     sample_data_percent: float= Field(gt=0.0, lt=1.0)
     
@@ -29,6 +31,30 @@ class path_validation(BaseModel):
             logger.error(f'The file {v} should be a csv, parquet')
             raise ValueError(f'The file {v} should be a csv, parquet')
         return path
+    
+    @field_validator('aditional_dataset')
+    def datasets_validation(cls, v):
+        if isinstance(v, str): 
+            v= Path(__file__).parent.parent.parent / 'data' / v
+            if not v.exists(): 
+                logger.error(f'The path for file {v} doesnt exists')
+                raise FileNotFoundError(f'The path for file {v} doesnt exists')
+            if v.suffix not in ['.csv', '.parquet']: 
+                logger.error(f'The file {v} should be a csv, parquet')
+                raise ValueError(f'The file {v} should be a csv, parquet')
+        elif isinstance(v, list): 
+            for i_path in range(len(v)): 
+                v[i_path]= Path(__file__).parent.parent.parent / 'data' / v[i_path]
+                
+                if not v[i_path].exists(): 
+                    logger.error(f'The path for file {v[i_path]} doesnt exists')
+                    raise FileNotFoundError(f'The path for file {v[i_path]} doesnt exists')
+                if v[i_path].suffix not in ['.csv', '.parquet']: 
+                    logger.error(f'The file {v[i_path]} should be a csv, parquet')
+                    raise ValueError(f'The file {v[i_path]} should be a csv, parquet')
+        else: 
+            pass
+        return v
 
 class validation(BaseModel): 
     path: path_validation
@@ -263,13 +289,21 @@ class validation(BaseModel):
         
         target= self.ml_training.target
         
-        if target not in frame_columns: 
-            logger.error(f'The target column "{target}" must be in the Frame. Available columns:\n{frame_columns}')
-            raise ValueError(f'The target column "{target}" must be in the Frame. Available columns:\n{frame_columns}')
-        
-        if target not in columns_pre: 
-            logger.info(f'Target column "{target}" must exists in available columns {columns_pre}')
-            raise ValueError(f'Target column "{target}" must exists in available columns {columns_pre}')
+        if isinstance(target, str):
+            if target not in frame_columns: 
+                logger.error(f'The target column "{target}" must be in the Frame. Available columns:\n{frame_columns}')
+                raise ValueError(f'The target column "{target}" must be in the Frame. Available columns:\n{frame_columns}')
+            if target not in columns_pre: 
+                logger.info(f'Target column "{target}" must exists in available columns {columns_pre}')
+                raise ValueError(f'Target column "{target}" must exists in available columns {columns_pre}')
+        else: 
+            for col in target: 
+                if col not in frame_columns: 
+                    logger.error(f'The target column "{col}" must be in the Frame. Available columns:\n{frame_columns}')
+                    raise ValueError(f'The target column "{col}" must be in the Frame. Available columns:\n{frame_columns}')
+                if col not in columns_pre: 
+                    logger.info(f'Target column "{col}" must exists in available columns {columns_pre}')
+                    raise ValueError(f'Target column "{col}" must exists in available columns {columns_pre}')
         
         return self
 
