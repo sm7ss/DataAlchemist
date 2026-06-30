@@ -1,4 +1,4 @@
-from ..strategies.cleaning_strategies import NumericNulls, CategoricNulls
+from src.strategies.cleaning_strategies import NumericNulls, CategoricNulls
 
 from typing import List, Optional, Dict, Any, Union
 from pydantic import BaseModel
@@ -104,12 +104,12 @@ class CleanNulls:
                 else: 
                     return None
                 
-                return expr
+                return expr, 'expr_input'
             else: 
                 logger.info(f'For column {col} rows will be removed')
                 index_rows= row_nulls.get_column('index').to_list()
                 expr= self.delete.delete_row_expr(index_list=index_rows)
-                return expr
+                return expr, 'delete_rows'
         else:
             logger.info(f'Column {col} will be removed')
             return col
@@ -120,6 +120,7 @@ class CleanNulls:
             return None
         
         columns_removed= []
+        filter_expr= []
         list_expr= []
         
         for col in self.JSON: 
@@ -133,15 +134,19 @@ class CleanNulls:
                 else: 
                     if isinstance(analyse, str): 
                         columns_removed.append(col)
-                    elif analyse is None:
+                    elif isinstance(analyse, tuple):
+                        if analyse[1] == 'expr_input': 
+                            list_expr.append(analyse[0])
+                        else:
+                            filter_expr.append(analyse[0])
+                    else: 
                         logger.info(f'Datatype for column {col} will not be processed, just strings or numeric types.')
                         continue
-                    else:
-                        list_expr.append(analyse)
         
         return {
             'delete_columns': columns_removed if columns_removed else None, 
-            'expressions': list_expr if list_expr else None
+            'expressions': list_expr if list_expr else None, 
+            'filter': filter_expr if filter_expr else None
         }
     
     def clean_dataframe(self) -> pl.DataFrame:
@@ -153,17 +158,16 @@ class CleanNulls:
         
         delete_columns= dict_null_actions['delete_columns']
         expressions= dict_null_actions['expressions']
+        filter_expr= dict_null_actions['filter']
         
         if delete_columns: 
             frame= frame.drop(delete_columns)
             logger.info(f'Columns: {delete_columns}. Were removed')
         if expressions: 
             frame= frame.with_columns(expressions)
-            logger.info(f'Frame was cleaned')
+            logger.info('Frame was cleaned')
+        if filter_expr: 
+            frame= frame.filter(filter_expr)
+            logger.info('Nulls for rows were filtered')
         
         return frame
-
-
-
-
-
