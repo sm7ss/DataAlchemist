@@ -1,0 +1,1494 @@
+
+========================================================================================
+                                    DATA ALCHEMIST  
+                             🐥 ANALYSIS REPORT (TEXT MODE)
+========================================================================================
+📅 Date: 2026-07-07
+📁 Dataset: gold_recovery_test.csv
+📊 Shape: 5856 rows | 53 columns
+========================================================================================
+GENERAL INFO
+----------------------------------------------------------------------------------------
+📝 Available Columns: date, primary_cleaner.input.sulfate, primary_cleaner.input.depressant, primary_cleaner.input.feed_size, primary_cleaner.input.xanthate, primary_cleaner.state.floatbank8_a_air, primary_cleaner.state.floatbank8_a_level, primary_cleaner.state.floatbank8_b_air, primary_cleaner.state.floatbank8_b_level, primary_cleaner.state.floatbank8_c_air, primary_cleaner.state.floatbank8_c_level, primary_cleaner.state.floatbank8_d_air, primary_cleaner.state.floatbank8_d_level, rougher.input.feed_ag, rougher.input.feed_pb, rougher.input.feed_rate, rougher.input.feed_size, rougher.input.feed_sol, rougher.input.feed_au, rougher.input.floatbank10_sulfate, rougher.input.floatbank10_xanthate, rougher.input.floatbank11_sulfate, rougher.input.floatbank11_xanthate, rougher.state.floatbank10_a_air, rougher.state.floatbank10_a_level, rougher.state.floatbank10_b_air, rougher.state.floatbank10_b_level, rougher.state.floatbank10_c_air, rougher.state.floatbank10_c_level, rougher.state.floatbank10_d_air, rougher.state.floatbank10_d_level, rougher.state.floatbank10_e_air, rougher.state.floatbank10_e_level, rougher.state.floatbank10_f_air, rougher.state.floatbank10_f_level, secondary_cleaner.state.floatbank2_a_air, secondary_cleaner.state.floatbank2_a_level, secondary_cleaner.state.floatbank2_b_air, secondary_cleaner.state.floatbank2_b_level, secondary_cleaner.state.floatbank3_a_air, secondary_cleaner.state.floatbank3_a_level, secondary_cleaner.state.floatbank3_b_air, secondary_cleaner.state.floatbank3_b_level, secondary_cleaner.state.floatbank4_a_air, secondary_cleaner.state.floatbank4_a_level, secondary_cleaner.state.floatbank4_b_air, secondary_cleaner.state.floatbank4_b_level, secondary_cleaner.state.floatbank5_a_air, secondary_cleaner.state.floatbank5_a_level, secondary_cleaner.state.floatbank5_b_air, secondary_cleaner.state.floatbank5_b_level, secondary_cleaner.state.floatbank6_a_air, secondary_cleaner.state.floatbank6_a_level
+
+🏷️ Column Type: 
+    - date: String
+    - primary_cleaner.input.sulfate: Float64
+    - primary_cleaner.input.depressant: Float64
+    - primary_cleaner.input.feed_size: Float64
+    - primary_cleaner.input.xanthate: Float64
+    - primary_cleaner.state.floatbank8_a_air: Float64
+    - primary_cleaner.state.floatbank8_a_level: Float64
+    - primary_cleaner.state.floatbank8_b_air: Float64
+    - primary_cleaner.state.floatbank8_b_level: Float64
+    - primary_cleaner.state.floatbank8_c_air: Float64
+    - primary_cleaner.state.floatbank8_c_level: Float64
+    - primary_cleaner.state.floatbank8_d_air: Float64
+    - primary_cleaner.state.floatbank8_d_level: Float64
+    - rougher.input.feed_ag: Float64
+    - rougher.input.feed_pb: Float64
+    - rougher.input.feed_rate: Float64
+    - rougher.input.feed_size: Float64
+    - rougher.input.feed_sol: Float64
+    - rougher.input.feed_au: Float64
+    - rougher.input.floatbank10_sulfate: Float64
+    - rougher.input.floatbank10_xanthate: Float64
+    - rougher.input.floatbank11_sulfate: Float64
+    - rougher.input.floatbank11_xanthate: Float64
+    - rougher.state.floatbank10_a_air: Float64
+    - rougher.state.floatbank10_a_level: Float64
+    - rougher.state.floatbank10_b_air: Float64
+    - rougher.state.floatbank10_b_level: Float64
+    - rougher.state.floatbank10_c_air: Float64
+    - rougher.state.floatbank10_c_level: Float64
+    - rougher.state.floatbank10_d_air: Float64
+    - rougher.state.floatbank10_d_level: Float64
+    - rougher.state.floatbank10_e_air: Float64
+    - rougher.state.floatbank10_e_level: Float64
+    - rougher.state.floatbank10_f_air: Float64
+    - rougher.state.floatbank10_f_level: Float64
+    - secondary_cleaner.state.floatbank2_a_air: Float64
+    - secondary_cleaner.state.floatbank2_a_level: Float64
+    - secondary_cleaner.state.floatbank2_b_air: Float64
+    - secondary_cleaner.state.floatbank2_b_level: Float64
+    - secondary_cleaner.state.floatbank3_a_air: Float64
+    - secondary_cleaner.state.floatbank3_a_level: Float64
+    - secondary_cleaner.state.floatbank3_b_air: Float64
+    - secondary_cleaner.state.floatbank3_b_level: Float64
+    - secondary_cleaner.state.floatbank4_a_air: Float64
+    - secondary_cleaner.state.floatbank4_a_level: Float64
+    - secondary_cleaner.state.floatbank4_b_air: Float64
+    - secondary_cleaner.state.floatbank4_b_level: Float64
+    - secondary_cleaner.state.floatbank5_a_air: Float64
+    - secondary_cleaner.state.floatbank5_a_level: Float64
+    - secondary_cleaner.state.floatbank5_b_air: Float64
+    - secondary_cleaner.state.floatbank5_b_level: Float64
+    - secondary_cleaner.state.floatbank6_a_air: Float64
+    - secondary_cleaner.state.floatbank6_a_level: Float64
+
+📐 Numeric Statistics:     
+    primary_cleaner.input.sulfate 
+        - Mean: 170.5152428210138 
+        - Median: 176.11914622249958
+        - Std: 49.60860166102424
+        - Min:  0.00010280542908335013
+        - Max: 274.4096258580686
+        
+    primary_cleaner.input.depressant 
+        - Mean: 8.482873017035493 
+        - Median: 8.023264434066617
+        - Std: 3.353104563454131
+        - Min:  3.128933825944856e-05
+        - Max: 40.02458214430837
+        
+    primary_cleaner.input.feed_size 
+        - Mean: 7.2646512922454205 
+        - Median: 7.259999812444222
+        - Std: 0.6115257797788545
+        - Min:  5.6500000953674325
+        - Max: 15.5
+        
+    primary_cleaner.input.xanthate 
+        - Mean: 1.3214200676815477 
+        - Median: 1.1835390149947276
+        - Std: 0.6932463100290008
+        - Min:  3.4088387659217093e-06
+        - Max: 5.433169159645429
+        
+    primary_cleaner.state.floatbank8_a_air 
+        - Mean: 1481.9902410678467 
+        - Median: 1554.6847100315008
+        - Std: 310.4531658593017
+        - Min:  0.0
+        - Max: 2212.4320895440633
+        
+    primary_cleaner.state.floatbank8_a_level 
+        - Mean: -509.0577955531918 
+        - Median: -499.99710209280283
+        - Std: 61.33925625965578
+        - Min:  -799.7737882109213
+        - Max: -57.195403577578496
+        
+    primary_cleaner.state.floatbank8_b_air 
+        - Mean: 1486.9086703944358 
+        - Median: 1553.279020618785
+        - Std: 313.22428635638187
+        - Min:  0.0
+        - Max: 1975.1479228034414
+        
+    primary_cleaner.state.floatbank8_b_level 
+        - Mean: -511.7439559290625 
+        - Median: -500.0665038636077
+        - Std: 67.13907422121163
+        - Min:  -800.0290780533154
+        - Max: -142.52722919130937
+        
+    primary_cleaner.state.floatbank8_c_air 
+        - Mean: 1468.4952164536132 
+        - Median: 1546.183457885007
+        - Std: 309.98074797806316
+        - Min:  0.0
+        - Max: 1715.0537728681416
+        
+    primary_cleaner.state.floatbank8_c_level 
+        - Mean: -509.7412116852701 
+        - Median: -500.07946158514716
+        - Std: 62.67187253854755
+        - Min:  -799.9951267885547
+        - Max: -150.93703496431226
+        
+    primary_cleaner.state.floatbank8_d_air 
+        - Mean: 1486.3985568206133 
+        - Median: 1552.1031207091494
+        - Std: 313.72524760783074
+        - Min:  0.0
+        - Max: 1913.256560875848
+        
+    primary_cleaner.state.floatbank8_d_level 
+        - Mean: -510.72360631715577 
+        - Median: -500.0455571370401
+        - Std: 65.4176329029705
+        - Min:  -799.8388455517895
+        - Max: -32.44945608757012
+        
+    rougher.input.feed_ag 
+        - Mean: 8.73616963996835 
+        - Median: 9.628615516461238
+        - Std: 2.9858052705929587
+        - Min:  0.0
+        - Max: 14.406130170844893
+        
+    rougher.input.feed_pb 
+        - Mean: 3.552721541939047 
+        - Median: 3.6798719831307727
+        - Std: 1.3261132722267608
+        - Min:  0.0
+        - Max: 6.905684239202076
+        
+    rougher.input.feed_rate 
+        - Mean: 458.48547239410897 
+        - Median: 489.56562669769073
+        - Std: 155.9582716455446
+        - Min:  0.002985848512981309
+        - Max: 707.3640197925482
+        
+    rougher.input.feed_size 
+        - Mean: 55.93753506406804 
+        - Median: 50.005849469501065
+        - Std: 22.724253794562376
+        - Min:  0.04636879881719739
+        - Max: 477.44547252313856
+        
+    rougher.input.feed_sol 
+        - Mean: 35.10583429603488 
+        - Median: 37.33663422596419
+        - Std: 10.793249027290278
+        - Min:  0.0
+        - Max: 53.47774205101861
+        
+    rougher.input.feed_au 
+        - Mean: 8.70093007500636 
+        - Median: 9.449678320406568
+        - Std: 2.803046426581402
+        - Min:  0.0
+        - Max: 13.731329939295394
+        
+    rougher.input.floatbank10_sulfate 
+        - Mean: 13.439932941698391 
+        - Median: 14.000239531656186
+        - Std: 3.9977153114506603
+        - Min:  0.0001544937213665001
+        - Max: 24.28063553624123
+        
+    rougher.input.floatbank10_xanthate 
+        - Mean: 6.169553307083209 
+        - Median: 6.401502381522693
+        - Std: 1.6736062763351904
+        - Min:  5.244940994425001e-05
+        - Max: 13.037750395496788
+        
+    rougher.input.floatbank11_sulfate 
+        - Mean: 13.056046914122609 
+        - Median: 13.998778474711866
+        - Std: 4.533948217328542
+        - Min:  1.4209480458512216e-05
+        - Max: 28.949609009400522
+        
+    rougher.input.floatbank11_xanthate 
+        - Mean: 6.423565717417902 
+        - Median: 6.4961052739335825
+        - Std: 1.1203706944310956
+        - Min:  5.548697935226129e-05
+        - Max: 18.709477879163323
+        
+    rougher.state.floatbank10_a_air 
+        - Mean: 1016.2947033883341 
+        - Median: 1000.32706220487
+        - Std: 226.49477535604987
+        - Min:  -0.12319396852434936
+        - Max: 1423.2746866128368
+        
+    rougher.state.floatbank10_a_level 
+        - Mean: -404.977728435733 
+        - Median: -399.8172402142568
+        - Std: 100.95378163628634
+        - Min:  -657.9497594243531
+        - Max: -273.776101238253
+        
+    rougher.state.floatbank10_b_air 
+        - Mean: 1270.598553154316 
+        - Median: 1300.9835164402848
+        - Std: 285.2477152423634
+        - Min:  -0.8219208795984643
+        - Max: 1706.6404194050153
+        
+    rougher.state.floatbank10_b_level 
+        - Mean: -482.1545671574115 
+        - Median: -499.8754153803629
+        - Std: 55.39963103325027
+        - Min:  -650.3491586720855
+        - Max: -229.39620269043843
+        
+    rougher.state.floatbank10_c_air 
+        - Mean: 1253.495044750017 
+        - Median: 1298.5094433837871
+        - Std: 290.70315734605936
+        - Min:  -0.28208701095273514
+        - Max: 1809.889686479554
+        
+    rougher.state.floatbank10_c_level 
+        - Mean: -480.9458684175234 
+        - Median: -499.8102468544832
+        - Std: 53.759052520286424
+        - Min:  -650.0
+        - Max: -253.05458656580052
+        
+    rougher.state.floatbank10_d_air 
+        - Mean: 1169.6755637293097 
+        - Median: 1202.8992542030865
+        - Std: 285.4072441301345
+        - Min:  -1.0473884981786514
+        - Max: 1775.2185844862383
+        
+    rougher.state.floatbank10_d_level 
+        - Mean: -482.15225287586316 
+        - Median: -499.75698640747385
+        - Std: 54.96798489976225
+        - Min:  -648.3906653215574
+        - Max: -76.3973265240352
+        
+    rougher.state.floatbank10_e_air 
+        - Mean: 1018.3863110574188 
+        - Median: 1001.6709945426396
+        - Std: 231.67575605937014
+        - Min:  -2.076798348597848
+        - Max: 1467.1848427590155
+        
+    rougher.state.floatbank10_e_level 
+        - Mean: -476.5515474449068 
+        - Median: -499.8013526945088
+        - Std: 67.00259539427742
+        - Min:  -650.1525332744765
+        - Max: -139.7530248223448
+        
+    rougher.state.floatbank10_f_air 
+        - Mean: 962.0053746797931 
+        - Median: 999.088193685032
+        - Std: 220.86243520574746
+        - Min:  -2.5933895111083984
+        - Max: 1476.588106938268
+        
+    rougher.state.floatbank10_f_level 
+        - Mean: -477.79538018427206 
+        - Median: -499.7544126841412
+        - Std: 68.3423051213346
+        - Min:  -650.0346312409661
+        - Max: -218.47282393620557
+        
+    secondary_cleaner.state.floatbank2_a_air 
+        - Mean: 25.47980783525709 
+        - Median: 26.862954644335225
+        - Std: 5.450423563370474
+        - Min:  0.0
+        - Max: 59.944408911216726
+        
+    secondary_cleaner.state.floatbank2_a_level 
+        - Mean: -513.7149411313522 
+        - Median: -500.0174077669218
+        - Std: 62.4483657411874
+        - Min:  -799.6085571885611
+        - Max: -300.34367015300654
+        
+    secondary_cleaner.state.floatbank2_b_air 
+        - Mean: 21.083474616469154 
+        - Median: 22.90901958055946
+        - Std: 5.9400173473564735
+        - Min:  0.0
+        - Max: 60.0
+        
+    secondary_cleaner.state.floatbank2_b_level 
+        - Mean: -512.3257169654961 
+        - Median: -500.0311019915397
+        - Std: 63.37677558846033
+        - Min:  -798.4672433323973
+        - Max: -211.9992726088799
+        
+    secondary_cleaner.state.floatbank3_a_air 
+        - Mean: 24.345831293613344 
+        - Median: 25.00038286611392
+        - Std: 7.950732848077068
+        - Min:  0.0
+        - Max: 40.04199696527827
+        
+    secondary_cleaner.state.floatbank3_a_level 
+        - Mean: -519.4177330987432 
+        - Median: -500.0529215149994
+        - Std: 73.96810854251794
+        - Min:  -799.7557983398438
+        - Max: -313.8664252446466
+        
+    secondary_cleaner.state.floatbank3_b_air 
+        - Mean: 20.068079263337594 
+        - Median: 20.028394416697367
+        - Std: 7.644391003448971
+        - Min:  0.0
+        - Max: 32.03936453935373
+        
+    secondary_cleaner.state.floatbank3_b_level 
+        - Mean: -515.0283157425674 
+        - Median: -500.02375590065805
+        - Std: 60.457837509038754
+        - Min:  -809.3330078125
+        - Max: -202.2773661996642
+        
+    secondary_cleaner.state.floatbank4_a_air 
+        - Mean: 15.636031368722419 
+        - Median: 17.001889292404908
+        - Std: 4.660834924909862
+        - Min:  0.0
+        - Max: 30.051797424068646
+        
+    secondary_cleaner.state.floatbank4_a_level 
+        - Mean: -516.2660744565023 
+        - Median: -500.1601428924336
+        - Std: 62.75674841576538
+        - Min:  -799.7985229492188
+        - Max: -401.56521153396113
+        
+    secondary_cleaner.state.floatbank4_b_air 
+        - Mean: 13.145702380392384 
+        - Median: 14.952156604269753
+        - Std: 4.304085726571566
+        - Min:  0.0
+        - Max: 31.26970588999798
+        
+    secondary_cleaner.state.floatbank4_b_level 
+        - Mean: -476.33890682849005 
+        - Median: -499.64429606603744
+        - Std: 105.54942442394491
+        - Min:  -800.8369140625
+        - Max: -6.506986133139549
+        
+    secondary_cleaner.state.floatbank5_a_air 
+        - Mean: 12.30896691103461 
+        - Median: 12.063171194845085
+        - Std: 3.762827010215701
+        - Min:  -0.22339298254754605
+        - Max: 25.258848362480954
+        
+    secondary_cleaner.state.floatbank5_a_level 
+        - Mean: -512.2081261627176 
+        - Median: -500.04760383537683
+        - Std: 58.86465104932594
+        - Min:  -799.661075885063
+        - Max: -244.48356646706506
+        
+    secondary_cleaner.state.floatbank5_b_air 
+        - Mean: 9.47098591981239 
+        - Median: 9.980828838774867
+        - Std: 3.312470859171861
+        - Min:  0.5280828475952148
+        - Max: 14.09019428094156
+        
+    secondary_cleaner.state.floatbank5_b_level 
+        - Mean: -505.01782678470363 
+        - Median: -500.00129662723947
+        - Std: 68.78589793619024
+        - Min:  -800.2203369140625
+        - Max: -126.46344554669636
+        
+    secondary_cleaner.state.floatbank6_a_air 
+        - Mean: 16.678721856212974 
+        - Median: 16.00725014574261
+        - Std: 5.404513665684607
+        - Min:  -0.07942622900009155
+        - Max: 26.70588918614603
+        
+    secondary_cleaner.state.floatbank6_a_level 
+        - Mean: -512.3516936025247 
+        - Median: -500.04100452200754
+        - Std: 69.91983923832458
+        - Min:  -809.8597058316906
+        - Max: -29.093593335314328
+     
+🧮 Unique Categoric Values: 
+    - date: 5856
+ 
+========================================================================================
+MISSING VALUES ANALYSIS
+----------------------------------------------------------------------------------------
+❓ Total Nulls in Dataset: 2360
+
+    - primary_cleaner.input.sulfate: 302 nulls column (5.157%), 16 nulls row -> action: analyse
+    - primary_cleaner.input.depressant: 284 nulls column (4.85%), 16 nulls row -> action: analyse
+    - primary_cleaner.input.xanthate: 166 nulls column (2.835%), 16 nulls row -> action: analyse
+    - primary_cleaner.state.floatbank8_a_air: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - primary_cleaner.state.floatbank8_a_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - primary_cleaner.state.floatbank8_b_air: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - primary_cleaner.state.floatbank8_b_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - primary_cleaner.state.floatbank8_c_air: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - primary_cleaner.state.floatbank8_c_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - primary_cleaner.state.floatbank8_d_air: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - primary_cleaner.state.floatbank8_d_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - rougher.input.feed_ag: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - rougher.input.feed_pb: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - rougher.input.feed_rate: 40 nulls column (0.683%), 16 nulls row -> action: delete
+    - rougher.input.feed_size: 22 nulls column (0.376%), 16 nulls row -> action: delete
+    - rougher.input.feed_sol: 67 nulls column (1.144%), 16 nulls row -> action: analyse
+    - rougher.input.feed_au: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - rougher.input.floatbank10_sulfate: 257 nulls column (4.389%), 16 nulls row -> action: analyse
+    - rougher.input.floatbank10_xanthate: 123 nulls column (2.1%), 16 nulls row -> action: analyse
+    - rougher.input.floatbank11_sulfate: 55 nulls column (0.939%), 16 nulls row -> action: analyse
+    - rougher.input.floatbank11_xanthate: 353 nulls column (6.028%), 16 nulls row -> action: analyse
+    - rougher.state.floatbank10_a_air: 17 nulls column (0.29%), 16 nulls row -> action: delete
+    - rougher.state.floatbank10_a_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - rougher.state.floatbank10_b_air: 17 nulls column (0.29%), 16 nulls row -> action: delete
+    - rougher.state.floatbank10_b_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - rougher.state.floatbank10_c_air: 17 nulls column (0.29%), 16 nulls row -> action: delete
+    - rougher.state.floatbank10_c_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - rougher.state.floatbank10_d_air: 17 nulls column (0.29%), 16 nulls row -> action: delete
+    - rougher.state.floatbank10_d_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - rougher.state.floatbank10_e_air: 17 nulls column (0.29%), 16 nulls row -> action: delete
+    - rougher.state.floatbank10_e_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - rougher.state.floatbank10_f_air: 17 nulls column (0.29%), 16 nulls row -> action: delete
+    - rougher.state.floatbank10_f_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank2_a_air: 20 nulls column (0.342%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank2_a_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank2_b_air: 23 nulls column (0.393%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank2_b_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank3_a_air: 34 nulls column (0.581%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank3_a_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank3_b_air: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank3_b_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank4_a_air: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank4_a_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank4_b_air: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank4_b_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank5_a_air: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank5_a_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank5_b_air: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank5_b_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank6_a_air: 16 nulls column (0.273%), 16 nulls row -> action: delete
+    - secondary_cleaner.state.floatbank6_a_level: 16 nulls column (0.273%), 16 nulls row -> action: delete
+
+========================================================================================
+NUMERIC COLUMNS ANALYSIS
+========================================================================================
+DISTRIBUTION 
+----------------------------------------------------------------------------------------
+📊 primary_cleaner.input.sulfate
+    - Mean: 170.515 | Median: 176.119 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 primary_cleaner.input.depressant
+    - Mean: 8.483 | Median: 8.023 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 primary_cleaner.input.feed_size
+    - Mean: 7.265 | Median: 7.26 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 primary_cleaner.input.xanthate
+    - Mean: 1.321 | Median: 1.184 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 primary_cleaner.state.floatbank8_a_air
+    - Mean: 1481.99 | Median: 1554.685 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 primary_cleaner.state.floatbank8_a_level
+    - Mean: -509.058 | Median: -499.997 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 primary_cleaner.state.floatbank8_b_air
+    - Mean: 1486.909 | Median: 1553.279 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 primary_cleaner.state.floatbank8_b_level
+    - Mean: -511.744 | Median: -500.067 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 primary_cleaner.state.floatbank8_c_air
+    - Mean: 1468.495 | Median: 1546.183 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 primary_cleaner.state.floatbank8_c_level
+    - Mean: -509.741 | Median: -500.079 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 primary_cleaner.state.floatbank8_d_air
+    - Mean: 1486.399 | Median: 1552.103 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 primary_cleaner.state.floatbank8_d_level
+    - Mean: -510.724 | Median: -500.046 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.input.feed_ag
+    - Mean: 8.736 | Median: 9.629 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.input.feed_pb
+    - Mean: 3.553 | Median: 3.68 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.input.feed_rate
+    - Mean: 458.485 | Median: 489.566 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.input.feed_size
+    - Mean: 55.938 | Median: 50.006 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 rougher.input.feed_sol
+    - Mean: 35.106 | Median: 37.337 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.input.feed_au
+    - Mean: 8.701 | Median: 9.45 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.input.floatbank10_sulfate
+    - Mean: 13.44 | Median: 14.0 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.input.floatbank10_xanthate
+    - Mean: 6.17 | Median: 6.402 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.input.floatbank11_sulfate
+    - Mean: 13.056 | Median: 13.999 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.input.floatbank11_xanthate
+    - Mean: 6.424 | Median: 6.496 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.state.floatbank10_a_air
+    - Mean: 1016.295 | Median: 1000.327 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 rougher.state.floatbank10_a_level
+    - Mean: -404.978 | Median: -399.817 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: moderately dispersed
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: robustScaler
+
+📊 rougher.state.floatbank10_b_air
+    - Mean: 1270.599 | Median: 1300.984 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.state.floatbank10_b_level
+    - Mean: -482.155 | Median: -499.875 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 rougher.state.floatbank10_c_air
+    - Mean: 1253.495 | Median: 1298.509 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.state.floatbank10_c_level
+    - Mean: -480.946 | Median: -499.81 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 rougher.state.floatbank10_d_air
+    - Mean: 1169.676 | Median: 1202.899 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.state.floatbank10_d_level
+    - Mean: -482.152 | Median: -499.757 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 rougher.state.floatbank10_e_air
+    - Mean: 1018.386 | Median: 1001.671 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 rougher.state.floatbank10_e_level
+    - Mean: -476.552 | Median: -499.801 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 rougher.state.floatbank10_f_air
+    - Mean: 962.005 | Median: 999.088 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 rougher.state.floatbank10_f_level
+    - Mean: -477.795 | Median: -499.754 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank2_a_air
+    - Mean: 25.48 | Median: 26.863 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank2_a_level
+    - Mean: -513.715 | Median: -500.017 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank2_b_air
+    - Mean: 21.083 | Median: 22.909 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank2_b_level
+    - Mean: -512.326 | Median: -500.031 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank3_a_air
+    - Mean: 24.346 | Median: 25.0 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank3_a_level
+    - Mean: -519.418 | Median: -500.053 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank3_b_air
+    - Mean: 20.068 | Median: 20.028 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: moderately dispersed
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: robustScaler
+
+📊 secondary_cleaner.state.floatbank3_b_level
+    - Mean: -515.028 | Median: -500.024 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank4_a_air
+    - Mean: 15.636 | Median: 17.002 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank4_a_level
+    - Mean: -516.266 | Median: -500.16 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank4_b_air
+    - Mean: 13.146 | Median: 14.952 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank4_b_level
+    - Mean: -476.339 | Median: -499.644 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank5_a_air
+    - Mean: 12.309 | Median: 12.063 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank5_a_level
+    - Mean: -512.208 | Median: -500.048 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank5_b_air
+    - Mean: 9.471 | Median: 9.981 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank5_b_level
+    - Mean: -505.018 | Median: -500.001 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank6_a_air
+    - Mean: 16.679 | Median: 16.007 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 secondary_cleaner.state.floatbank6_a_level
+    - Mean: -512.352 | Median: -500.041 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+========================================================================================
+OUTLIERS
+----------------------------------------------------------------------------------------
+🚨 primary_cleaner.input.sulfate
+    - IQR (distance between 25 and 75): 63.912
+    - Total of Outliers: 141
+    - Percent: 2.408
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+
+🚨 primary_cleaner.input.depressant
+    - IQR (distance between 25 and 75): 3.605
+    - Total of Outliers: 247
+    - Percent: 4.218
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+       - Transform: log1p
+
+🚨 primary_cleaner.input.feed_size
+    - IQR (distance between 25 and 75): 0.763
+    - Total of Outliers: 62
+    - Percent: 1.059
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: trim
+       - Impute: median
+       - Transform: sqrt
+
+🚨 primary_cleaner.input.xanthate
+    - IQR (distance between 25 and 75): 0.875
+    - Total of Outliers: 86
+    - Percent: 1.469
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: trim
+       - Impute: median
+       - Transform: log1p
+
+🚨 primary_cleaner.state.floatbank8_a_air
+    - IQR (distance between 25 and 75): 104.484
+    - Total of Outliers: 740
+    - Percent: 12.637
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 primary_cleaner.state.floatbank8_a_level
+    - IQR (distance between 25 and 75): 0.88
+    - Total of Outliers: 1137
+    - Percent: 19.416
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 primary_cleaner.state.floatbank8_b_air
+    - IQR (distance between 25 and 75): 104.633
+    - Total of Outliers: 730
+    - Percent: 12.466
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 primary_cleaner.state.floatbank8_b_level
+    - IQR (distance between 25 and 75): 1.613
+    - Total of Outliers: 1805
+    - Percent: 30.823
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 primary_cleaner.state.floatbank8_c_air
+    - IQR (distance between 25 and 75): 163.68
+    - Total of Outliers: 235
+    - Percent: 4.013
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+
+🚨 primary_cleaner.state.floatbank8_c_level
+    - IQR (distance between 25 and 75): 2.289
+    - Total of Outliers: 1373
+    - Percent: 23.446
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 primary_cleaner.state.floatbank8_d_air
+    - IQR (distance between 25 and 75): 102.371
+    - Total of Outliers: 751
+    - Percent: 12.824
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 primary_cleaner.state.floatbank8_d_level
+    - IQR (distance between 25 and 75): 0.941
+    - Total of Outliers: 1134
+    - Percent: 19.365
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 rougher.input.feed_ag
+    - IQR (distance between 25 and 75): 2.969
+    - Total of Outliers: 395
+    - Percent: 6.745
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Filter: capping
+       - Flag: True
+
+🚨 rougher.input.feed_pb
+    - IQR (distance between 25 and 75): 1.161
+    - Total of Outliers: 508
+    - Percent: 8.675
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Filter: capping
+       - Flag: True
+
+🚨 rougher.input.feed_rate
+    - IQR (distance between 25 and 75): 168.308
+    - Total of Outliers: 369
+    - Percent: 6.301
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Filter: capping
+       - Flag: True
+
+🚨 rougher.input.feed_size
+    - IQR (distance between 25 and 75): 17.749
+    - Total of Outliers: 262
+    - Percent: 4.474
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+       - Transform: log1p
+
+🚨 rougher.input.feed_sol
+    - IQR (distance between 25 and 75): 8.007
+    - Total of Outliers: 457
+    - Percent: 7.804
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Filter: capping
+       - Flag: True
+
+🚨 rougher.input.feed_au
+    - IQR (distance between 25 and 75): 2.613
+    - Total of Outliers: 410
+    - Percent: 7.001
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Filter: capping
+       - Flag: True
+
+🚨 rougher.input.floatbank10_sulfate
+    - IQR (distance between 25 and 75): 5.67
+    - Total of Outliers: 194
+    - Percent: 3.313
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+
+🚨 rougher.input.floatbank10_xanthate
+    - IQR (distance between 25 and 75): 1.118
+    - Total of Outliers: 403
+    - Percent: 6.882
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Filter: capping
+       - Flag: True
+
+🚨 rougher.input.floatbank11_sulfate
+    - IQR (distance between 25 and 75): 5.376
+    - Total of Outliers: 365
+    - Percent: 6.233
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Filter: capping
+       - Flag: True
+
+🚨 rougher.input.floatbank11_xanthate
+    - IQR (distance between 25 and 75): 1.014
+    - Total of Outliers: 159
+    - Percent: 2.715
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+
+🚨 rougher.state.floatbank10_a_air
+    - IQR (distance between 25 and 75): 6.119
+    - Total of Outliers: 1707
+    - Percent: 29.15
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+       - Transform: sqrt
+
+🚨 rougher.state.floatbank10_b_air
+    - IQR (distance between 25 and 75): 203.748
+    - Total of Outliers: 209
+    - Percent: 3.569
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+
+🚨 rougher.state.floatbank10_b_level
+    - IQR (distance between 25 and 75): 2.708
+    - Total of Outliers: 1669
+    - Percent: 28.501
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+       - Transform: sqrt
+
+🚨 rougher.state.floatbank10_c_air
+    - IQR (distance between 25 and 75): 206.443
+    - Total of Outliers: 211
+    - Percent: 3.603
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+
+🚨 rougher.state.floatbank10_c_level
+    - IQR (distance between 25 and 75): 2.963
+    - Total of Outliers: 1642
+    - Percent: 28.04
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+       - Transform: sqrt
+
+🚨 rougher.state.floatbank10_d_air
+    - IQR (distance between 25 and 75): 353.223
+    - Total of Outliers: 204
+    - Percent: 3.484
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+
+🚨 rougher.state.floatbank10_d_level
+    - IQR (distance between 25 and 75): 4.99
+    - Total of Outliers: 1750
+    - Percent: 29.884
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+       - Transform: sqrt
+
+🚨 rougher.state.floatbank10_e_air
+    - IQR (distance between 25 and 75): 102.016
+    - Total of Outliers: 944
+    - Percent: 16.12
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+       - Transform: sqrt
+
+🚨 rougher.state.floatbank10_e_level
+    - IQR (distance between 25 and 75): 2.437
+    - Total of Outliers: 1673
+    - Percent: 28.569
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+       - Transform: sqrt
+
+🚨 rougher.state.floatbank10_f_air
+    - IQR (distance between 25 and 75): 149.528
+    - Total of Outliers: 431
+    - Percent: 7.36
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Filter: capping
+       - Flag: True
+
+🚨 rougher.state.floatbank10_f_level
+    - IQR (distance between 25 and 75): 5.162
+    - Total of Outliers: 1717
+    - Percent: 29.32
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+       - Transform: sqrt
+
+🚨 secondary_cleaner.state.floatbank2_a_air
+    - IQR (distance between 25 and 75): 3.144
+    - Total of Outliers: 307
+    - Percent: 5.242
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Filter: capping
+       - Flag: True
+
+🚨 secondary_cleaner.state.floatbank2_a_level
+    - IQR (distance between 25 and 75): 0.446
+    - Total of Outliers: 834
+    - Percent: 14.242
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 secondary_cleaner.state.floatbank2_b_air
+    - IQR (distance between 25 and 75): 4.987
+    - Total of Outliers: 674
+    - Percent: 11.51
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 secondary_cleaner.state.floatbank2_b_level
+    - IQR (distance between 25 and 75): 0.416
+    - Total of Outliers: 799
+    - Percent: 13.644
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 secondary_cleaner.state.floatbank3_a_air
+    - IQR (distance between 25 and 75): 7.961
+    - Total of Outliers: 351
+    - Percent: 5.994
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Filter: capping
+       - Flag: True
+
+🚨 secondary_cleaner.state.floatbank3_a_level
+    - IQR (distance between 25 and 75): 0.574
+    - Total of Outliers: 956
+    - Percent: 16.325
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 secondary_cleaner.state.floatbank3_b_level
+    - IQR (distance between 25 and 75): 0.277
+    - Total of Outliers: 988
+    - Percent: 16.872
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 secondary_cleaner.state.floatbank4_a_air
+    - IQR (distance between 25 and 75): 5.973
+    - Total of Outliers: 246
+    - Percent: 4.201
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+
+🚨 secondary_cleaner.state.floatbank4_a_level
+    - IQR (distance between 25 and 75): 1.612
+    - Total of Outliers: 921
+    - Percent: 15.727
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 secondary_cleaner.state.floatbank4_b_air
+    - IQR (distance between 25 and 75): 4.059
+    - Total of Outliers: 529
+    - Percent: 9.033
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Filter: capping
+       - Flag: True
+
+🚨 secondary_cleaner.state.floatbank4_b_level
+    - IQR (distance between 25 and 75): 98.889
+    - Total of Outliers: 512
+    - Percent: 8.743
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Filter: capping
+       - Flag: True
+       - Transform: sqrt
+
+🚨 secondary_cleaner.state.floatbank5_a_air
+    - IQR (distance between 25 and 75): 4.894
+    - Total of Outliers: 205
+    - Percent: 3.501
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+       - Transform: sqrt
+
+🚨 secondary_cleaner.state.floatbank5_a_level
+    - IQR (distance between 25 and 75): 1.582
+    - Total of Outliers: 990
+    - Percent: 16.906
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 secondary_cleaner.state.floatbank5_b_air
+    - IQR (distance between 25 and 75): 4.001
+    - Total of Outliers: 202
+    - Percent: 3.449
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+
+🚨 secondary_cleaner.state.floatbank5_b_level
+    - IQR (distance between 25 and 75): 0.5
+    - Total of Outliers: 1115
+    - Percent: 19.04
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+🚨 secondary_cleaner.state.floatbank6_a_air
+    - IQR (distance between 25 and 75): 7.997
+    - Total of Outliers: 207
+    - Percent: 3.535
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+       - Transform: sqrt
+
+🚨 secondary_cleaner.state.floatbank6_a_level
+    - IQR (distance between 25 and 75): 1.438
+    - Total of Outliers: 952
+    - Percent: 16.257
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+========================================================================================
+CORRELATION
+----------------------------------------------------------------------------------------
+🔗 High correlation detected (threshold= 0.75)
+   - primary_cleaner.state.floatbank8_a_air <--> primary_cleaner.state.floatbank8_a_level: 0.874
+   - primary_cleaner.state.floatbank8_a_air <--> primary_cleaner.state.floatbank8_b_air: 0.996
+   - primary_cleaner.state.floatbank8_a_air <--> primary_cleaner.state.floatbank8_b_level: 0.787
+   - primary_cleaner.state.floatbank8_a_air <--> primary_cleaner.state.floatbank8_c_air: 0.974
+   - primary_cleaner.state.floatbank8_a_air <--> primary_cleaner.state.floatbank8_c_level: 0.868
+   - primary_cleaner.state.floatbank8_a_air <--> primary_cleaner.state.floatbank8_d_air: 0.995
+   - primary_cleaner.state.floatbank8_a_air <--> primary_cleaner.state.floatbank8_d_level: 0.796
+   - primary_cleaner.state.floatbank8_a_air <--> rougher.state.floatbank10_a_air: 0.805
+   - primary_cleaner.state.floatbank8_a_air <--> rougher.state.floatbank10_b_air: 0.793
+   - primary_cleaner.state.floatbank8_a_air <--> rougher.state.floatbank10_c_air: 0.769
+   - primary_cleaner.state.floatbank8_a_air <--> rougher.state.floatbank10_e_air: 0.812
+   - primary_cleaner.state.floatbank8_a_air <--> rougher.state.floatbank10_f_air: 0.798
+   - primary_cleaner.state.floatbank8_a_air <--> secondary_cleaner.state.floatbank2_a_air: 0.761
+   - primary_cleaner.state.floatbank8_a_air <--> secondary_cleaner.state.floatbank2_a_level: 0.817
+   - primary_cleaner.state.floatbank8_a_air <--> secondary_cleaner.state.floatbank4_a_level: 0.798
+   - primary_cleaner.state.floatbank8_a_air <--> secondary_cleaner.state.floatbank5_a_level: 0.889
+   - primary_cleaner.state.floatbank8_a_air <--> secondary_cleaner.state.floatbank6_a_level: 0.798
+   - primary_cleaner.state.floatbank8_a_level <--> primary_cleaner.state.floatbank8_b_air: 0.87
+   - primary_cleaner.state.floatbank8_a_level <--> primary_cleaner.state.floatbank8_b_level: 0.877
+   - primary_cleaner.state.floatbank8_a_level <--> primary_cleaner.state.floatbank8_c_air: 0.847
+   - primary_cleaner.state.floatbank8_a_level <--> primary_cleaner.state.floatbank8_c_level: 0.975
+   - primary_cleaner.state.floatbank8_a_level <--> primary_cleaner.state.floatbank8_d_air: 0.867
+   - primary_cleaner.state.floatbank8_a_level <--> primary_cleaner.state.floatbank8_d_level: 0.912
+   - primary_cleaner.state.floatbank8_a_level <--> rougher.state.floatbank10_a_air: 0.821
+   - primary_cleaner.state.floatbank8_a_level <--> secondary_cleaner.state.floatbank2_a_level: 0.831
+   - primary_cleaner.state.floatbank8_a_level <--> secondary_cleaner.state.floatbank2_b_level: 0.759
+   - primary_cleaner.state.floatbank8_a_level <--> secondary_cleaner.state.floatbank4_a_level: 0.794
+   - primary_cleaner.state.floatbank8_a_level <--> secondary_cleaner.state.floatbank5_a_level: 0.853
+   - primary_cleaner.state.floatbank8_a_level <--> secondary_cleaner.state.floatbank6_a_level: 0.764
+   - primary_cleaner.state.floatbank8_b_air <--> primary_cleaner.state.floatbank8_b_level: 0.79
+   - primary_cleaner.state.floatbank8_b_air <--> primary_cleaner.state.floatbank8_c_air: 0.981
+   - primary_cleaner.state.floatbank8_b_air <--> primary_cleaner.state.floatbank8_c_level: 0.864
+   - primary_cleaner.state.floatbank8_b_air <--> primary_cleaner.state.floatbank8_d_air: 0.996
+   - primary_cleaner.state.floatbank8_b_air <--> primary_cleaner.state.floatbank8_d_level: 0.792
+   - primary_cleaner.state.floatbank8_b_air <--> rougher.state.floatbank10_a_air: 0.794
+   - primary_cleaner.state.floatbank8_b_air <--> rougher.state.floatbank10_b_air: 0.795
+   - primary_cleaner.state.floatbank8_b_air <--> rougher.state.floatbank10_c_air: 0.775
+   - primary_cleaner.state.floatbank8_b_air <--> rougher.state.floatbank10_e_air: 0.819
+   - primary_cleaner.state.floatbank8_b_air <--> rougher.state.floatbank10_f_air: 0.806
+   - primary_cleaner.state.floatbank8_b_air <--> secondary_cleaner.state.floatbank2_a_air: 0.774
+   - primary_cleaner.state.floatbank8_b_air <--> secondary_cleaner.state.floatbank2_a_level: 0.815
+   - primary_cleaner.state.floatbank8_b_air <--> secondary_cleaner.state.floatbank4_a_air: 0.751
+   - primary_cleaner.state.floatbank8_b_air <--> secondary_cleaner.state.floatbank4_a_level: 0.803
+   - primary_cleaner.state.floatbank8_b_air <--> secondary_cleaner.state.floatbank5_a_level: 0.885
+   - primary_cleaner.state.floatbank8_b_air <--> secondary_cleaner.state.floatbank6_a_level: 0.799
+   - primary_cleaner.state.floatbank8_b_level <--> primary_cleaner.state.floatbank8_c_air: 0.775
+   - primary_cleaner.state.floatbank8_b_level <--> primary_cleaner.state.floatbank8_c_level: 0.87
+   - primary_cleaner.state.floatbank8_b_level <--> primary_cleaner.state.floatbank8_d_air: 0.786
+   - primary_cleaner.state.floatbank8_b_level <--> primary_cleaner.state.floatbank8_d_level: 0.816
+   - primary_cleaner.state.floatbank8_b_level <--> secondary_cleaner.state.floatbank2_a_level: 0.755
+   - primary_cleaner.state.floatbank8_b_level <--> secondary_cleaner.state.floatbank4_a_level: 0.781
+   - primary_cleaner.state.floatbank8_b_level <--> secondary_cleaner.state.floatbank5_a_level: 0.779
+   - primary_cleaner.state.floatbank8_c_air <--> primary_cleaner.state.floatbank8_c_level: 0.842
+   - primary_cleaner.state.floatbank8_c_air <--> primary_cleaner.state.floatbank8_d_air: 0.978
+   - primary_cleaner.state.floatbank8_c_air <--> primary_cleaner.state.floatbank8_d_level: 0.775
+   - primary_cleaner.state.floatbank8_c_air <--> rougher.state.floatbank10_b_air: 0.813
+   - primary_cleaner.state.floatbank8_c_air <--> rougher.state.floatbank10_c_air: 0.801
+   - primary_cleaner.state.floatbank8_c_air <--> rougher.state.floatbank10_d_air: 0.773
+   - primary_cleaner.state.floatbank8_c_air <--> rougher.state.floatbank10_e_air: 0.835
+   - primary_cleaner.state.floatbank8_c_air <--> rougher.state.floatbank10_f_air: 0.813
+   - primary_cleaner.state.floatbank8_c_air <--> secondary_cleaner.state.floatbank2_a_air: 0.756
+   - primary_cleaner.state.floatbank8_c_air <--> secondary_cleaner.state.floatbank2_a_level: 0.821
+   - primary_cleaner.state.floatbank8_c_air <--> secondary_cleaner.state.floatbank4_a_level: 0.81
+   - primary_cleaner.state.floatbank8_c_air <--> secondary_cleaner.state.floatbank5_a_level: 0.881
+   - primary_cleaner.state.floatbank8_c_air <--> secondary_cleaner.state.floatbank6_a_level: 0.794
+   - primary_cleaner.state.floatbank8_c_level <--> primary_cleaner.state.floatbank8_d_air: 0.862
+   - primary_cleaner.state.floatbank8_c_level <--> primary_cleaner.state.floatbank8_d_level: 0.911
+   - primary_cleaner.state.floatbank8_c_level <--> rougher.state.floatbank10_a_air: 0.81
+   - primary_cleaner.state.floatbank8_c_level <--> secondary_cleaner.state.floatbank2_a_level: 0.818
+   - primary_cleaner.state.floatbank8_c_level <--> secondary_cleaner.state.floatbank4_a_level: 0.786
+   - primary_cleaner.state.floatbank8_c_level <--> secondary_cleaner.state.floatbank5_a_level: 0.839
+   - primary_cleaner.state.floatbank8_d_air <--> primary_cleaner.state.floatbank8_d_level: 0.789
+   - primary_cleaner.state.floatbank8_d_air <--> rougher.state.floatbank10_a_air: 0.793
+   - primary_cleaner.state.floatbank8_d_air <--> rougher.state.floatbank10_b_air: 0.792
+   - primary_cleaner.state.floatbank8_d_air <--> rougher.state.floatbank10_c_air: 0.771
+   - primary_cleaner.state.floatbank8_d_air <--> rougher.state.floatbank10_e_air: 0.817
+   - primary_cleaner.state.floatbank8_d_air <--> rougher.state.floatbank10_f_air: 0.805
+   - primary_cleaner.state.floatbank8_d_air <--> secondary_cleaner.state.floatbank2_a_air: 0.767
+   - primary_cleaner.state.floatbank8_d_air <--> secondary_cleaner.state.floatbank2_a_level: 0.812
+   - primary_cleaner.state.floatbank8_d_air <--> secondary_cleaner.state.floatbank4_a_air: 0.75
+   - primary_cleaner.state.floatbank8_d_air <--> secondary_cleaner.state.floatbank4_a_level: 0.799
+   - primary_cleaner.state.floatbank8_d_air <--> secondary_cleaner.state.floatbank5_a_level: 0.883
+   - primary_cleaner.state.floatbank8_d_air <--> secondary_cleaner.state.floatbank6_a_level: 0.796
+   - primary_cleaner.state.floatbank8_d_level <--> rougher.state.floatbank10_a_air: 0.777
+   - primary_cleaner.state.floatbank8_d_level <--> secondary_cleaner.state.floatbank2_a_level: 0.762
+   - primary_cleaner.state.floatbank8_d_level <--> secondary_cleaner.state.floatbank5_a_level: 0.81
+   - rougher.input.feed_ag <--> rougher.input.feed_pb: 0.766
+   - rougher.input.feed_ag <--> rougher.input.feed_au: 0.95
+   - rougher.input.feed_pb <--> rougher.input.feed_au: 0.865
+   - rougher.input.feed_rate <--> rougher.input.feed_sol: 0.84
+   - rougher.input.feed_rate <--> rougher.input.floatbank11_sulfate: 0.791
+   - rougher.input.floatbank10_sulfate <--> rougher.input.floatbank11_sulfate: 0.757
+   - rougher.state.floatbank10_a_air <--> secondary_cleaner.state.floatbank5_a_level: 0.796
+   - rougher.state.floatbank10_b_air <--> rougher.state.floatbank10_c_air: 0.98
+   - rougher.state.floatbank10_b_air <--> rougher.state.floatbank10_d_air: 0.97
+   - rougher.state.floatbank10_b_air <--> rougher.state.floatbank10_e_air: 0.954
+   - rougher.state.floatbank10_b_air <--> rougher.state.floatbank10_f_air: 0.93
+   - rougher.state.floatbank10_b_air <--> secondary_cleaner.state.floatbank2_a_level: 0.763
+   - rougher.state.floatbank10_b_air <--> secondary_cleaner.state.floatbank5_a_level: 0.8
+   - rougher.state.floatbank10_b_level <--> rougher.state.floatbank10_c_level: 0.973
+   - rougher.state.floatbank10_b_level <--> rougher.state.floatbank10_d_level: 0.959
+   - rougher.state.floatbank10_b_level <--> rougher.state.floatbank10_e_level: 0.909
+   - rougher.state.floatbank10_b_level <--> rougher.state.floatbank10_f_level: 0.923
+   - rougher.state.floatbank10_c_air <--> rougher.state.floatbank10_d_air: 0.974
+   - rougher.state.floatbank10_c_air <--> rougher.state.floatbank10_e_air: 0.955
+   - rougher.state.floatbank10_c_air <--> rougher.state.floatbank10_f_air: 0.914
+   - rougher.state.floatbank10_c_air <--> secondary_cleaner.state.floatbank5_a_level: 0.77
+   - rougher.state.floatbank10_c_air <--> secondary_cleaner.state.floatbank6_a_air: 0.767
+   - rougher.state.floatbank10_c_level <--> rougher.state.floatbank10_d_level: 0.963
+   - rougher.state.floatbank10_c_level <--> rougher.state.floatbank10_e_level: 0.912
+   - rougher.state.floatbank10_c_level <--> rougher.state.floatbank10_f_level: 0.915
+   - rougher.state.floatbank10_d_air <--> rougher.state.floatbank10_e_air: 0.939
+   - rougher.state.floatbank10_d_air <--> rougher.state.floatbank10_f_air: 0.909
+   - rougher.state.floatbank10_d_air <--> secondary_cleaner.state.floatbank6_a_air: 0.765
+   - rougher.state.floatbank10_d_level <--> rougher.state.floatbank10_e_level: 0.925
+   - rougher.state.floatbank10_d_level <--> rougher.state.floatbank10_f_level: 0.912
+   - rougher.state.floatbank10_e_air <--> rougher.state.floatbank10_f_air: 0.977
+   - rougher.state.floatbank10_e_air <--> secondary_cleaner.state.floatbank5_a_level: 0.787
+   - rougher.state.floatbank10_e_level <--> rougher.state.floatbank10_f_level: 0.93
+   - rougher.state.floatbank10_f_air <--> secondary_cleaner.state.floatbank5_a_level: 0.784
+   - secondary_cleaner.state.floatbank2_a_air <--> secondary_cleaner.state.floatbank2_a_level: 0.794
+   - secondary_cleaner.state.floatbank2_a_air <--> secondary_cleaner.state.floatbank2_b_air: 0.913
+   - secondary_cleaner.state.floatbank2_a_air <--> secondary_cleaner.state.floatbank2_b_level: 0.767
+   - secondary_cleaner.state.floatbank2_a_air <--> secondary_cleaner.state.floatbank5_a_level: 0.754
+   - secondary_cleaner.state.floatbank2_a_level <--> secondary_cleaner.state.floatbank2_b_level: 0.944
+   - secondary_cleaner.state.floatbank2_a_level <--> secondary_cleaner.state.floatbank4_a_level: 0.76
+   - secondary_cleaner.state.floatbank2_a_level <--> secondary_cleaner.state.floatbank5_a_level: 0.867
+   - secondary_cleaner.state.floatbank2_a_level <--> secondary_cleaner.state.floatbank6_a_level: 0.762
+   - secondary_cleaner.state.floatbank2_b_air <--> secondary_cleaner.state.floatbank4_a_air: 0.795
+   - secondary_cleaner.state.floatbank2_b_air <--> secondary_cleaner.state.floatbank4_b_air: 0.792
+   - secondary_cleaner.state.floatbank2_b_air <--> secondary_cleaner.state.floatbank5_b_air: 0.764
+   - secondary_cleaner.state.floatbank2_b_level <--> secondary_cleaner.state.floatbank5_a_level: 0.807
+   - secondary_cleaner.state.floatbank3_a_air <--> secondary_cleaner.state.floatbank3_a_level: 0.754
+   - secondary_cleaner.state.floatbank3_a_air <--> secondary_cleaner.state.floatbank3_b_air: 0.937
+   - secondary_cleaner.state.floatbank3_a_level <--> secondary_cleaner.state.floatbank3_b_level: 0.903
+   - secondary_cleaner.state.floatbank4_a_air <--> secondary_cleaner.state.floatbank4_b_air: 0.954
+   - secondary_cleaner.state.floatbank4_a_level <--> secondary_cleaner.state.floatbank5_a_level: 0.799
+   - secondary_cleaner.state.floatbank4_b_air <--> secondary_cleaner.state.floatbank5_b_air: 0.771
+   - secondary_cleaner.state.floatbank5_a_air <--> secondary_cleaner.state.floatbank5_b_air: 0.877
+   - secondary_cleaner.state.floatbank5_a_level <--> secondary_cleaner.state.floatbank5_b_level: 0.866
+   - secondary_cleaner.state.floatbank5_a_level <--> secondary_cleaner.state.floatbank6_a_level: 0.857
+   - secondary_cleaner.state.floatbank5_b_level <--> secondary_cleaner.state.floatbank6_a_level: 0.772
+
+📌 Note: values with high correlation were found, it is recommended to either remove, join or filter values from the columns for model training
+
+========================================================================================
+CATEGORICAL COLUMNS ANALYSIS
+----------------------------------------------------------------------------------------
+🧮 date
+Total unique values: 5856
+
+    Unique Top Values
+    - 2017-11-15 03:59:59 (0.017%) -> 1 total values
+    - 2016-12-18 16:59:59 (0.017%) -> 1 total values
+
+    Rare Unique Values
+    - 2017-11-15 03:59:59 (0.017%) -> 1 total values
+    - 2016-12-18 16:59:59 (0.017%) -> 1 total values
+    - 2017-11-25 15:59:59 (0.017%) -> 1 total values
+    - 2016-10-26 08:59:59 (0.017%) -> 1 total values
+    - 2017-12-19 11:59:59 (0.017%) -> 1 total values
+    - 2017-12-23 22:59:59 (0.017%) -> 1 total values
+    - 2017-12-30 23:59:59 (0.017%) -> 1 total values
+    - 2016-11-20 08:59:59 (0.017%) -> 1 total values
+    - 2016-12-07 00:59:59 (0.017%) -> 1 total values
+    - 2017-09-21 18:59:59 (0.017%) -> 1 total values
+
+    - For many categories: targetEncoder
+    - For hight cardinality: targetEncoder
+
+========================================================================================
+SUMMARY & RECOMMENDATIONS
+----------------------------------------------------------------------------------------
+✅ Missing values detected and categorized by action
+✅ Outliers quantified and suggested handling per column
+✅ High correlations identified for model consideration
+✅ Categorical encoding suggestions provided
+
+⚠️  Priority suggestions actions before modeling:
+    - Apply or analyse the suggestions in primary_cleaner.input.sulfate, primary_cleaner.input.depressant, primary_cleaner.input.feed_size, primary_cleaner.input.xanthate, primary_cleaner.state.floatbank8_a_air, primary_cleaner.state.floatbank8_a_level, primary_cleaner.state.floatbank8_b_air, primary_cleaner.state.floatbank8_b_level, primary_cleaner.state.floatbank8_c_air, primary_cleaner.state.floatbank8_c_level, primary_cleaner.state.floatbank8_d_air, primary_cleaner.state.floatbank8_d_level, rougher.input.feed_ag, rougher.input.feed_pb, rougher.input.feed_rate, rougher.input.feed_size, rougher.input.feed_sol, rougher.input.feed_au, rougher.input.floatbank10_sulfate, rougher.input.floatbank10_xanthate, rougher.input.floatbank11_sulfate, rougher.input.floatbank11_xanthate, rougher.state.floatbank10_a_air, rougher.state.floatbank10_b_air, rougher.state.floatbank10_b_level, rougher.state.floatbank10_c_air, rougher.state.floatbank10_c_level, rougher.state.floatbank10_d_air, rougher.state.floatbank10_d_level, rougher.state.floatbank10_e_air, rougher.state.floatbank10_e_level, rougher.state.floatbank10_f_air, rougher.state.floatbank10_f_level, secondary_cleaner.state.floatbank2_a_air, secondary_cleaner.state.floatbank2_a_level, secondary_cleaner.state.floatbank2_b_air, secondary_cleaner.state.floatbank2_b_level, secondary_cleaner.state.floatbank3_a_air, secondary_cleaner.state.floatbank3_a_level, secondary_cleaner.state.floatbank3_b_level, secondary_cleaner.state.floatbank4_a_air, secondary_cleaner.state.floatbank4_a_level, secondary_cleaner.state.floatbank4_b_air, secondary_cleaner.state.floatbank4_b_level, secondary_cleaner.state.floatbank5_a_air, secondary_cleaner.state.floatbank5_a_level, secondary_cleaner.state.floatbank5_b_air, secondary_cleaner.state.floatbank5_b_level, secondary_cleaner.state.floatbank6_a_air, secondary_cleaner.state.floatbank6_a_level
+    - Join, filter, remove or group primary_cleaner.state.floatbank8_a_air, primary_cleaner.state.floatbank8_a_level, primary_cleaner.state.floatbank8_a_air, primary_cleaner.state.floatbank8_b_air, primary_cleaner.state.floatbank8_a_air, primary_cleaner.state.floatbank8_b_level, primary_cleaner.state.floatbank8_a_air, primary_cleaner.state.floatbank8_c_air, primary_cleaner.state.floatbank8_a_air, primary_cleaner.state.floatbank8_c_level, primary_cleaner.state.floatbank8_a_air, primary_cleaner.state.floatbank8_d_air, primary_cleaner.state.floatbank8_a_air, primary_cleaner.state.floatbank8_d_level, primary_cleaner.state.floatbank8_a_air, rougher.state.floatbank10_a_air, primary_cleaner.state.floatbank8_a_air, rougher.state.floatbank10_b_air, primary_cleaner.state.floatbank8_a_air, rougher.state.floatbank10_c_air, primary_cleaner.state.floatbank8_a_air, rougher.state.floatbank10_e_air, primary_cleaner.state.floatbank8_a_air, rougher.state.floatbank10_f_air, primary_cleaner.state.floatbank8_a_air, secondary_cleaner.state.floatbank2_a_air, primary_cleaner.state.floatbank8_a_air, secondary_cleaner.state.floatbank2_a_level, primary_cleaner.state.floatbank8_a_air, secondary_cleaner.state.floatbank4_a_level, primary_cleaner.state.floatbank8_a_air, secondary_cleaner.state.floatbank5_a_level, primary_cleaner.state.floatbank8_a_air, secondary_cleaner.state.floatbank6_a_level, primary_cleaner.state.floatbank8_a_level, primary_cleaner.state.floatbank8_b_air, primary_cleaner.state.floatbank8_a_level, primary_cleaner.state.floatbank8_b_level, primary_cleaner.state.floatbank8_a_level, primary_cleaner.state.floatbank8_c_air, primary_cleaner.state.floatbank8_a_level, primary_cleaner.state.floatbank8_c_level, primary_cleaner.state.floatbank8_a_level, primary_cleaner.state.floatbank8_d_air, primary_cleaner.state.floatbank8_a_level, primary_cleaner.state.floatbank8_d_level, primary_cleaner.state.floatbank8_a_level, rougher.state.floatbank10_a_air, primary_cleaner.state.floatbank8_a_level, secondary_cleaner.state.floatbank2_a_level, primary_cleaner.state.floatbank8_a_level, secondary_cleaner.state.floatbank2_b_level, primary_cleaner.state.floatbank8_a_level, secondary_cleaner.state.floatbank4_a_level, primary_cleaner.state.floatbank8_a_level, secondary_cleaner.state.floatbank5_a_level, primary_cleaner.state.floatbank8_a_level, secondary_cleaner.state.floatbank6_a_level, primary_cleaner.state.floatbank8_b_air, primary_cleaner.state.floatbank8_b_level, primary_cleaner.state.floatbank8_b_air, primary_cleaner.state.floatbank8_c_air, primary_cleaner.state.floatbank8_b_air, primary_cleaner.state.floatbank8_c_level, primary_cleaner.state.floatbank8_b_air, primary_cleaner.state.floatbank8_d_air, primary_cleaner.state.floatbank8_b_air, primary_cleaner.state.floatbank8_d_level, primary_cleaner.state.floatbank8_b_air, rougher.state.floatbank10_a_air, primary_cleaner.state.floatbank8_b_air, rougher.state.floatbank10_b_air, primary_cleaner.state.floatbank8_b_air, rougher.state.floatbank10_c_air, primary_cleaner.state.floatbank8_b_air, rougher.state.floatbank10_e_air, primary_cleaner.state.floatbank8_b_air, rougher.state.floatbank10_f_air, primary_cleaner.state.floatbank8_b_air, secondary_cleaner.state.floatbank2_a_air, primary_cleaner.state.floatbank8_b_air, secondary_cleaner.state.floatbank2_a_level, primary_cleaner.state.floatbank8_b_air, secondary_cleaner.state.floatbank4_a_air, primary_cleaner.state.floatbank8_b_air, secondary_cleaner.state.floatbank4_a_level, primary_cleaner.state.floatbank8_b_air, secondary_cleaner.state.floatbank5_a_level, primary_cleaner.state.floatbank8_b_air, secondary_cleaner.state.floatbank6_a_level, primary_cleaner.state.floatbank8_b_level, primary_cleaner.state.floatbank8_c_air, primary_cleaner.state.floatbank8_b_level, primary_cleaner.state.floatbank8_c_level, primary_cleaner.state.floatbank8_b_level, primary_cleaner.state.floatbank8_d_air, primary_cleaner.state.floatbank8_b_level, primary_cleaner.state.floatbank8_d_level, primary_cleaner.state.floatbank8_b_level, secondary_cleaner.state.floatbank2_a_level, primary_cleaner.state.floatbank8_b_level, secondary_cleaner.state.floatbank4_a_level, primary_cleaner.state.floatbank8_b_level, secondary_cleaner.state.floatbank5_a_level, primary_cleaner.state.floatbank8_c_air, primary_cleaner.state.floatbank8_c_level, primary_cleaner.state.floatbank8_c_air, primary_cleaner.state.floatbank8_d_air, primary_cleaner.state.floatbank8_c_air, primary_cleaner.state.floatbank8_d_level, primary_cleaner.state.floatbank8_c_air, rougher.state.floatbank10_b_air, primary_cleaner.state.floatbank8_c_air, rougher.state.floatbank10_c_air, primary_cleaner.state.floatbank8_c_air, rougher.state.floatbank10_d_air, primary_cleaner.state.floatbank8_c_air, rougher.state.floatbank10_e_air, primary_cleaner.state.floatbank8_c_air, rougher.state.floatbank10_f_air, primary_cleaner.state.floatbank8_c_air, secondary_cleaner.state.floatbank2_a_air, primary_cleaner.state.floatbank8_c_air, secondary_cleaner.state.floatbank2_a_level, primary_cleaner.state.floatbank8_c_air, secondary_cleaner.state.floatbank4_a_level, primary_cleaner.state.floatbank8_c_air, secondary_cleaner.state.floatbank5_a_level, primary_cleaner.state.floatbank8_c_air, secondary_cleaner.state.floatbank6_a_level, primary_cleaner.state.floatbank8_c_level, primary_cleaner.state.floatbank8_d_air, primary_cleaner.state.floatbank8_c_level, primary_cleaner.state.floatbank8_d_level, primary_cleaner.state.floatbank8_c_level, rougher.state.floatbank10_a_air, primary_cleaner.state.floatbank8_c_level, secondary_cleaner.state.floatbank2_a_level, primary_cleaner.state.floatbank8_c_level, secondary_cleaner.state.floatbank4_a_level, primary_cleaner.state.floatbank8_c_level, secondary_cleaner.state.floatbank5_a_level, primary_cleaner.state.floatbank8_d_air, primary_cleaner.state.floatbank8_d_level, primary_cleaner.state.floatbank8_d_air, rougher.state.floatbank10_a_air, primary_cleaner.state.floatbank8_d_air, rougher.state.floatbank10_b_air, primary_cleaner.state.floatbank8_d_air, rougher.state.floatbank10_c_air, primary_cleaner.state.floatbank8_d_air, rougher.state.floatbank10_e_air, primary_cleaner.state.floatbank8_d_air, rougher.state.floatbank10_f_air, primary_cleaner.state.floatbank8_d_air, secondary_cleaner.state.floatbank2_a_air, primary_cleaner.state.floatbank8_d_air, secondary_cleaner.state.floatbank2_a_level, primary_cleaner.state.floatbank8_d_air, secondary_cleaner.state.floatbank4_a_air, primary_cleaner.state.floatbank8_d_air, secondary_cleaner.state.floatbank4_a_level, primary_cleaner.state.floatbank8_d_air, secondary_cleaner.state.floatbank5_a_level, primary_cleaner.state.floatbank8_d_air, secondary_cleaner.state.floatbank6_a_level, primary_cleaner.state.floatbank8_d_level, rougher.state.floatbank10_a_air, primary_cleaner.state.floatbank8_d_level, secondary_cleaner.state.floatbank2_a_level, primary_cleaner.state.floatbank8_d_level, secondary_cleaner.state.floatbank5_a_level, rougher.input.feed_ag, rougher.input.feed_pb, rougher.input.feed_ag, rougher.input.feed_au, rougher.input.feed_pb, rougher.input.feed_au, rougher.input.feed_rate, rougher.input.feed_sol, rougher.input.feed_rate, rougher.input.floatbank11_sulfate, rougher.input.floatbank10_sulfate, rougher.input.floatbank11_sulfate, rougher.state.floatbank10_a_air, secondary_cleaner.state.floatbank5_a_level, rougher.state.floatbank10_b_air, rougher.state.floatbank10_c_air, rougher.state.floatbank10_b_air, rougher.state.floatbank10_d_air, rougher.state.floatbank10_b_air, rougher.state.floatbank10_e_air, rougher.state.floatbank10_b_air, rougher.state.floatbank10_f_air, rougher.state.floatbank10_b_air, secondary_cleaner.state.floatbank2_a_level, rougher.state.floatbank10_b_air, secondary_cleaner.state.floatbank5_a_level, rougher.state.floatbank10_b_level, rougher.state.floatbank10_c_level, rougher.state.floatbank10_b_level, rougher.state.floatbank10_d_level, rougher.state.floatbank10_b_level, rougher.state.floatbank10_e_level, rougher.state.floatbank10_b_level, rougher.state.floatbank10_f_level, rougher.state.floatbank10_c_air, rougher.state.floatbank10_d_air, rougher.state.floatbank10_c_air, rougher.state.floatbank10_e_air, rougher.state.floatbank10_c_air, rougher.state.floatbank10_f_air, rougher.state.floatbank10_c_air, secondary_cleaner.state.floatbank5_a_level, rougher.state.floatbank10_c_air, secondary_cleaner.state.floatbank6_a_air, rougher.state.floatbank10_c_level, rougher.state.floatbank10_d_level, rougher.state.floatbank10_c_level, rougher.state.floatbank10_e_level, rougher.state.floatbank10_c_level, rougher.state.floatbank10_f_level, rougher.state.floatbank10_d_air, rougher.state.floatbank10_e_air, rougher.state.floatbank10_d_air, rougher.state.floatbank10_f_air, rougher.state.floatbank10_d_air, secondary_cleaner.state.floatbank6_a_air, rougher.state.floatbank10_d_level, rougher.state.floatbank10_e_level, rougher.state.floatbank10_d_level, rougher.state.floatbank10_f_level, rougher.state.floatbank10_e_air, rougher.state.floatbank10_f_air, rougher.state.floatbank10_e_air, secondary_cleaner.state.floatbank5_a_level, rougher.state.floatbank10_e_level, rougher.state.floatbank10_f_level, rougher.state.floatbank10_f_air, secondary_cleaner.state.floatbank5_a_level, secondary_cleaner.state.floatbank2_a_air, secondary_cleaner.state.floatbank2_a_level, secondary_cleaner.state.floatbank2_a_air, secondary_cleaner.state.floatbank2_b_air, secondary_cleaner.state.floatbank2_a_air, secondary_cleaner.state.floatbank2_b_level, secondary_cleaner.state.floatbank2_a_air, secondary_cleaner.state.floatbank5_a_level, secondary_cleaner.state.floatbank2_a_level, secondary_cleaner.state.floatbank2_b_level, secondary_cleaner.state.floatbank2_a_level, secondary_cleaner.state.floatbank4_a_level, secondary_cleaner.state.floatbank2_a_level, secondary_cleaner.state.floatbank5_a_level, secondary_cleaner.state.floatbank2_a_level, secondary_cleaner.state.floatbank6_a_level, secondary_cleaner.state.floatbank2_b_air, secondary_cleaner.state.floatbank4_a_air, secondary_cleaner.state.floatbank2_b_air, secondary_cleaner.state.floatbank4_b_air, secondary_cleaner.state.floatbank2_b_air, secondary_cleaner.state.floatbank5_b_air, secondary_cleaner.state.floatbank2_b_level, secondary_cleaner.state.floatbank5_a_level, secondary_cleaner.state.floatbank3_a_air, secondary_cleaner.state.floatbank3_a_level, secondary_cleaner.state.floatbank3_a_air, secondary_cleaner.state.floatbank3_b_air, secondary_cleaner.state.floatbank3_a_level, secondary_cleaner.state.floatbank3_b_level, secondary_cleaner.state.floatbank4_a_air, secondary_cleaner.state.floatbank4_b_air, secondary_cleaner.state.floatbank4_a_level, secondary_cleaner.state.floatbank5_a_level, secondary_cleaner.state.floatbank4_b_air, secondary_cleaner.state.floatbank5_b_air, secondary_cleaner.state.floatbank5_a_air, secondary_cleaner.state.floatbank5_b_air, secondary_cleaner.state.floatbank5_a_level, secondary_cleaner.state.floatbank5_b_level, secondary_cleaner.state.floatbank5_a_level, secondary_cleaner.state.floatbank6_a_level, secondary_cleaner.state.floatbank5_b_level, secondary_cleaner.state.floatbank6_a_level
+    - Group, remove or filter rare categories
+
+========================================================================================
