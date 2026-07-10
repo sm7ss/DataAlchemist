@@ -1,0 +1,172 @@
+
+========================================================================================
+                                    DATA ALCHEMIST  
+                             🐥 ANALYSIS REPORT (TEXT MODE)
+========================================================================================
+📅 Date: 2026-07-10
+📁 Dataset: geo_data_2.csv
+📊 Shape: 100000 rows | 6 columns
+========================================================================================
+GENERAL INFO
+----------------------------------------------------------------------------------------
+📝 Available Columns: index, id, f0, f1, f2, product
+
+🏷️ Column Type: 
+    - index: UInt32
+    - id: String
+    - f0: Float64
+    - f1: Float64
+    - f2: Float64
+    - product: Float64
+
+📐 Numeric Statistics:     
+    index 
+        - Mean: 49999.5 
+        - Median: 50000.0
+        - Std: 28867.65779668774
+        - Min:  0.0
+        - Max: 99999.0
+        
+    f0 
+        - Mean: 0.0020226967336622183 
+        - Median: 0.009428824036315793
+        - Std: 1.7320449040867418
+        - Min:  -8.760003624213763
+        - Max: 7.2382624797940505
+        
+    f1 
+        - Mean: -0.002080534450544637 
+        - Median: -0.00946414524896199
+        - Std: 1.730417084907715
+        - Min:  -7.084019760867246
+        - Max: 7.844801270084258
+        
+    f2 
+        - Mean: 2.495127579781912 
+        - Median: 2.484243374311411
+        - Std: 3.4734446226937656
+        - Min:  -11.97033454147699
+        - Max: 16.73940205869952
+        
+    product 
+        - Mean: 95.00000000000001 
+        - Median: 94.92575499098612
+        - Std: 44.74992106895218
+        - Min:  0.0
+        - Max: 190.0298383433513
+     
+🧮 Unique Categoric Values: 
+    - id: 99996
+ 
+========================================================================================
+MISSING VALUES ANALYSIS
+----------------------------------------------------------------------------------------
+❓ Total Nulls in Dataset: 0
+    📌 Note: no nulls where detected. It means, the total of nulls are 0
+
+========================================================================================
+NUMERIC COLUMNS ANALYSIS
+========================================================================================
+DISTRIBUTION 
+----------------------------------------------------------------------------------------
+📊 f0
+    - Mean: 0.002 | Median: 0.009 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 f1
+    - Mean: -0.002 | Median: -0.009 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 f2
+    - Mean: 2.495 | Median: 2.484 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 product
+    - Mean: 95.0 | Median: 94.926 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: moderately dispersed
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: robustScaler
+
+========================================================================================
+OUTLIERS
+----------------------------------------------------------------------------------------
+🚨 f0
+    - IQR (distance between 25 and 75): 2.321
+    - Total of Outliers: 733
+    - Percent: 0.733
+    ML Suggestions: 
+       - Scaler: standarScaler
+       - Filter: trim
+       - Impute: median
+
+🚨 f1
+    - IQR (distance between 25 and 75): 2.338
+    - Total of Outliers: 684
+    - Percent: 0.684
+    ML Suggestions: 
+       - Scaler: standarScaler
+       - Filter: trim
+       - Impute: median
+       - Transform: sqrt
+
+🚨 f2
+    - IQR (distance between 25 and 75): 4.728
+    - Total of Outliers: 584
+    - Percent: 0.584
+    ML Suggestions: 
+       - Scaler: standarScaler
+       - Filter: trim
+       - Impute: median
+       - Transform: sqrt
+
+========================================================================================
+CORRELATION
+----------------------------------------------------------------------------------------
+No high correlation was detected
+========================================================================================
+CATEGORICAL COLUMNS ANALYSIS
+----------------------------------------------------------------------------------------
+🧮 id
+Total unique values: 99996
+
+    Unique Top Values
+    - xCHr8 (0.002%) -> 2 total values
+    - Vcm5J (0.002%) -> 2 total values
+
+    Rare Unique Values
+    - 8bywe (0.001%) -> 1 total values
+    - TGAk8 (0.001%) -> 1 total values
+    - H0baA (0.001%) -> 1 total values
+    - yU5RR (0.001%) -> 1 total values
+    - rKrMr (0.001%) -> 1 total values
+    - vPmCe (0.001%) -> 1 total values
+    - Bx40m (0.001%) -> 1 total values
+    - m7y13 (0.001%) -> 1 total values
+    - HMm6F (0.001%) -> 1 total values
+    - VOUdv (0.001%) -> 1 total values
+
+    - For many categories: targetEncoder
+    - For hight cardinality: targetEncoder
+
+========================================================================================
+SUMMARY & RECOMMENDATIONS
+----------------------------------------------------------------------------------------
+✅ Missing values were not detected
+✅ Outliers quantified and suggested handling per column
+✅ Categorical encoding suggestions provided
+
+⚠️  Priority suggestions actions before modeling:
+    - Apply or analyse the suggestions in f0, f1, f2
+    - Group, remove or filter rare categories
+
+========================================================================================
