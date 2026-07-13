@@ -1,0 +1,312 @@
+
+========================================================================================
+                                    DATA ALCHEMIST  
+                             🐥 ANALYSIS REPORT (TEXT MODE)
+========================================================================================
+📅 Date: 2026-07-13
+📁 Dataset: Churn.csv
+📊 Shape: 10000 rows | 14 columns
+========================================================================================
+GENERAL INFO
+----------------------------------------------------------------------------------------
+📝 Available Columns: RowNumber, CustomerId, Surname, CreditScore, Geography, Gender, Age, Tenure, Balance, NumOfProducts, HasCrCard, IsActiveMember, EstimatedSalary, Exited
+
+🏷️ Column Type: 
+    - RowNumber: Int64
+    - CustomerId: Int64
+    - Surname: String
+    - CreditScore: Int64
+    - Geography: String
+    - Gender: String
+    - Age: Int64
+    - Tenure: Float64
+    - Balance: Float64
+    - NumOfProducts: Int64
+    - HasCrCard: Int64
+    - IsActiveMember: Int64
+    - EstimatedSalary: Float64
+    - Exited: Int64
+
+📐 Numeric Statistics:     
+    RowNumber 
+        - Mean: 5000.5 
+        - Median: 5001.0
+        - Std: 2886.8956799071675
+        - Min:  1.0
+        - Max: 10000.0
+        
+    CustomerId 
+        - Mean: 15690940.5694 
+        - Median: 15690743.0
+        - Std: 71936.186122749
+        - Min:  15565701.0
+        - Max: 15815690.0
+        
+    CreditScore 
+        - Mean: 650.5288 
+        - Median: 652.0
+        - Std: 96.65329873613044
+        - Min:  350.0
+        - Max: 850.0
+        
+    Age 
+        - Mean: 38.9218 
+        - Median: 37.0
+        - Std: 10.487806451704607
+        - Min:  18.0
+        - Max: 92.0
+        
+    Tenure 
+        - Mean: 4.997690023099769 
+        - Median: 5.0
+        - Std: 2.894723234821247
+        - Min:  0.0
+        - Max: 10.0
+        
+    Balance 
+        - Mean: 76485.889288 
+        - Median: 97208.46
+        - Std: 62397.40520238598
+        - Min:  0.0
+        - Max: 250898.09
+        
+    NumOfProducts 
+        - Mean: 1.5302 
+        - Median: 1.0
+        - Std: 0.5816543579989905
+        - Min:  1.0
+        - Max: 4.0
+        
+    HasCrCard 
+        - Mean: 0.7055 
+        - Median: 1.0
+        - Std: 0.4558404644751334
+        - Min:  0.0
+        - Max: 1.0
+        
+    IsActiveMember 
+        - Mean: 0.5151 
+        - Median: 1.0
+        - Std: 0.49979692845891893
+        - Min:  0.0
+        - Max: 1.0
+        
+    EstimatedSalary 
+        - Mean: 100090.23988099999 
+        - Median: 100200.4
+        - Std: 57510.49281769816
+        - Min:  11.58
+        - Max: 199992.48
+        
+    Exited 
+        - Mean: 0.2037 
+        - Median: 0.0
+        - Std: 0.40276858399486093
+        - Min:  0.0
+        - Max: 1.0
+     
+🧮 Unique Categoric Values: 
+    - Surname: 2932
+    - Geography: 3
+    - Gender: 2
+ 
+========================================================================================
+MISSING VALUES ANALYSIS
+----------------------------------------------------------------------------------------
+❓ Total Nulls in Dataset: 909
+
+    - Tenure: 909 nulls column (9.09%), 0 nulls row -> action: analyse
+
+========================================================================================
+NUMERIC COLUMNS ANALYSIS
+========================================================================================
+DISTRIBUTION 
+----------------------------------------------------------------------------------------
+📊 RowNumber
+    - Mean: 5000.5 | Median: 5001.0 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: moderately dispersed
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: robustScaler
+
+📊 CustomerId
+    - Mean: 15690940.569 | Median: 15690743.0 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: moderately dispersed
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: robustScaler
+
+📊 CreditScore
+    - Mean: 650.529 | Median: 652.0 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 Age
+    - Mean: 38.922 | Median: 37.0 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 Tenure
+    - Mean: 4.998 | Median: 5.0 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: moderately dispersed
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: robustScaler
+
+📊 Balance
+    - Mean: 76485.889 | Median: 97208.46 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: moderately dispersed
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: robustScaler
+
+📊 NumOfProducts
+    - Mean: 1.53 | Median: 1.0 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: moderately dispersed
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: robustScaler
+
+📊 HasCrCard
+    - Mean: 0.706 | Median: 1.0 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very dispersed (75% of data covers more than 70% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: robustScaler
+
+📊 IsActiveMember
+    - Mean: 0.515 | Median: 1.0 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very dispersed (75% of data covers more than 70% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: robustScaler
+
+📊 EstimatedSalary
+    - Mean: 100090.24 | Median: 100200.4 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: moderately dispersed
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: robustScaler
+
+📊 Exited
+    - Mean: 0.204 | Median: 0.0 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: Many zeros. Consider a specific model for excess zeros
+        - Scaler: minMaxScaler
+
+========================================================================================
+OUTLIERS
+----------------------------------------------------------------------------------------
+🚨 CreditScore
+    - IQR (distance between 25 and 75): 134.0
+    - Total of Outliers: 15
+    - Percent: 0.15
+    ML Suggestions: 
+       - Scaler: standarScaler
+       - Filter: trim
+       - Impute: median
+
+🚨 Age
+    - IQR (distance between 25 and 75): 12.0
+    - Total of Outliers: 359
+    - Percent: 3.59
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+       - Transform: sqrt
+
+🚨 NumOfProducts
+    - IQR (distance between 25 and 75): 1.0
+    - Total of Outliers: 60
+    - Percent: 0.6
+    ML Suggestions: 
+       - Scaler: standarScaler
+       - Filter: trim
+       - Impute: median
+       - Transform: sqrt
+
+🚨 Exited
+    - IQR (distance between 25 and 75): 0.0
+    - Total of Outliers: 2037
+    - Percent: 20.37
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+========================================================================================
+CORRELATION
+----------------------------------------------------------------------------------------
+No high correlation was detected
+========================================================================================
+CATEGORICAL COLUMNS ANALYSIS
+----------------------------------------------------------------------------------------
+🧮 Surname
+Total unique values: 2932
+
+    Unique Top Values
+    - Smith (0.32%) -> 32 total values
+    - Scott (0.29%) -> 29 total values
+
+    Rare Unique Values
+    - Cowger (0.01%) -> 1 total values
+    - Morehead (0.01%) -> 1 total values
+    - Kolesnikova (0.01%) -> 1 total values
+    - Tillman (0.01%) -> 1 total values
+    - Okeke (0.06%) -> 6 total values
+    - Otoole (0.01%) -> 1 total values
+    - Padilla (0.01%) -> 1 total values
+    - Cobb (0.01%) -> 1 total values
+    - Sims (0.05%) -> 5 total values
+    - Winter-Irving (0.02%) -> 2 total values
+
+    - For many categories: targetEncoder
+    - For hight cardinality: targetEncoder
+
+🧮 Geography
+Total unique values: 3
+
+    Unique Top Values
+    - France (50.14%) -> 5014 total values
+    - Germany (25.09%) -> 2509 total values
+
+    Rare Unique Values
+    📌 Note: there are no rare values
+
+    - For few categories: ordinalEncoder
+    Many Rare Values
+    - Suggestion: group
+    - Encoder: oneHotEncoder
+
+🧮 Gender
+Total unique values: 2
+
+    Unique Top Values
+    - Male (54.57%) -> 5457 total values
+    - Female (45.43%) -> 4543 total values
+
+    Rare Unique Values
+    📌 Note: there are no rare values
+
+    - For few categories: ordinalEncoder
+    Many Rare Values
+    - Suggestion: group
+    - Encoder: oneHotEncoder
+
+========================================================================================
+SUMMARY & RECOMMENDATIONS
+----------------------------------------------------------------------------------------
+✅ Missing values detected and categorized by action
+✅ Outliers quantified and suggested handling per column
+✅ Categorical encoding suggestions provided
+
+⚠️  Priority suggestions actions before modeling:
+    - Apply or analyse the suggestions in CreditScore, Age, NumOfProducts, Exited
+    - Group, remove or filter rare categories
+
+========================================================================================

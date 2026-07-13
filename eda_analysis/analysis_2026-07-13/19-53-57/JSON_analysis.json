@@ -1,0 +1,915 @@
+{
+    "general_eda": {
+        "total_columns": 14,
+        "total_rows": 10000,
+        "available_columns": [
+            "RowNumber",
+            "CustomerId",
+            "Surname",
+            "CreditScore",
+            "Geography",
+            "Gender",
+            "Age",
+            "Tenure",
+            "Balance",
+            "NumOfProducts",
+            "HasCrCard",
+            "IsActiveMember",
+            "EstimatedSalary",
+            "Exited"
+        ],
+        "datatype": {
+            "RowNumber": "Int64",
+            "CustomerId": "Int64",
+            "Surname": "String",
+            "CreditScore": "Int64",
+            "Geography": "String",
+            "Gender": "String",
+            "Age": "Int64",
+            "Tenure": "Float64",
+            "Balance": "Float64",
+            "NumOfProducts": "Int64",
+            "HasCrCard": "Int64",
+            "IsActiveMember": "Int64",
+            "EstimatedSalary": "Float64",
+            "Exited": "Int64"
+        },
+        "statistics": {
+            "RowNumber": {
+                "mean": 5000.5,
+                "std": 2886.8956799071675,
+                "25": 2501.0,
+                "50": 5001.0,
+                "75": 7500.0,
+                "min": 1.0,
+                "max": 10000.0
+            },
+            "CustomerId": {
+                "mean": 15690940.5694,
+                "std": 71936.186122749,
+                "25": 15628530.0,
+                "50": 15690743.0,
+                "75": 15753229.0,
+                "min": 15565701.0,
+                "max": 15815690.0
+            },
+            "CreditScore": {
+                "mean": 650.5288,
+                "std": 96.65329873613044,
+                "25": 584.0,
+                "50": 652.0,
+                "75": 718.0,
+                "min": 350.0,
+                "max": 850.0
+            },
+            "Age": {
+                "mean": 38.9218,
+                "std": 10.487806451704607,
+                "25": 32.0,
+                "50": 37.0,
+                "75": 44.0,
+                "min": 18.0,
+                "max": 92.0
+            },
+            "Tenure": {
+                "mean": 4.997690023099769,
+                "std": 2.894723234821247,
+                "25": 2.0,
+                "50": 5.0,
+                "75": 7.0,
+                "min": 0.0,
+                "max": 10.0
+            },
+            "Balance": {
+                "mean": 76485.889288,
+                "std": 62397.40520238598,
+                "25": 0.0,
+                "50": 97208.46,
+                "75": 127642.44,
+                "min": 0.0,
+                "max": 250898.09
+            },
+            "NumOfProducts": {
+                "mean": 1.5302,
+                "std": 0.5816543579989905,
+                "25": 1.0,
+                "50": 1.0,
+                "75": 2.0,
+                "min": 1.0,
+                "max": 4.0
+            },
+            "HasCrCard": {
+                "mean": 0.7055,
+                "std": 0.4558404644751334,
+                "25": 0.0,
+                "50": 1.0,
+                "75": 1.0,
+                "min": 0.0,
+                "max": 1.0
+            },
+            "IsActiveMember": {
+                "mean": 0.5151,
+                "std": 0.49979692845891893,
+                "25": 0.0,
+                "50": 1.0,
+                "75": 1.0,
+                "min": 0.0,
+                "max": 1.0
+            },
+            "EstimatedSalary": {
+                "mean": 100090.23988099999,
+                "std": 57510.49281769816,
+                "25": 51011.29,
+                "50": 100200.4,
+                "75": 149384.43,
+                "min": 11.58,
+                "max": 199992.48
+            },
+            "Exited": {
+                "mean": 0.2037,
+                "std": 0.40276858399486093,
+                "25": 0.0,
+                "50": 0.0,
+                "75": 0.0,
+                "min": 0.0,
+                "max": 1.0
+            }
+        },
+        "unique_values": {
+            "Surname": 2932,
+            "Geography": 3,
+            "Gender": 2
+        }
+    },
+    "null_analysis": {
+        "RowNumber": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "CustomerId": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "Surname": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "CreditScore": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "Geography": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "Gender": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "Age": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "Tenure": {
+            "total_nulls_column": 909,
+            "total_nulls_row": 0,
+            "nulls_percent": 9.09,
+            "action": "analyse"
+        },
+        "Balance": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "NumOfProducts": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "HasCrCard": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "IsActiveMember": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "EstimatedSalary": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "Exited": {
+            "total_nulls_column": 0,
+            "total_nulls_row": 0,
+            "action": "keep"
+        },
+        "total_nulls": 909
+    },
+    "analysis_data": {
+        "distribution": {
+            "RowNumber": {
+                "range": 9999.0,
+                "mean": 5000.5,
+                "median": 5001.0,
+                "iqr": 4999.0,
+                "form": "negative",
+                "distribution": "moderately dispersed",
+                "suggestion": {
+                    "transformer": "square",
+                    "scaler": "robustScaler"
+                }
+            },
+            "CustomerId": {
+                "range": 249989.0,
+                "mean": 15690940.569,
+                "median": 15690743.0,
+                "iqr": 124699.0,
+                "form": "positive",
+                "distribution": "moderately dispersed",
+                "suggestion": {
+                    "transformer": "sqrt",
+                    "scaler": "robustScaler"
+                }
+            },
+            "CreditScore": {
+                "range": 500.0,
+                "mean": 650.529,
+                "median": 652.0,
+                "iqr": 134.0,
+                "form": "negative",
+                "distribution": "very concentrated (75% of the data in less than 30% of the range)",
+                "suggestion": {
+                    "transformer": "square",
+                    "scaler": "minMaxScaler"
+                }
+            },
+            "Age": {
+                "range": 74.0,
+                "mean": 38.922,
+                "median": 37.0,
+                "iqr": 12.0,
+                "form": "positive",
+                "distribution": "very concentrated (75% of the data in less than 30% of the range)",
+                "suggestion": {
+                    "transformer": "sqrt",
+                    "scaler": "minMaxScaler"
+                }
+            },
+            "Tenure": {
+                "range": 10.0,
+                "mean": 4.998,
+                "median": 5.0,
+                "iqr": 5.0,
+                "form": "negative",
+                "distribution": "moderately dispersed",
+                "suggestion": {
+                    "transformer": "square",
+                    "scaler": "robustScaler"
+                }
+            },
+            "Balance": {
+                "range": 250898.09,
+                "mean": 76485.889,
+                "median": 97208.46,
+                "iqr": 127642.44,
+                "form": "negative",
+                "distribution": "moderately dispersed",
+                "suggestion": {
+                    "transformer": "square",
+                    "scaler": "robustScaler"
+                }
+            },
+            "NumOfProducts": {
+                "range": 3.0,
+                "mean": 1.53,
+                "median": 1.0,
+                "iqr": 1.0,
+                "form": "positive",
+                "distribution": "moderately dispersed",
+                "suggestion": {
+                    "transformer": "sqrt",
+                    "scaler": "robustScaler"
+                }
+            },
+            "HasCrCard": {
+                "range": 1.0,
+                "mean": 0.706,
+                "median": 1.0,
+                "iqr": 1.0,
+                "form": "negative",
+                "distribution": "very dispersed (75% of data covers more than 70% of the range)",
+                "suggestion": {
+                    "transformer": "square",
+                    "scaler": "robustScaler"
+                }
+            },
+            "IsActiveMember": {
+                "range": 1.0,
+                "mean": 0.515,
+                "median": 1.0,
+                "iqr": 1.0,
+                "form": "negative",
+                "distribution": "very dispersed (75% of data covers more than 70% of the range)",
+                "suggestion": {
+                    "transformer": "square",
+                    "scaler": "robustScaler"
+                }
+            },
+            "EstimatedSalary": {
+                "range": 199980.9,
+                "mean": 100090.24,
+                "median": 100200.4,
+                "iqr": 98373.14,
+                "form": "negative",
+                "distribution": "moderately dispersed",
+                "suggestion": {
+                    "transformer": "square",
+                    "scaler": "robustScaler"
+                }
+            },
+            "Exited": {
+                "range": 1.0,
+                "mean": 0.204,
+                "median": 0.0,
+                "iqr": 0.0,
+                "form": "positive",
+                "distribution": "very concentrated (75% of the data in less than 30% of the range)",
+                "suggestion": {
+                    "transformer": null,
+                    "scaler": "minMaxScaler"
+                }
+            }
+        },
+        "outliers": {
+            "RowNumber": {
+                "iqr": 4999.0,
+                "n_outliers": 0,
+                "percent_outliers": 0.0,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "standarScaler",
+                    "filter": "trim",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": null
+                }
+            },
+            "CustomerId": {
+                "iqr": 124699.0,
+                "n_outliers": 0,
+                "percent_outliers": 0.0,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "standarScaler",
+                    "filter": "trim",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": "sqrt"
+                }
+            },
+            "CreditScore": {
+                "iqr": 134.0,
+                "n_outliers": 15,
+                "percent_outliers": 0.15,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "standarScaler",
+                    "filter": "trim",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": null
+                }
+            },
+            "Age": {
+                "iqr": 12.0,
+                "n_outliers": 359,
+                "percent_outliers": 3.59,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "minMaxScaler",
+                    "filter": "capping",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": "sqrt"
+                }
+            },
+            "Tenure": {
+                "iqr": 5.0,
+                "n_outliers": 0,
+                "percent_outliers": 0.0,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "standarScaler",
+                    "filter": "trim",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": null
+                }
+            },
+            "Balance": {
+                "iqr": 127642.44,
+                "n_outliers": 0,
+                "percent_outliers": 0.0,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "standarScaler",
+                    "filter": "trim",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": null
+                }
+            },
+            "NumOfProducts": {
+                "iqr": 1.0,
+                "n_outliers": 60,
+                "percent_outliers": 0.6,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "standarScaler",
+                    "filter": "trim",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": "sqrt"
+                }
+            },
+            "HasCrCard": {
+                "iqr": 1.0,
+                "n_outliers": 0,
+                "percent_outliers": 0.0,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "standarScaler",
+                    "filter": "trim",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": null
+                }
+            },
+            "IsActiveMember": {
+                "iqr": 1.0,
+                "n_outliers": 0,
+                "percent_outliers": 0.0,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "standarScaler",
+                    "filter": "trim",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": null
+                }
+            },
+            "EstimatedSalary": {
+                "iqr": 98373.14,
+                "n_outliers": 0,
+                "percent_outliers": 0.0,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "standarScaler",
+                    "filter": "trim",
+                    "impute": "median",
+                    "flag": false,
+                    "transform": null
+                }
+            },
+            "Exited": {
+                "iqr": 0.0,
+                "n_outliers": 2037,
+                "percent_outliers": 20.37,
+                "method": "iqr",
+                "suggestion": {
+                    "scaler": "robustScaler",
+                    "filter": null,
+                    "impute": null,
+                    "flag": true,
+                    "transform": null
+                }
+            }
+        },
+        "correlation": {
+            "correlations": [
+                [
+                    "RowNumber",
+                    "CustomerId",
+                    0.023632992095156968
+                ],
+                [
+                    "RowNumber",
+                    "CreditScore",
+                    0.01733014640161827
+                ],
+                [
+                    "RowNumber",
+                    "Age",
+                    -0.015989079706128586
+                ],
+                [
+                    "RowNumber",
+                    "Tenure",
+                    0.023409061915891326
+                ],
+                [
+                    "RowNumber",
+                    "Balance",
+                    0.0056440193990655385
+                ],
+                [
+                    "RowNumber",
+                    "NumOfProducts",
+                    0.005111118072102088
+                ],
+                [
+                    "RowNumber",
+                    "HasCrCard",
+                    0.013565494109385772
+                ],
+                [
+                    "RowNumber",
+                    "IsActiveMember",
+                    0.011996408500298763
+                ],
+                [
+                    "RowNumber",
+                    "EstimatedSalary",
+                    0.01994291735759554
+                ],
+                [
+                    "RowNumber",
+                    "Exited",
+                    -0.015458643120572534
+                ],
+                [
+                    "CustomerId",
+                    "CreditScore",
+                    -0.02160842306908124
+                ],
+                [
+                    "CustomerId",
+                    "Age",
+                    -0.007039674187415536
+                ],
+                [
+                    "CustomerId",
+                    "Tenure",
+                    -0.00786155998562762
+                ],
+                [
+                    "CustomerId",
+                    "Balance",
+                    -0.021402650298577196
+                ],
+                [
+                    "CustomerId",
+                    "NumOfProducts",
+                    0.018703042353913672
+                ],
+                [
+                    "CustomerId",
+                    "HasCrCard",
+                    0.0016174791910396414
+                ],
+                [
+                    "CustomerId",
+                    "IsActiveMember",
+                    0.0031352727238062247
+                ],
+                [
+                    "CustomerId",
+                    "EstimatedSalary",
+                    0.030603541391461455
+                ],
+                [
+                    "CustomerId",
+                    "Exited",
+                    -0.013701373330558516
+                ],
+                [
+                    "CreditScore",
+                    "Age",
+                    0.005308516045936966
+                ],
+                [
+                    "CreditScore",
+                    "Tenure",
+                    0.01424261469605626
+                ],
+                [
+                    "CreditScore",
+                    "Balance",
+                    0.03603513977055556
+                ],
+                [
+                    "CreditScore",
+                    "NumOfProducts",
+                    0.0028208519383193516
+                ],
+                [
+                    "CreditScore",
+                    "HasCrCard",
+                    -0.0025459507493779602
+                ],
+                [
+                    "CreditScore",
+                    "IsActiveMember",
+                    0.016434983582529185
+                ],
+                [
+                    "CreditScore",
+                    "EstimatedSalary",
+                    -0.04048297990423108
+                ],
+                [
+                    "CreditScore",
+                    "Exited",
+                    -0.029845417725776698
+                ],
+                [
+                    "Age",
+                    "Tenure",
+                    0.006199884431386198
+                ],
+                [
+                    "Age",
+                    "Balance",
+                    0.017062632106445458
+                ],
+                [
+                    "Age",
+                    "NumOfProducts",
+                    0.007469111362934612
+                ],
+                [
+                    "Age",
+                    "HasCrCard",
+                    -0.007807175702841661
+                ],
+                [
+                    "Age",
+                    "IsActiveMember",
+                    0.08663925977492618
+                ],
+                [
+                    "Age",
+                    "EstimatedSalary",
+                    -0.02109614815396115
+                ],
+                [
+                    "Age",
+                    "Exited",
+                    0.28420322100450196
+                ],
+                [
+                    "Tenure",
+                    "Balance",
+                    -0.02874636817145965
+                ],
+                [
+                    "Tenure",
+                    "NumOfProducts",
+                    0.023602305551227477
+                ],
+                [
+                    "Tenure",
+                    "HasCrCard",
+                    0.01749643487220234
+                ],
+                [
+                    "Tenure",
+                    "IsActiveMember",
+                    -0.020713754054006973
+                ],
+                [
+                    "Tenure",
+                    "EstimatedSalary",
+                    0.0011461422995873616
+                ],
+                [
+                    "Tenure",
+                    "Exited",
+                    -0.025592717835250682
+                ],
+                [
+                    "Balance",
+                    "NumOfProducts",
+                    -0.30798723249992616
+                ],
+                [
+                    "Balance",
+                    "HasCrCard",
+                    -0.00767538489637365
+                ],
+                [
+                    "Balance",
+                    "IsActiveMember",
+                    -0.015043787104953982
+                ],
+                [
+                    "Balance",
+                    "EstimatedSalary",
+                    -0.002880859530700537
+                ],
+                [
+                    "Balance",
+                    "Exited",
+                    0.11922250390245497
+                ],
+                [
+                    "NumOfProducts",
+                    "HasCrCard",
+                    0.005956544519145995
+                ],
+                [
+                    "NumOfProducts",
+                    "IsActiveMember",
+                    -0.006414968395569733
+                ],
+                [
+                    "NumOfProducts",
+                    "EstimatedSalary",
+                    0.026474087488731663
+                ],
+                [
+                    "NumOfProducts",
+                    "Exited",
+                    -0.025881486504204874
+                ],
+                [
+                    "HasCrCard",
+                    "IsActiveMember",
+                    -0.024805997723803153
+                ],
+                [
+                    "HasCrCard",
+                    "EstimatedSalary",
+                    0.0036283485139653186
+                ],
+                [
+                    "HasCrCard",
+                    "Exited",
+                    -0.0013335702752225195
+                ],
+                [
+                    "IsActiveMember",
+                    "EstimatedSalary",
+                    -0.009220463635276724
+                ],
+                [
+                    "IsActiveMember",
+                    "Exited",
+                    -0.15971748897190738
+                ],
+                [
+                    "EstimatedSalary",
+                    "Exited",
+                    9.311313681937189e-05
+                ]
+            ],
+            "high_correlations": null,
+            "threshold": 0.75,
+            "note": null
+        },
+        "category_dominance": {
+            "Surname": {
+                "unique_count": 2932,
+                "top_values": [
+                    {
+                        "value": "Smith",
+                        "count": 32,
+                        "percent": 0.32
+                    },
+                    {
+                        "value": "Scott",
+                        "count": 29,
+                        "percent": 0.29
+                    }
+                ],
+                "rare_values": [
+                    {
+                        "value": "Cowger",
+                        "count": 1,
+                        "percent": 0.01
+                    },
+                    {
+                        "value": "Morehead",
+                        "count": 1,
+                        "percent": 0.01
+                    },
+                    {
+                        "value": "Kolesnikova",
+                        "count": 1,
+                        "percent": 0.01
+                    },
+                    {
+                        "value": "Tillman",
+                        "count": 1,
+                        "percent": 0.01
+                    },
+                    {
+                        "value": "Okeke",
+                        "count": 6,
+                        "percent": 0.06
+                    },
+                    {
+                        "value": "Otoole",
+                        "count": 1,
+                        "percent": 0.01
+                    },
+                    {
+                        "value": "Padilla",
+                        "count": 1,
+                        "percent": 0.01
+                    },
+                    {
+                        "value": "Cobb",
+                        "count": 1,
+                        "percent": 0.01
+                    },
+                    {
+                        "value": "Sims",
+                        "count": 5,
+                        "percent": 0.05
+                    },
+                    {
+                        "value": "Winter-Irving",
+                        "count": 2,
+                        "percent": 0.02
+                    }
+                ],
+                "rare_threshold": 0.01,
+                "suggestion": {
+                    "few_categories": null,
+                    "many_categories": "targetEncoder",
+                    "many_rare_values": null,
+                    "hight_cardinality": "targetEncoder",
+                    "categories_with_nulls": null,
+                    "no_rare_value_categories_reasonable": null
+                }
+            },
+            "Geography": {
+                "unique_count": 3,
+                "top_values": [
+                    {
+                        "value": "France",
+                        "count": 5014,
+                        "percent": 50.14
+                    },
+                    {
+                        "value": "Germany",
+                        "count": 2509,
+                        "percent": 25.09
+                    }
+                ],
+                "rare_values": null,
+                "rare_threshold": 0.01,
+                "suggestion": {
+                    "few_categories": "ordinalEncoder",
+                    "many_categories": null,
+                    "many_rare_values": {
+                        "suggestion": "group",
+                        "encoder": "oneHotEncoder"
+                    },
+                    "hight_cardinality": null,
+                    "categories_with_nulls": null,
+                    "no_rare_value_categories_reasonable": null
+                }
+            },
+            "Gender": {
+                "unique_count": 2,
+                "top_values": [
+                    {
+                        "value": "Male",
+                        "count": 5457,
+                        "percent": 54.57
+                    },
+                    {
+                        "value": "Female",
+                        "count": 4543,
+                        "percent": 45.43
+                    }
+                ],
+                "rare_values": null,
+                "rare_threshold": 0.01,
+                "suggestion": {
+                    "few_categories": "ordinalEncoder",
+                    "many_categories": null,
+                    "many_rare_values": {
+                        "suggestion": "group",
+                        "encoder": "oneHotEncoder"
+                    },
+                    "hight_cardinality": null,
+                    "categories_with_nulls": null,
+                    "no_rare_value_categories_reasonable": null
+                }
+            }
+        }
+    }
+}
