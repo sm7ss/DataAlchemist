@@ -1,0 +1,4 @@
+name: "decision_tree_regressor"
+max_depth: [3, 5, 10]
+min_sample_split: [2, 5, 10]
+min_sample_leaf: 2
