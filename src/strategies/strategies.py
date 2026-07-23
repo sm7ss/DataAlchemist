@@ -11,5 +11,8 @@ class CategoryDominanceRtp(float, Enum):
     MAX = 1
     MIN = 0.0
 
-
+class ProtectionData(float, Enum): 
+    PERMUTATION_MATRIX = 'permutation_matrix'
+    RANDOM_ROTATION = 'random_rotation'
+    MASKING = 'masking'
 
