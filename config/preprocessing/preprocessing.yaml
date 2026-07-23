@@ -1,0 +1,26 @@
+columns: 
+
+sampling: # if not value given 'random' will be used
+representative_column: #use when "representative" is selected
+
+null_num_handler: # if not value given 'median' will be used
+null_cat_handler: # if not value given 'constantValue' will be used
+null_cat_handler_value: # if not value is given "Unknown" will be used
+
+distribution: 
+  transformer: 
+
+outlier: 
+  strategy: # if not given "iqr" will be the strategy used
+  filter: 
+  impute_outliers: 
+  flag: # Bool True/False
+  transform: 
+
+correlation:
+  high_correlation: # if None, then join will be the operation
+  remove_column: # just if high_correlation is selected if not, join will be the auto operation for not deleting any column
+
+category: # THIS IS MISSING
+  operation: # if not value given, "Group" operation will be given
+  name_operation_value: # Value for operation, if None, then "Unknown" will be the auto value given

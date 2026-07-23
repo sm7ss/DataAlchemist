@@ -1,0 +1,10 @@
+rename_columns: 
+change_datatypes: 
+duplicates: True # Deleate duplicated rows
+drop_columns: 
+
+null_values: 
+  null_impute_numerics: # if None -> the median will be used if nulls are found
+  null_impute_categorics: # if None -> the mode will be used if nulls are found
+
+

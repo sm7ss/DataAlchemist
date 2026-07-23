@@ -1,0 +1,9 @@
+scaler_rules: 
+  robust_scaler_percent: 0.05
+  standard_scaler_percent: 0.01
+  # The difference between robust and standard will be MinMaxScaler
+
+best_model_rules: 
+  cv_fold: 5
+  train_test_difference_percent: 0.10
+  unstable_cross_validation_percent: 0.05

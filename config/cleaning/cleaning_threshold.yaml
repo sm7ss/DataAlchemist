@@ -1,0 +1,5 @@
+threshold_nulls:
+  rows_percent: 40
+  columns_percent: 65
+
+
