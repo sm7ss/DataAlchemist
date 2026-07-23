@@ -1,8 +1,8 @@
 defaults: 
   - analysis_values: analysis_values
-  - cleaning: cleaning
-  - preprocessing: preprocessing
-  - modeling: modeling
+  - cleaning: cleaning_threshold
+  - preprocessing: preprocessing_threshold
+  - modeling: modeling_threshold
   
   - data: 'Churn'
   - model: 
@@ -10,7 +10,7 @@ defaults:
     - 'LinearRegressor'
     - 'RandomForestClassifier'
 
-path: 
+data_management: 
   output:
     clean_data: 
       enable: False
@@ -48,58 +48,9 @@ eda:
       top_n: #if a top_n is not given, the value will be 2
       rare_threshold_percent: #if a threshold is not given, the value will be 0.01
 
-cleaning: 
-  rename_columns: 
-  change_datatypes: 
-  duplicates: True # Deleate duplicated rows
-  drop_columns: 
-  
-  null_values: 
-    null_impute_numerics: # if None -> the median will be used if nulls are found
-    null_impute_categorics: # if None -> the mode will be used if nulls are found
-
-ml_preprocessing: 
-  columns: 
-  
-  sampling: # if not value given 'random' will be used
-  representative_column: #use when "representative" is selected
-  
-  null_num_handler: # if not value given 'median' will be used
-  null_cat_handler: # if not value given 'constantValue' will be used
-  null_cat_handler_value: # if not value is given "Unknown" will be used
-  
-  distribution: 
-    transformer: 
-  
-  outlier: 
-    strategy: # if not given "iqr" will be the strategy used
-    filter: 
-    impute_outliers: 
-    flag: # Bool True/False
-    transform: 
-  
-  correlation:
-    high_correlation: # if None, then join will be the operation
-    remove_column: # just if high_correlation is selected if not, join will be the auto operation for not deleting any column
-  
-  category: # THIS IS MISSING
-    operation: # if not value given, "Group" operation will be given
-    name_operation_value: # Value for operation, if None, then "Unknown" will be the auto value given
-
-#ml_training: # Encoder & Scaler not working
-#  target: Exited
-#  
-#  train_test_search: 0.25 
-#  train_test_final: 0.25 # 🚨 NOT AVAILABLE 🚨
-#  random_state: 42
-#  
-#  encoder: # 🚨 NOT AVAILABLE 🚨 if None=Auto (Rules in config_modeling), if not all columns will have the encoder you selected 
-#  scaler: # 🚨 NOT AVAILABLE 🚨 if none, auto will be use, the algorithm will decide
-#  scaler_outlier_method: # if none, iqr will be used
-
 hydra: 
   run:
-    dir: 1_hydra_learning/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    dir: config/hydra_config/hydra_outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:
     dir: multirun/${now%Y-%m-%d}/${now:%H-%M-%S}
     subdir: ${hydra.job.num}
