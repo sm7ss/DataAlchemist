@@ -1,10 +1,10 @@
 name: 'grid_search_cv' 
-cv: 5
+cv: 5 # If not given 2 will be used
 scoring: 
-  neg_mean_absolute_error: 'neg_mean_absolute_error'
-  neg_mean_squared_error: 'neg_mean_squared_error' 
-  neg_root_mean_squared_error: 'neg_root_mean_squared_error'
-  r2: 'r2'
-n_jobs: 2 # how many cores are thrown into the system
+  - 'neg_mean_absolute_error'
+  - 'neg_mean_squared_error' 
+  - 'neg_root_mean_squared_error'
+  - 'r2'
+n_jobs: 2 # how many cores are leaving into the system, if None, 1 core will be left for system
 
 
