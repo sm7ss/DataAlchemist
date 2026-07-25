@@ -1,5 +1,5 @@
 defaults: 
-  - analysis_values: analysis_values
+  - eda_threshold: eda_threshold
   - cleaning: cleaning_threshold
   - preprocessing: preprocessing_threshold
   - modeling: modeling_threshold
@@ -9,6 +9,8 @@ defaults:
     - 'RandomForestRegressor'
     - 'LinearRegressor'
     - 'RandomForestClassifier'
+  
+  - _self_
 
 data_management: 
   output:
@@ -50,7 +52,7 @@ eda:
 
 hydra: 
   run:
-    dir: config/hydra_config/hydra_outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    dir: config/hydra_outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:
     dir: multirun/${now%Y-%m-%d}/${now:%H-%M-%S}
     subdir: ${hydra.job.num}
