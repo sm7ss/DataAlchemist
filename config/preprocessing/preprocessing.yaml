@@ -8,9 +8,11 @@ null_cat_handler: # if not value given 'constantValue' will be used
 null_cat_handler_value: # if not value is given "Unknown" will be used
 
 distribution: 
+  enable: 
   transformer: 
 
 outlier: 
+  enable: 
   strategy: # if not given "iqr" will be the strategy used
   filter: 
   impute_outliers: 
@@ -18,9 +20,11 @@ outlier:
   transform: 
 
 correlation:
+  enable: 
   high_correlation: # if None, then join will be the operation
   remove_column: # just if high_correlation is selected if not, join will be the auto operation for not deleting any column
 
 category: # THIS IS MISSING
+  enable: 
   operation: # if not value given, "Group" operation will be given
   name_operation_value: # Value for operation, if None, then "Unknown" will be the auto value given
