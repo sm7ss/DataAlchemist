@@ -2,32 +2,15 @@ defaults:
   - eda_threshold: eda_threshold
   - cleaning: cleaning_threshold
   - preprocessing: preprocessing_threshold
-  - modeling: modeling_threshold
+#  - modeling: modeling_threshold
   
-  - data: 'Churn'
+  - data: 'data'
   - model: 
-    - 'RandomForestRegressor'
-    - 'LinearRegressor'
-    - 'RandomForestClassifier'
+    - 'random_forest_regressor'
+    - 'linear_regression'
+    - 'decision_tree_regressor'
   
   - _self_
-
-data_management: 
-  output:
-    clean_data: 
-      enable: False
-      name: 
-    preprocessing_data: 
-      enable: False
-      name: 
-  
-  data_protection: 
-    enable: True
-    method: 'permutation_matrix'
-    delete_original_after: True
-  
-  overhead_percent: 1.8
-  sample_data_percent: 0.1 #percent data analysis, this can change by system to be optimal, not used now, until laz and streaming is added
 
 eda: 
   null_values: True
