@@ -1,0 +1,19 @@
+path: 'Churn.csv'
+
+data_management: 
+  output:
+    clean_data: 
+      enable: False
+      name: 
+    preprocessing_data: 
+      enable: False
+      name: 
+  
+  data_protection: 
+    enable: True
+    method: 'permutation_matrix'
+    delete_original_after: True
+  
+  overhead_percent: 1.8
+  sample_data_percent: 0.1 #percent data analysis, this can change by system to be optimal, not used now, until laz and streaming is added
+
