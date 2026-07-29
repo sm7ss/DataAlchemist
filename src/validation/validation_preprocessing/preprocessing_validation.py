@@ -11,11 +11,11 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(mess
 logger= logging.getLogger(__name__)
 
 class distribution_val(BaseModel): 
-    enable: bool
+    enable: Optional[bool]
     transformer: Optional[DistributionTransformer]
 
 class outlier_val(BaseModel): 
-    enable: bool
+    enable: Optional[bool]
     strategy: Optional[AnalysisOutliers]
     filter: Optional[OutlierFilter]
     impute_outliers: Optional[OutlierImpute]
@@ -31,7 +31,7 @@ class outlier_val(BaseModel):
         return v
 
 class correlation_val(BaseModel): 
-    enable: bool
+    enable: Optional[bool]
     high_correlation: Optional[HighCorrelationActions]
     remove_column: Union[str, List[str], None]
     
@@ -51,7 +51,7 @@ class correlation_val(BaseModel):
         return self
 
 class category_val(BaseModel): 
-    enable: bool
+    enable: Optional[bool]
     operation: Optional[CategoryOperation]
     name_operation_value: Optional[str]
     
