@@ -1,3 +1,5 @@
+from omegaconf import DictConfig, OmegaConf
+
 import yaml 
 import tomli
 import logging
@@ -9,10 +11,20 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(mess
 logger= logging.getLogger(__name__)
 
 from .validation import validation
-from .validation_analysis_values.validation import validator_analysis_values
-from .validation_preprocessing.validation import preprocessing_validation
-from .validation_modeling.validation import modeling_val
-from .validation_cleaning.validation import config_cleaning
+
+from .validation_cleaning.cleaning_validation import cleaning_val
+from .validation_preprocessing.preprocessing_validation import ml_preprocessing_val
+
+def validate_config(cfg: DictConfig) -> None:
+    dict_config= OmegaConf.to_container(cfg, resolve=True)
+    
+    try: 
+        validate_cfg= validation(**dict_config)
+        logger.info('Successful validation')
+    except Exception as e:
+        logger.error(f'There are problems in validating fields:\n{e}')
+    
+    return validate_cfg
 
 class ReadConfig: 
     @staticmethod
@@ -47,72 +59,27 @@ class ReadConfig:
             logger.error(f'There is an error:\n{e}')
             raise ValueError(f'There is an error:\n{e}')
     
-    @staticmethod
-    def yaml_read_cleaning(config: Path) -> BaseModel: 
-        try: 
-            with open(config, 'r') as c: 
-                read= yaml.safe_load(c)
-                logger.info(f'The file {config.name} was readed correctly')
-            val= config_cleaning(**read['threshold_nulls'])
-            logger.info(f'The file {config.name} was validated correctly')
-            return val
-        except yaml.YAMLError: 
-            logger.error(f'The yaml file {config.name} is corrupted')
-            raise ValueError(f'The yaml file {config.name} is corrupted')
-        except Exception as e: 
-            logger.error(f'There is an error:\n{e}')
-            raise ValueError(f'There is an error:\n{e}')
-    
-    @staticmethod
-    def toml_read_cleaning(config: Path) -> BaseModel: 
-        try: 
-            with open(config, 'rb') as c: 
-                read= tomli.load(c)
-                logger.info(f'The file {config.name} was readed correctly')
-            val= config_cleaning(**read['threshold_nulls'])
-            logger.info(f'The file {config.name} was validated correctly')
-            return val
-        except tomli.TOMLDecodeError: 
-            logger.error(f'The toml file {config.name} is corrupted')
-            raise ValueError(f'The toml file {config.name} is corrupted')
-        except Exception as e: 
-            logger.error(f'There is an error:\n{e}')
-            raise ValueError(f'There is an error:\n{e}')
-    
     @classmethod
     def read_config(cls) -> Dict[str, Any]: 
-        config= Path(__file__).resolve().parent.parent.parent / 'config' / 'config.yml'
-        config_var= Path(__file__).resolve().parent.parent.parent / 'config' / 'config_analysis_values.yml'
-        config_preprocessing= Path(__file__).resolve().parent.parent.parent / 'config' / 'config_preprocessing.yml'
-        config_modeling= Path(__file__).resolve().parent.parent.parent / 'config' / 'config_modeling.yml'
-        config_cleaning= Path(__file__).resolve().parent.parent.parent / 'config' / 'config_cleaning.yml'
+        config= Path(__file__).resolve().parent.parent.parent / 'config' / 'config.yaml'
+        
+        preprocessing_path= 'config' / 'preprocessing' / 'preprocessing.yaml'
+        preprocessing= Path(__file__).resolve().parent.parent.parent / preprocessing_path
+        
+        cleaning_path= 'config' / 'cleaning' / 'cleaning.yaml'
+        cleaning= Path(__file__).resolve().parent.parent.parent / cleaning_path
         
         dict_configs= {}
         
         if config.suffix in ['.yml', '.yaml']: 
-            dict_configs['config']= cls.yaml_read(config=config, callable=validation)
+            dict_configs['cleaning']= cls.yaml_read(config=cleaning, callable=cleaning_val)
         else: 
-            dict_configs['config'] = cls.toml_read(config=config, callable=validation)
+            dict_configs['cleaning'] = cls.toml_read(config=cleaning, callable=cleaning_val)
         
-        if config_var.suffix in ['.yml', '.yaml']: 
-            dict_configs['config_vars']= cls.yaml_read(config=config_var, callable=validator_analysis_values)
+        if config.suffix in ['.yml', '.yaml']: 
+            dict_configs['preprocessing']= cls.yaml_read(config=preprocessing, callable=ml_preprocessing_val)
         else: 
-            dict_configs['config_vars']= cls.toml_read(config=config_var, callable=validator_analysis_values)
-        
-        if config_preprocessing.suffix in ['.yml', '.yaml']: 
-            dict_configs['preprocessing']= cls.yaml_read(config=config_preprocessing, callable=preprocessing_validation)
-        else:
-            dict_configs['preprocessing']= cls.toml_read(config=config_preprocessing, callable=preprocessing_validation)
-        
-        if config_modeling.suffix in ['.yml', '.yaml']: 
-            dict_configs['modeling']= cls.yaml_read(config=config_modeling, callable=modeling_val)
-        else: 
-            dict_configs['modeling']= cls.toml_read(config=config_modeling, callable=modeling_val)
-        
-        if config_cleaning.suffix in ['.yml', '.yaml']: 
-            dict_configs['cleaning']= cls.yaml_read_cleaning(config=config_cleaning)
-        else: 
-            dict_configs['cleaning']= cls.toml_read_cleaning(config=config_cleaning)
+            dict_configs['preprocessing'] = cls.toml_read(config=preprocessing, callable=ml_preprocessing_val)
         
         return dict_configs
 
