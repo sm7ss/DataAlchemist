@@ -1,5 +1,5 @@
 defaults: 
-  - eda_threshold: eda_threshold
+  - eda: eda_threshold
   - cleaning: cleaning_threshold
   - preprocessing: preprocessing_threshold
 #  - modeling: modeling_threshold
