@@ -13,36 +13,36 @@ from .validation_cleaning.cleaning_threshold_validation import config_cleaning
 #from .validation_modeling.modeling_threshold_validation import modeling_val
 from .validation_preprocessing.preprocessing_threshold_validation import preprocessing_val
 
-from .validation_model.cv_grid_search import grid_search_cv_val
-from .validation_model.decision_tree_regressor import decision_tree_regressor_val
-from .validation_model.linear_regression import linear_regression_val
-from .validation_model.random_forest_regressor_validation import random_forest_regressor_val
+#from .validation_model.cv_grid_search import grid_search_cv_val
+#from .validation_model.decision_tree_regressor import decision_tree_regressor_val
+#from .validation_model.linear_regression import linear_regression_val
+#from .validation_model.random_forest_regressor_validation import random_forest_regressor_val
 
 from .validation_eda.eda_threshold_validation import eda_threshold_val
 from .validation_eda.eda_validation import eda_val
 
 class validation(BaseModel): 
-    eda_threshold: eda_threshold_val
+    eda: eda_threshold_val
     cleaning: config_cleaning
     preprocessing: preprocessing_val
 #    modeling: modeling_val
     
     data: data_managment_val 
-    model: Union[
-        grid_search_cv_val,
-        decision_tree_regressor_val, 
-        linear_regression_val, 
-        random_forest_regressor_val,
-        List[Union[
-            grid_search_cv_val, 
-            decision_tree_regressor_val, 
-            linear_regression_val, 
-            random_forest_regressor_val
-            ]
-        ]
-    ]
     
     eda: eda_val
+#    model: Union[
+#        grid_search_cv_val,
+#        decision_tree_regressor_val, 
+#        linear_regression_val, 
+#        random_forest_regressor_val,
+#        List[Union[
+#            grid_search_cv_val, 
+#            decision_tree_regressor_val, 
+#            linear_regression_val, 
+#            random_forest_regressor_val
+#            ]
+#        ]
+#]
     
     @model_validator(mode='after')
     def columns_analysis_val(self): 

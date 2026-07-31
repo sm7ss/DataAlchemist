@@ -5,10 +5,7 @@ defaults:
 #  - modeling: modeling_threshold
   
   - data: 'data'
-  - model: 
-    - 'random_forest_regressor'
-    - 'linear_regression'
-    - 'decision_tree_regressor'
+#  - model: 
   
   - _self_
 
