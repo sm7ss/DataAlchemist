@@ -11,7 +11,7 @@ logger= logging.getLogger(__name__)
 
 class CatNullExpr: 
     def __init__(self, model: BaseModel):
-        self.null_cat = model.cleaning.null_values.null_impute_categorics
+        self.null_cat = model.null_values.null_impute_categorics
     
     def input_value(self, cat_col: str) -> pl.Expr: 
         return pl.col(cat_col).fill_null(self.null_cat)
@@ -29,7 +29,7 @@ class CatNullExpr:
 
 class NumNullExpr: 
     def __init__(self, model: BaseModel):
-        self.null_num = model.cleaning.null_values.null_impute_numerics
+        self.null_num = model.null_values.null_impute_numerics
     
     def operation_fill(self, col_num: str) -> pl.Expr:
         expr= (getattr(pl.col(col_num), self.null_num)())
@@ -56,15 +56,15 @@ class DeleteData:
         return ~pl.col('index').is_in(index_list)
 
 class CleanNulls: 
-    def __init__(self, frame: pl.DataFrame, JSON: Dict[str, Any], model: BaseModel, model_cleaning: BaseModel):
+    def __init__(self, frame: pl.DataFrame, JSON: Dict[str, Any], model: BaseModel, model_threshold: BaseModel):
         self.frame= frame
         
         self.JSON= JSON.get('null_analysis', None)
         self.model= model
-        self.model_cleaning= model_cleaning
+        self.model_threshold= model_threshold
         
         self.cat= CatNullExpr(model=self.model)
-        self.num= NumNullExpr(model=model)
+        self.num= NumNullExpr(model=self.model)
         self.delete= DeleteData()
     
     def cat_impute(self, col: str) -> pl.Expr: 
@@ -76,7 +76,7 @@ class CleanNulls:
     def analyse(self, col: str) -> Union[pl.Expr, str, None]: 
         frame= self.frame
         
-        umbral= (self.model_cleaning.rows_percent/100)*self.frame.width
+        umbral= (self.model_threshold.rows_percent/100)*self.frame.width
         total_nulls= self.JSON[col]['total_nulls_column']
         if total_nulls == 0: 
             logger.info(f'Total of nulls for column {col} is equal to 0')
@@ -85,14 +85,14 @@ class CleanNulls:
         nulls= frame.filter(pl.col(col).is_null())
         percent_nulls= (nulls.height/ frame.height)*100
         
-        if percent_nulls < self.model_cleaning.columns_percent: 
+        if percent_nulls < self.model_threshold.columns_percent: 
             
             row_nulls= nulls.with_columns(
                 sum_nulls= pl.sum_horizontal(pl.col('*').is_null().cast(pl.Int32))
             ).filter(pl.col('sum_nulls') > umbral)
             percent_null_rows= (row_nulls.height/total_nulls)*100
             
-            if percent_null_rows < self.model_cleaning.rows_percent: 
+            if percent_null_rows < self.model_threshold.rows_percent: 
                 logger.info(f'For column {col} rows will be imputed')
                 numeric_cols= self.frame.select(pl.selectors.numeric())
                 categoric_cols= self.frame.select(pl.selectors.string())

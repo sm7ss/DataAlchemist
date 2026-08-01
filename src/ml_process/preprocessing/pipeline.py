@@ -61,7 +61,7 @@ class SamplingData:
 
 class NullHandler: 
     def __init__(self, frame: pl.DataFrame, config: BaseModel):
-        self.config= config.ml_preprocessing
+        self.config= config
         
         self.frame= frame
         self.num_cols= frame.select(pl.selectors.numeric()).columns
@@ -209,21 +209,16 @@ class PreProcessinAuto:
             return None
 
 class AutoPipeline: 
-    def __init__(self, frame: pl.DataFrame, analysis: Dict[str, Any], config: BaseModel, config_pre: BaseModel):
+    def __init__(self, frame: pl.DataFrame, analysis: Dict[str, Any], config: BaseModel, config_threshold_preprocessing: BaseModel):
         self.config= config
-        self.config_pre= config_pre
+        self.config_pre= config_threshold_preprocessing
         
-        column= self.config.ml_preprocessing.columns
-        if column: 
-            self.frame= frame.select(column).with_row_index()
-        else: 
-            self.frame= frame.with_row_index()
-        
+        self.frame= frame
         self.analysis= analysis
     
     def frame_sampling(self) -> pl.DataFrame: 
-        sampling= self.config.ml_preprocessing.sampling
-        r_columns= self.config.ml_preprocessing.representative_column
+        sampling= self.config.sampling
+        r_columns= self.config.representative_column
         
         sample_data= SamplingData(frame=self.frame, config=self.config_pre).sampling(decision=sampling, r_columns=r_columns)
         

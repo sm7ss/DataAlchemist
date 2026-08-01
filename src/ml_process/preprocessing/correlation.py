@@ -22,7 +22,7 @@ class CorrelationPreprocessing:
     def __init__(self, frame: pl.DataFrame, corr_dict: Dict[str, Any], config: BaseModel):
         self.frame= frame
         
-        self.corr_config= config.ml_preprocessing.correlation
+        self.corr_config= config.correlation
         
         self.corr= corr_dict.get('high_correlations')
         self.expr= CorrelationExpr(frame=self.frame)

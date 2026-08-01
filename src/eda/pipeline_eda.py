@@ -538,18 +538,19 @@ SUMMARY & RECOMMENDATIONS
         return text
 
 class EdaPipeline: 
-    def __init__(self,frame: pl.DataFrame, config: BaseModel, config_var: BaseModel):
+    def __init__(self,frame: pl.DataFrame, config: BaseModel):
         frame= frame
         
-        self.path= config.path.data
-        self.config_eda= config.eda
+        self.path= config.data.path
+        self.config_eda= config.eda_analysis
+        self.threshold_eda= config.eda
         
         self.eda_general= EdaGeneralInfo(frame=frame)
         self.eda_null= EdaNullValues(frame=frame, config_eda=self.config_eda)
         self.eda_analysis= AnalysisData(
             frame= frame, 
             analysis= self.config_eda.basic_analysis_data, 
-            config_vars= config_var
+            config_vars= self.threshold_eda
         )
     
     def eda_general_info(self) -> Dict[str, Any]:

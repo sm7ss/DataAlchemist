@@ -14,11 +14,11 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(mess
 logger= logging.getLogger(__name__)
 
 class CleanDataFrame: 
-    def __init__(self, frame: pl.DataFrame, config: BaseModel, config_clean: BaseModel, JSON: Dict[str, Any]):
+    def __init__(self, frame: pl.DataFrame, config: BaseModel, config_threshold_cleaning: BaseModel,  JSON: Dict[str, Any]):
         self.frame= frame
         
-        self.config= config
-        self.conig_clean= config_clean
+        self.config_threshold= config_threshold_cleaning
+        self.config_cleaning= config
         
         self.JSON= JSON
     
@@ -28,7 +28,7 @@ class CleanDataFrame:
         return class_rename_columns
     
     def _change_datatypes(self, frame: pl.DataFrame) -> pl.DataFrame: 
-        class_change_datatypes= DataTypeListExpr(frame=frame, config=self.config)
+        class_change_datatypes= DataTypeListExpr(frame=frame, config=self.config_threshold)
         
         expr_datatypes= class_change_datatypes.list_expr_cast()
         new_frame= frame.with_columns(expr_datatypes)
@@ -48,8 +48,8 @@ class CleanDataFrame:
         class_null_list_expr= CleanNulls(
             frame=frame, 
             JSON=self.JSON, 
-            model=self.config, 
-            model_cleaning=self.conig_clean
+            model=self.config_cleaning, 
+            model_threshold=self.config_threshold
         )
         
         frame= class_null_list_expr.clean_dataframe()
@@ -58,10 +58,10 @@ class CleanDataFrame:
     def clean_dataframe(self) -> pl.DataFrame: 
         frame= self.frame.with_row_index()
         
-        rename_columns= self.config.cleaning.rename_columns
-        change_datatypes= self.config.cleaning.change_datatypes
-        duplicates= self.config.cleaning.duplicates
-        drop_columns= self.config.cleaning.drop_columns
+        rename_columns= self.config_cleaning.rename_columns
+        change_datatypes= self.config_cleaning.change_datatypes
+        duplicates= self.config_cleaning.duplicates
+        drop_columns= self.config_cleaning.drop_columns
         
         if rename_columns: 
             frame= self._rename_columns(frame=frame, rename_dict=rename_columns)
