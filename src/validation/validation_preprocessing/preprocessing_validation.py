@@ -72,8 +72,6 @@ class category_val(BaseModel):
         return v
 
 class ml_preprocessing_val(BaseModel): 
-    columns: Union[List[str], str, None]
-    
     representative_column: Union[str, List[str], None]
     sampling: Optional[CorrSampling]
     

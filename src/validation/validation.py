@@ -29,7 +29,7 @@ class validation(BaseModel):
     
     data: data_managment_val 
     
-    eda: eda_val
+    eda_analysis: eda_val
 #    model: Union[
 #        grid_search_cv_val,
 #        decision_tree_regressor_val, 
@@ -47,28 +47,33 @@ class validation(BaseModel):
     @model_validator(mode='after')
     def columns_analysis_val(self): 
         path= self.data.path
-        analysis= self.eda.basic_analysis_data
+        analysis= self.eda_analysis.basic_analysis_data
         
         if path.suffix == '.csv': 
             frame= pl.read_csv(path, n_rows=100, null_values=['tbd', 'TBD', 'N/A', 'nan'])
         else: 
             frame= pl.read_parquet(path, n_rows=100)
         
-        num_columns= frame.select(pl.selectors.numeric()).columns
-        cat_columns= frame.select(pl.selectors.string()).columns
+        columns= self.data.columns
+        if columns: 
+            num_columns= frame.select(columns).select(pl.selectors.numeric()).columns
+            cat_columns= frame.select(columns).select(pl.selectors.string()).columns
+        else: 
+            num_columns= frame.select(pl.selectors.numeric()).columns
+            cat_columns= frame.select(pl.selectors.string()).columns
         
         for analysis_data in analysis: 
             if not num_columns: 
                 if analysis_data == 'distribution': 
-                    self.eda.basic_analysis_data[analysis_data]['enable']= False
+                    self.eda_analysis.basic_analysis_data[analysis_data]['enable']= False
                 if analysis_data == 'outliers': 
-                    self.eda.basic_analysis_data[analysis_data]['enable']= False
+                    self.eda_analysis.basic_analysis_data[analysis_data]['enable']= False
                 if analysis_data == 'correlation': 
-                    self.eda.basic_analysis_data[analysis_data]['enable']= False
+                    self.eda_analysis.basic_analysis_data[analysis_data]['enable']= False
             
             if not cat_columns: 
                 if analysis_data == 'category_dominance': 
-                    self.eda.basic_analysis_data[analysis_data]['enable']= False
+                    self.eda_analysis.basic_analysis_data[analysis_data]['enable']= False
             
             columns= analysis[analysis_data]['columns']
             enable= analysis[analysis_data]['enable']
@@ -77,35 +82,35 @@ class validation(BaseModel):
                 if analysis_data == 'distribution': 
                     if len(num_columns) < 1: 
                         logger.warning(f'There are no columns available, {analysis_data} will be desactivated')
-                        self.eda.basic_analysis_data[analysis_data]['enable']= False
+                        self.eda_analysis.basic_analysis_data[analysis_data]['enable']= False
                     else: 
                         logger.warning(f'{analysis_data} analysis will change their columns to be all columns, cause there are no columns available and the analysis is activated')
-                        self.eda.basic_analysis_data[analysis_data]['columns']= num_columns
+                        self.eda_analysis.basic_analysis_data[analysis_data]['columns']= num_columns
                 elif analysis_data == 'outliers': 
                     if len(num_columns) < 1: 
                         logger.warning(f'There are no numeric columns available, {analysis_data} will be desactivated')
-                        self.eda.basic_analysis_data[analysis_data]['enable']= False
+                        self.eda_analysis.basic_analysis_data[analysis_data]['enable']= False
                     else: 
                         logger.warning(f'{analysis_data} analysis will change their columns to be all numeric columns, cause there are no columns available and the analysis is activated')
-                        self.eda.basic_analysis_data[analysis_data]['columns']= num_columns
+                        self.eda_analysis.basic_analysis_data[analysis_data]['columns']= num_columns
                 elif analysis_data == 'correlation': 
                     if len(num_columns) < 1: 
                         logger.warning(f'There are no numeric columns available, {analysis_data} will be desactivated')
-                        self.eda.basic_analysis_data[analysis_data]['enable']= False
+                        self.eda_analysis.basic_analysis_data[analysis_data]['enable']= False
                     else: 
                         if len(num_columns) < 2: 
                             logger.warning(f'{analysis_data} analysis cannot have less than 2 numeric columns. This analysis will be desactivated')
-                            self.eda.basic_analysis_data[analysis_data]['enable']= False
+                            self.eda_analysis.basic_analysis_data[analysis_data]['enable']= False
                         else: 
                             logger.warning(f'{analysis_data} analysis will change their columns to be all numeric columns, cause there are no columns available and the analysis is activated')
-                            self.eda.basic_analysis_data[analysis_data]['columns']= num_columns
+                            self.eda_analysis.basic_analysis_data[analysis_data]['columns']= num_columns
                 elif analysis_data == 'category_dominance': 
                     if len(cat_columns) < 1: 
                         logger.warning(f'There are no categoric columns available, {analysis_data} will be desactivated')
-                        self.eda.basic_analysis_data[analysis_data]['enable']= False
+                        self.eda_analysis.basic_analysis_data[analysis_data]['enable']= False
                     else: 
                         logger.warning(f'{analysis_data} analysis will change their columns to be all categorical columns, cause there are no columns available and the analysis is activated')
-                        self.eda.basic_analysis_data[analysis_data]['columns']= cat_columns 
+                        self.eda_analysis.basic_analysis_data[analysis_data]['columns']= cat_columns 
                 else: 
                     continue
             elif isinstance(columns, list) and enable: 
@@ -121,7 +126,7 @@ class validation(BaseModel):
                     elif analysis_data == 'correlation':
                         if len(num_columns) < 2: 
                             logger.warning(f'{analysis_data} analysis cannot have less than 2 numeric columns. This analysis will be desactivated')
-                            self.eda.basic_analysis_data[analysis_data]['enable']= False 
+                            self.eda_analysis.basic_analysis_data[analysis_data]['enable']= False 
                         if col not in num_columns: 
                             logger.error(f'The column {col} should be a numerical column.\nNumerical columns available: {columns}')
                             raise ValueError(f'Th column {col} should be a numerical column.\nNumerical columns available: {columns}')
@@ -143,7 +148,7 @@ class validation(BaseModel):
                 elif analysis_data == 'correlation': 
                     if len(num_columns) < 2: 
                         logger.warning(f'{analysis_data} analysis cannot have less than 2 numeric columns. This analysis will be desactivated')
-                        self.eda.basic_analysis_data[analysis_data]['enable']= False
+                        self.eda_analysis.basic_analysis_data[analysis_data]['enable']= False
                     if columns not in num_columns: 
                         logger.error(f'The column {col} should be a numerical column.\nNumerical columns available: {columns}')
                         raise ValueError(f'Th column {col} should be a numerical column.\nNumerical columns available: {columns}')

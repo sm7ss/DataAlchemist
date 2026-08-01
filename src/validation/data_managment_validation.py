@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, model_validator, field_validator
 from pathlib import Path
 import logging
 
-from typing import Optional
+from typing import Optional, List
 from ..strategies.strategies import ProtectionData
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
@@ -52,6 +52,7 @@ class data_manag_val(BaseModel):
 
 class data_managment_val(BaseModel): 
     path: str
+    columns: Optional[List[str]]
     data_management: data_manag_val
     
     @field_validator('path')
