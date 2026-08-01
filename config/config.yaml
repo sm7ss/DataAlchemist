@@ -9,7 +9,7 @@ defaults:
   
   - _self_
 
-eda: 
+eda_analysis: 
   null_values: True
   null_values_percent_column: 0.65
   null_values_percent_row: 0.40
@@ -30,11 +30,11 @@ eda:
       top_n: #if a top_n is not given, the value will be 2
       rare_threshold_percent: #if a threshold is not given, the value will be 0.01
 
-hydra: 
-  run:
-    dir: config/hydra_outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
-  sweep:
-    dir: multirun/${now%Y-%m-%d}/${now:%H-%M-%S}
-    subdir: ${hydra.job.num}
+#hydra: 
+#  run:
+#    dir: config/hydra_outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+#  sweep:
+#    dir: multirun/${now%Y-%m-%d}/${now:%H-%M-%S}
+#    subdir: ${hydra.job.num}
 
 
