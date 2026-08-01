@@ -1,5 +1,3 @@
-columns: 
-
 sampling: # if not value given 'random' will be used
 representative_column: #use when "representative" is selected
 
