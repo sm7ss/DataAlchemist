@@ -1,5 +1,3 @@
-from omegaconf import DictConfig, OmegaConf
-
 import yaml 
 import logging
 from pathlib import Path
@@ -9,21 +7,8 @@ from pydantic import BaseModel
 logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
 logger= logging.getLogger(__name__)
 
-from .validation import validation
-
 from .validation_cleaning.cleaning_validation import cleaning_val
 from .validation_preprocessing.preprocessing_validation import ml_preprocessing_val
-
-def validate_config(cfg: DictConfig) -> None:
-    dict_config= OmegaConf.to_container(cfg, resolve=True)
-    
-    try: 
-        validate_cfg= validation(**dict_config)
-        logger.info('Successful validation')
-    except Exception as e:
-        logger.error(f'There are problems in validating fields:\n{e}')
-    
-    return validate_cfg
 
 class ReadConfig: 
     @staticmethod
