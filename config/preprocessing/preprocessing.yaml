@@ -6,11 +6,11 @@ null_cat_handler: # if not value given 'constantValue' will be used
 null_cat_handler_value: # if not value is given "Unknown" will be used
 
 distribution: 
-  enable: 
+  enable: True
   transformer: 
 
 outlier: 
-  enable: 
+  enable: True
   strategy: # if not given "iqr" will be the strategy used
   filter: 
   impute_outliers: 
@@ -18,7 +18,7 @@ outlier:
   transform: 
 
 correlation:
-  enable: 
+  enable: True
   high_correlation: # if None, then join will be the operation
   remove_column: # just if high_correlation is selected if not, join will be the auto operation for not deleting any column
 
