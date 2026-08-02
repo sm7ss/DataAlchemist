@@ -1,6 +1,7 @@
 path: 'car_data.csv'
 
-columns: ['VehicleType','RegistrationYear','Gearbox','Power','Model','Mileage','RegistrationMonth','FuelType','Brand','NotRepaired']
+features: 
+target: 'Price'
 
 data_management: 
   output:
