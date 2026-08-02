@@ -7,6 +7,10 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
 logger= logging.getLogger(__name__)
 
+class null_values_val(BaseModel): 
+    null_values_percent_column: float
+    null_values_percent_row: float
+
 class distribution_decision_maker_val(BaseModel): 
     tail_length: int= Field(ge=50, le=1000)
     scaler_concentration: float= Field(ge=0.1, le=100) 
@@ -96,6 +100,7 @@ class category_decision_maker_val(BaseModel):
     threshold_ml_analysis: category_threshold_ml_analysis_val
 
 class eda_threshold_val(BaseModel): 
+    null_values: null_values_val
     distribution_decision_maker: distribution_decision_maker_val
     outlier_decision_maker: outlier_decision_maker_val
     correlation_decision_maker: correlation_decision_maker_val
