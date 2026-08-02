@@ -2,17 +2,14 @@ defaults:
   - eda: eda_threshold
   - cleaning: cleaning_threshold
   - preprocessing: preprocessing_threshold
-#  - modeling: modeling_threshold
   
   - data: 'data'
-#  - model: 
   
   - _self_
 
 eda_analysis: 
   null_values: True
-  null_values_percent_column: 0.65
-  null_values_percent_row: 0.40
+  duplicated_values: True
   basic_analysis_data: 
     distribution: 
       columns: 
