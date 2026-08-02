@@ -1,5 +1,4 @@
 from pydantic import BaseModel, model_validator
-from typing import Union, List
 
 import polars as pl 
 import logging
@@ -10,13 +9,7 @@ logger= logging.getLogger(__name__)
 from .data_managment_validation import data_managment_val
 
 from .validation_cleaning.cleaning_threshold_validation import config_cleaning
-#from .validation_modeling.modeling_threshold_validation import modeling_val
 from .validation_preprocessing.preprocessing_threshold_validation import preprocessing_val
-
-#from .validation_model.cv_grid_search import grid_search_cv_val
-#from .validation_model.decision_tree_regressor import decision_tree_regressor_val
-#from .validation_model.linear_regression import linear_regression_val
-#from .validation_model.random_forest_regressor_validation import random_forest_regressor_val
 
 from .validation_eda.eda_threshold_validation import eda_threshold_val
 from .validation_eda.eda_validation import eda_val
@@ -25,24 +18,10 @@ class validation(BaseModel):
     eda: eda_threshold_val
     cleaning: config_cleaning
     preprocessing: preprocessing_val
-#    modeling: modeling_val
     
     data: data_managment_val 
     
     eda_analysis: eda_val
-#    model: Union[
-#        grid_search_cv_val,
-#        decision_tree_regressor_val, 
-#        linear_regression_val, 
-#        random_forest_regressor_val,
-#        List[Union[
-#            grid_search_cv_val, 
-#            decision_tree_regressor_val, 
-#            linear_regression_val, 
-#            random_forest_regressor_val
-#            ]
-#        ]
-#]
     
     @model_validator(mode='after')
     def columns_analysis_val(self): 
@@ -54,13 +33,17 @@ class validation(BaseModel):
         else: 
             frame= pl.read_parquet(path, n_rows=100)
         
-        columns= self.data.columns
+        columns= self.data.features
+        target= self.data.target
         if columns: 
+            if target in columns: 
+                logger.warning('Target column removed from features to prevent data leakage')
+                columns= frame.drop(target)
             num_columns= frame.select(columns).select(pl.selectors.numeric()).columns
             cat_columns= frame.select(columns).select(pl.selectors.string()).columns
         else: 
-            num_columns= frame.select(pl.selectors.numeric()).columns
-            cat_columns= frame.select(pl.selectors.string()).columns
+            num_columns= frame.drop(target).select(pl.selectors.numeric()).columns
+            cat_columns= frame.drop(target).select(pl.selectors.string()).columns
         
         for analysis_data in analysis: 
             if not num_columns: 
