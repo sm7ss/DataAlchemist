@@ -52,7 +52,10 @@ class data_manag_val(BaseModel):
 
 class data_managment_val(BaseModel): 
     path: str
-    columns: Optional[List[str]]
+    
+    features: Optional[List[str]]
+    target: str
+    
     data_management: data_manag_val
     
     @field_validator('path')
