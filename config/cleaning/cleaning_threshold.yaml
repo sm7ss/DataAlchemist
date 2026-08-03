@@ -1,4 +1,3 @@
-rows_percent: 40
-columns_percent: 65
-
-
+output: 
+  name: 
+  enable: 
