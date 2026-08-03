@@ -8,5 +8,5 @@ logger= logging.getLogger(__name__)
 
 def drop_columns(frame: pl.DataFrame, list_drop: List[str]) -> pl.DataFrame: 
     logger.info(f'DataFrame {list_drop} columns were removed')
-    return frame.drop(list_drop)
+    return frame.drop(list_drop, strict=False)
 
