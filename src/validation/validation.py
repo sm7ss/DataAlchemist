@@ -1,4 +1,4 @@
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, model_validator, field_validator
 
 import polars as pl 
 import logging
@@ -33,19 +33,13 @@ class validation(BaseModel):
         else: 
             frame= pl.read_parquet(path, n_rows=100)
         
-        columns= self.data.features
         target= self.data.target
-        if columns: 
-            if target in columns: 
-                logger.warning('Target column removed from features to prevent data leakage')
-                columns= frame.drop(target)
-            num_columns= frame.select(columns).select(pl.selectors.numeric()).columns
-            cat_columns= frame.select(columns).select(pl.selectors.string()).columns
-        else: 
-            self.data.features=frame.drop(target).columns
-            
-            num_columns= frame.drop(target).select(pl.selectors.numeric()).columns
-            cat_columns= frame.drop(target).select(pl.selectors.string()).columns
+        if target not in frame.columns: 
+            logger.error('The target should exist on DataFrame')
+            raise ValueError('The target should exist on DataFrame')
+        
+        num_columns= frame.select(pl.selectors.numeric()).columns
+        cat_columns= frame.select(pl.selectors.string()).columns
         
         for analysis_data in analysis: 
             if not num_columns: 
