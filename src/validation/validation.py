@@ -8,7 +8,7 @@ logger= logging.getLogger(__name__)
 
 from .data_managment_validation import data_managment_val
 
-from .validation_cleaning.cleaning_threshold_validation import config_cleaning
+from .validation_cleaning.cleaning_threshold_validation import cleaning_val
 from .validation_preprocessing.preprocessing_threshold_validation import preprocessing_val
 
 from .validation_eda.eda_threshold_validation import eda_threshold_val
@@ -16,7 +16,7 @@ from .validation_eda.eda_validation import eda_val
 
 class validation(BaseModel): 
     eda: eda_threshold_val
-    cleaning: config_cleaning
+    cleaning: cleaning_val
     preprocessing: preprocessing_val
     
     data: data_managment_val 
