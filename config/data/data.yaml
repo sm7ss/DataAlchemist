@@ -1,6 +1,5 @@
 path: 'car_data.csv'
 
-features: 
 target: 'Price'
 
 data_management: 
