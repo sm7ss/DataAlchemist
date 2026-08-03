@@ -3,14 +3,6 @@ path: 'car_data.csv'
 target: 'Price'
 
 data_management: 
-  output:
-    clean_data: 
-      enable: False
-      name: 
-    preprocessing_data: 
-      enable: False
-      name: 
-  
   data_protection: 
     enable: True
     method: 'permutation_matrix'
