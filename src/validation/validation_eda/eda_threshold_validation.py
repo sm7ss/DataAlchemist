@@ -8,8 +8,8 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(mess
 logger= logging.getLogger(__name__)
 
 class null_values_val(BaseModel): 
-    null_values_percent_column: float
-    null_values_percent_row: float
+    null_values_percent_column: int
+    null_values_percent_row: int
 
 class distribution_decision_maker_val(BaseModel): 
     tail_length: int= Field(ge=50, le=1000)
