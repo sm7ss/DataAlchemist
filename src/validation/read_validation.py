@@ -24,7 +24,7 @@ class ValidateExternData:
                 logger.error(f'The column {col} doesnt exist in DataFrame. Available columns:\n{self.cols}')
                 raise ValueError(f'The column {col} doesnt exist in DataFrame. Available columns:\n{self.cols}')
     
-    def cleaning_validation(self, config_cleaning: BaseModel): 
+    def cleaning_validation(self, config: BaseModel, config_cleaning: BaseModel): 
         cleaning_columns_name= config_cleaning.rename_columns
         change_datatypes= config_cleaning.change_datatypes
         drop_columns= config_cleaning.drop_columns
@@ -47,6 +47,11 @@ class ValidateExternData:
         
         if drop_columns: 
             self.existing_columns(columns=drop_columns)
+            y= config.data.target
+            
+            if y in drop_columns: 
+                logger.error('The target column cannot be deleted')
+                raise ValueError('The target column cannot be deleted')
     
     def preprocessing_validation(self, config_preprocessing: BaseModel): 
         columns_remove_correlation= config_preprocessing.correlation.remove_column
@@ -90,23 +95,18 @@ class ReadConfig:
             raise ValueError(f'There is an error:\n{e}')
     
     @classmethod
-    def read_config(cls, frame: pl.DataFrame) -> Dict[str, Any]: 
+    def read_config(cls, frame: pl.DataFrame, config: BaseModel, path_config: Path) -> Dict[str, Any]: 
         validate= ValidateExternData(frame=frame)
         
-        preprocessing= Path(__file__).resolve().parent.parent.parent / 'config' / 'preprocessing' / 'preprocessing.yaml'
-        cleaning= Path(__file__).resolve().parent.parent.parent / 'config' / 'cleaning' / 'cleaning.yaml'
-        
-        dict_configs= {}
-        
-        cleaning_config= cls.yaml_read(config=cleaning, callable=cleaning_val)
-        validate.cleaning_validation(config_cleaning=cleaning_config)
-        
-        preprocessing_config= cls.yaml_read(config=preprocessing, callable=ml_preprocessing_val)
-        validate.preprocessing_validation(config_preprocessing=preprocessing_config)
-        
-        dict_configs['cleaning']= cleaning_config
-        dict_configs['preprocessing']= preprocessing_config
-        
-        return dict_configs
+        if path_config.name == 'cleaning.yaml': 
+            cleaning_config= cls.yaml_read(config=path_config, callable=cleaning_val)
+            validate.cleaning_validation(config_cleaning=cleaning_config, config=config)
+            logger.info('Cleaning config was validated correctly')
+            return cleaning_config
+        else: 
+            preprocessing_config= cls.yaml_read(config=path_config, callable=ml_preprocessing_val)
+            validate.preprocessing_validation(config_preprocessing=preprocessing_config)
+            logger.info('Preprocessing config was validated correctly')
+            return preprocessing_config
 
 
