@@ -1,5 +1,26 @@
-from pydantic import BaseModel, Field
-from typing import Union
+from pydantic import BaseModel, Field, model_validator
+from typing import Union, Optional
+
+from datetime import datetime
+from pathlib import Path
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
+logger= logging.getLogger(__name__)
+
+class output_val(BaseModel): 
+    name: Optional[str]
+    enable: Optional[bool]
+    
+    @model_validator(mode='after')
+    def name_val(self): 
+        if self.enable:
+            date= datetime.now().strftime('%d-%m-%Y')
+            path= Path(__file__).parent.parent.parent/'data_output'/'preprocesed'/date/self.name
+            self.name= path / self.name
+            logger.info('The path for the output of the preprocesed file is in place')
+        
+        return self
 
 class min_sample(BaseModel): 
     max_files: int= Field(ge=5000, le=15000)
@@ -28,6 +49,7 @@ class preprocessing_outlier_rules(BaseModel):
     flag_percent: Union[int, float]= Field(ge=1, le=100)
 
 class preprocessing_val(BaseModel): 
+    output: output_val
     sample_data: sample_data_val
     preprocessing_outlier_rules: preprocessing_outlier_rules
 
