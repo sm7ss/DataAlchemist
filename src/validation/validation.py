@@ -42,6 +42,8 @@ class validation(BaseModel):
             num_columns= frame.select(columns).select(pl.selectors.numeric()).columns
             cat_columns= frame.select(columns).select(pl.selectors.string()).columns
         else: 
+            self.data.features=frame.drop(target).columns
+            
             num_columns= frame.drop(target).select(pl.selectors.numeric()).columns
             cat_columns= frame.drop(target).select(pl.selectors.string()).columns
         
