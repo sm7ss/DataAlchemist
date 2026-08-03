@@ -2,10 +2,9 @@ from .columns_name import rename_columns
 from .datatypes import DataTypeListExpr
 from .duplicated import duplicated_rows
 from .drop_columns import drop_columns
-from .nulls import CleanNulls
 
 from pydantic import BaseModel
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 
 import polars as pl 
 import logging
@@ -14,11 +13,12 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(mess
 logger= logging.getLogger(__name__)
 
 class CleanDataFrame: 
-    def __init__(self, frame: pl.DataFrame, config: BaseModel, config_threshold_cleaning: BaseModel,  JSON: Dict[str, Any]):
+    def __init__(self, frame: pl.DataFrame, config_cleaning: BaseModel, config: BaseModel,  JSON: Dict[str, Any]):
         self.frame= frame
         
-        self.config_threshold= config_threshold_cleaning
-        self.config_cleaning= config
+        self.config= config
+        self.config_threshold= config.cleaning
+        self.config_cleaning= config_cleaning
         
         self.JSON= JSON
     
@@ -44,18 +44,7 @@ class CleanDataFrame:
         class_drop_columns= drop_columns(frame=frame, list_drop=list_drop)
         return class_drop_columns
     
-    def _nulls(self, frame: pl.DataFrame) -> pl.DataFrame:
-        class_null_list_expr= CleanNulls(
-            frame=frame, 
-            JSON=self.JSON, 
-            model=self.config_cleaning, 
-            model_threshold=self.config_threshold
-        )
-        
-        frame= class_null_list_expr.clean_dataframe()
-        return frame
-    
-    def clean_dataframe(self) -> pl.DataFrame: 
+    def clean_dataframe(self) -> Tuple[pl.DataFrame]: 
         frame= self.frame.with_row_index()
         
         rename_columns= self.config_cleaning.rename_columns
@@ -74,11 +63,15 @@ class CleanDataFrame:
         
         if drop_columns: 
             frame= self._drop_columns(frame=frame, list_drop=drop_columns)
-        
-        frame=self._nulls(frame=frame)
         logger.info('DataFrame is cleaned')
         
-        return frame.drop('index')
+        target= self.config.data.target
+        x= frame.drop(target, strict=False)
+        y= frame[target]
+        
+        logger.info('X and Y were obtained')
+        
+        return x, y
 
 
 
