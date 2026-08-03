@@ -1,3 +1,7 @@
+output: 
+  name: 
+  enable: 
+
 sample_data:
   min_sample: # < min_sample
     max_files: 10000
