@@ -22,6 +22,10 @@ class output_val(BaseModel):
         
         return self
 
+class threshold_nulls_val(BaseModel): 
+    rows_percent: int= Field(ge=1, le=100)
+    columns_percent: int= Field(ge=1, le=100)
+
 class min_sample(BaseModel): 
     max_files: int= Field(ge=5000, le=15000)
 
@@ -50,6 +54,7 @@ class preprocessing_outlier_rules(BaseModel):
 
 class preprocessing_val(BaseModel): 
     output: output_val
+    threshold_nulls: threshold_nulls_val
     sample_data: sample_data_val
     preprocessing_outlier_rules: preprocessing_outlier_rules
 
