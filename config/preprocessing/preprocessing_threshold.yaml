@@ -2,6 +2,10 @@ output:
   name: 
   enable: 
 
+threshold_nulls:
+  rows_percent: 40
+  columns_percent: 65
+
 sample_data:
   min_sample: # < min_sample
     max_files: 10000
