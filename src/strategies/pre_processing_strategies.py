@@ -1,5 +1,12 @@
 from enum import Enum
 
+class NumericNulls(str, Enum): 
+    MEDIAN= 'median'
+    MEAN= 'mean'
+
+class CategoricNulls(str, Enum): 
+    MODE= 'mode'
+
 class NullNumericHandler(str, Enum): 
     FILTER= 'filter'
     MEDIAN= 'median'

@@ -1,12 +1,5 @@
 from enum import Enum
 
-class NumericNulls(str, Enum): 
-    MEDIAN= 'median'
-    MEAN= 'mean'
-
-class CategoricNulls(str, Enum): 
-    MODE= 'mode'
-
 class DataTypes(str, Enum): 
     FLOAT32= 'Float32'
     INT32= 'Int32'
