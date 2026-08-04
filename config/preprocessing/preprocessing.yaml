@@ -1,9 +1,13 @@
 sampling: # if not value given 'random' will be used
 representative_column: #use when "representative" is selected
 
-null_num_handler: # if not value given 'median' will be used
+null_num_handler: # if not value given 'mean' will be used
 null_cat_handler: # if not value given 'constantValue' will be used
 null_cat_handler_value: # if not value is given "Unknown" will be used
+
+null_general_values: 
+  null_impute_numerics: # if None -> the median will be used if nulls are found
+  null_impute_categorics: # if None -> the mode will be used if nulls are found
 
 distribution: 
   enable: True
