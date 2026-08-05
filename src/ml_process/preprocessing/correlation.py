@@ -3,8 +3,6 @@ import logging
 from pydantic import BaseModel
 from typing import Union, Dict, Any, List
 
-from ...strategies.pre_processing_strategies import HighCorrelationActions
-
 logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
 logger= logging.getLogger(__name__)
 
@@ -27,7 +25,7 @@ class CorrelationPreprocessing:
         self.corr= corr_dict.get('high_correlations')
         self.expr= CorrelationExpr(frame=self.frame)
     
-    def auto_correlation(self) -> Dict[List[pl.Expr], List[str]]: 
+    def correlation(self) -> Dict[List[pl.Expr], List[str]]: 
         if not self.corr:
             logger.info('No high correlation was found') 
             return None
