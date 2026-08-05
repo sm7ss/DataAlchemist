@@ -2,6 +2,11 @@ path: 'car_data.csv'
 
 target: 'Price'
 
+training: 
+  test_size: 0.25
+  random_state: 42
+  shuffle: True
+
 data_management: 
   data_protection: 
     enable: True
