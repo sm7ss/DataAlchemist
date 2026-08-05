@@ -67,7 +67,7 @@ class CleanDataFrame:
         
         target= self.config.data.target
         x= frame.drop(target, strict=False)
-        y= frame[target]
+        y= frame[target, 'index']
         
         logger.info('X and Y were obtained')
         
