@@ -7,6 +7,12 @@ from ..strategies.strategies import ProtectionData
 logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
 logger= logging.getLogger(__name__)
 
+class training_val(BaseModel): 
+    test_size: float= Field(ge=0.01, le=0.99)
+    random_state: int= Field(ge=0)
+    shuffle: bool
+    
+
 class data_protection_val(BaseModel): 
     enable: bool
     method: ProtectionData
@@ -21,6 +27,7 @@ class data_managment_val(BaseModel):
     path: str
     target: str
     
+    training: training_val
     data_management: data_manag_val
     
     @field_validator('path')
