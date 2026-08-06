@@ -151,11 +151,10 @@ class CleanNulls:
         }
     
     def fit_expressions(self, x_train: pl.DataFrame) -> pl.DataFrame:
-        frame= self.frame
-        
         dict_null_actions= self.obtain_null_actions()
+        
         if not dict_null_actions: 
-            return frame
+            return x_train
         
         expressions= dict_null_actions['expressions']
         
@@ -173,6 +172,9 @@ class CleanNulls:
         return x_train
     
     def transform_expressions(self, x_test: pl.DataFrame) -> pl.DataFrame: 
+        if not self.impute_values: 
+            return x_test
+        
         expressions= []
         
         for col in self.impute_values: 
