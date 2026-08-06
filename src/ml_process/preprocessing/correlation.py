@@ -48,6 +48,31 @@ class CorrelationPreprocessing:
             'drop': list_col_drop, 
             'expr': list_expr
         }
+    
+    def fit_expressions(self, x_train: pl.DataFrame) -> pl.DataFrame: 
+        dict_expr= self.correlation()
+        
+        self.drop= dict_expr['drop']
+        self.expr= dict_expr['expr']
+        
+        if self.expr: 
+            x_train= x_train.with_columns(self.expr)
+            logger.info('Expressions were added')
+        if self.drop: 
+            x_train= x_train.drop(self.drop)
+            logger.info('Columns were dropped')
+        
+        return x_train
+    
+    def transform_expressions(self, x_test: pl.DataFrame) -> pl.DataFrame: 
+        if self.expr: 
+            x_test= x_test.with_columns(self.expr)
+            logger.info('Expressions were added')
+        if self.drop: 
+            x_test= x_test.drop(self.drop)
+            logger.info('Columns were dropped')
+        
+        return x_test
 
 
 
