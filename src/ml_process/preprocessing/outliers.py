@@ -58,7 +58,7 @@ class Outlier:
     def __init__(self, frame: pl.DataFrame, config: BaseModel, outlier_dict: Dict[str, Any]):
         self.frame= frame
         
-        self.o_config= config
+        self.o_config= config.preprocessing.preprocessing_outlier_rules
         self.outlier_dict= outlier_dict
         
         self.numeric_frame= self.frame.select(pl.selectors.numeric())
