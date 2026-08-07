@@ -55,13 +55,13 @@ class DeleteData:
     def delete_row_expr(index_list: List[Union[int]]) -> pl.Expr: 
         return ~pl.col('index').is_in(index_list)
 
-class CleanNulls: 
+class Nulls: 
     def __init__(self, frame: pl.DataFrame, JSON: Dict[str, Any], model: BaseModel, model_threshold: BaseModel):
         self.frame= frame
         
         self.JSON= JSON.get('null_analysis', None)
         self.model= model
-        self.model_threshold= model_threshold.threshold_nulls
+        self.model_threshold= model_threshold.preprocessing.threshold_nulls
         
         self.cat= CatNullExpr(model=self.model)
         self.num= NumNullExpr(model=self.model)
