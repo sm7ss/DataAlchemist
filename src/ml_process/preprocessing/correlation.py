@@ -6,6 +6,8 @@ from typing import Union, Dict, Any, List
 logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
 logger= logging.getLogger(__name__)
 
+# REMOVE COLUMS NEED TO BE IMPLEMENTED
+
 class CorrelationExpr: 
     def __init__(self, frame: pl.DataFrame):
         self.frame= frame
@@ -16,7 +18,7 @@ class CorrelationExpr:
     def join(self, col_1: str, col_2: str) -> pl.Expr: 
         return ((pl.col(col_1) + pl.col(col_2)) / 2).alias(f'{col_1}_{col_2}_avg')
 
-class CorrelationPreprocessing: 
+class Correlation: 
     def __init__(self, frame: pl.DataFrame, corr_dict: Dict[str, Any], config: BaseModel):
         self.frame= frame
         
