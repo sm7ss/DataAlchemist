@@ -26,6 +26,8 @@ class Correlation:
         
         self.corr= corr_dict.get('high_correlations')
         self.expr= CorrelationExpr(frame=self.frame)
+        
+        self.join= False
     
     def correlation(self) -> Dict[List[pl.Expr], List[str]]: 
         if not self.corr:
@@ -54,10 +56,15 @@ class Correlation:
     def fit_expressions(self, x_train: pl.DataFrame) -> pl.DataFrame: 
         dict_expr= self.correlation()
         
-        self.drop= dict_expr['drop']
-        self.expr= dict_expr['expr']
+        if not dict_expr: 
+            return x_train
         
-        if self.expr: 
+        self.join= True
+        
+        self.drop= dict_expr['drop']
+        self.expr_= dict_expr['expr']
+        
+        if self.expr_: 
             x_train= x_train.with_columns(self.expr)
             logger.info('Expressions were added')
         if self.drop: 
@@ -66,8 +73,11 @@ class Correlation:
         
         return x_train
     
-    def transform_expressions(self, x_test: pl.DataFrame) -> pl.DataFrame: 
-        if self.expr: 
+    def transform_expressions(self, x_test: pl.DataFrame) -> pl.DataFrame:
+        if not self.join: 
+            return x_test
+        
+        if self.expr_: 
             x_test= x_test.with_columns(self.expr)
             logger.info('Expressions were added')
         if self.drop: 
