@@ -61,7 +61,7 @@ class Nulls:
         
         self.JSON= JSON.get('null_analysis', None)
         self.model= model
-        self.model_threshold= model_threshold.preprocessing.threshold_nulls
+        self.model_threshold= model_threshold.threshold_nulls
         
         self.cat= CatNullExpr(model=self.model)
         self.num= NumNullExpr(model=self.model)
