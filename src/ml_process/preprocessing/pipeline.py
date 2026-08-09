@@ -1,25 +1,25 @@
 import polars as pl 
 import logging
-from typing import List, Optional, Union, Dict, Any
+from typing import List, Union, Dict, Any, Tuple
 from pydantic import BaseModel
 
 from ...strategies.pre_processing_strategies import CorrSampling
 from .operations.null import NullNumHandler, NullCatHandler
 
-from .distribution import DistributionListExpr
-from .outliers import OutlierCleanFrame
-from .correlation import CorrelationPreprocessing
+from .nulls import Nulls
+from .distribution import Distribution
+from .outliers import Outlier
+from .correlation import Correlation
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
 logger= logging.getLogger(__name__)
 
 class SamplingData: 
-    def __init__(self, frame: pl.DataFrame, config: BaseModel):
-        self.frame= frame
+    def __init__(self, config: BaseModel):
         self.config_sample= config.sample_data
     
-    def percent_files(self) -> int: 
-        size= self.frame.height
+    def percent_files(self, x: pl.DataFrame) -> int: 
+        size= x.height
         
         min_sample= self.config_sample.min_sample.max_files
         
@@ -42,22 +42,30 @@ class SamplingData:
         
         return new_size
     
-    def random_sample(self) -> pl.DataFrame: 
-        files= self.percent_files()
-        return self.frame.sample(n=files, seed=42)
+    def random_sample(self, x: pl.DataFrame, y: pl.DataFrame) -> Tuple[pl.DataFrame]: 
+        files= self.percent_files(x=x)
+        
+        x= x.sample(n=files, seed=42)
+        y= y.sample(n=files, seed=42)
+        
+        return x, y
     
-    def representative(self, r_columns: Union[str, List[str]]) -> pl.DataFrame: 
-        files= self.percent_files
-        return self.frame.select(r_columns).sample(n=files, seed=42)
+    def representative(self, x: pl.DataFrame, y: pl.DataFrame, r_columns: Union[str, List[str]]) -> Tuple[pl.DataFrame]: 
+        files= self.percent_files(x=x)
+        
+        x= x.select(r_columns).sample(n=files, seed=42)
+        y= y.select(r_columns).sample(n=files, seed=42)
+        
+        return x, y
     
-    def sampling(self, decision: CorrSampling, r_columns: Union[str, List[str]]=None) -> pl.DataFrame: 
+    def sampling(self, x: pl.DataFrame, y: pl.DataFrame, decision: CorrSampling, r_columns: Union[str, List[str]]=None) -> Tuple[pl.DataFrame]: 
         match decision: 
             case CorrSampling.RANDOM: 
-                self.frame= self.random_sample()
+                x, y= self.random_sample(x=x, y=y)
             case CorrSampling.REPRESENTATIVE: 
-                self.frame= self.representative(r_columns=r_columns)
+                x, y= self.representative(x=x, y=y, r_columns=r_columns)
         
-        return self.frame
+        return x, y
 
 class NullHandler: 
     def __init__(self, frame: pl.DataFrame, config: BaseModel):
@@ -67,213 +75,185 @@ class NullHandler:
         self.num_cols= frame.select(pl.selectors.numeric()).columns
         self.cat_cols= frame.select(pl.selectors.string()).columns
         
-        self.num_handle= NullNumHandler()
-        self.cat_handle= NullCatHandler()
+        self.nulls= False
     
-    def get_columns_with_nulls(self, null_dict: Dict[str, Any]) -> Optional[List[str]]: 
-        null= null_dict.get('null_analysis', None)
+    def get_expr(self, x_train: pl.DataFrame) -> List[str]: 
+        expr= []
         
-        if not null: 
-            logger.info('No null analysis were detected')
-            return None
-        
-        list_nulls= []
-        
-        for col in null: 
-            if col != 'total_nulls': 
-                nulls= null[col].get('total_nulls_column', None)
-                if nulls > 0: 
-                    list_nulls.append(col)
-        
-        if list_nulls: 
-            return list_nulls
-        else: 
-            logger.info(f'Any column have outliers')
-            return None
-    
-    def get_expr(self, null_analysis: Dict[str, Any]) -> Optional[List[pl.Expr]]: 
-        list_expr= []
-        cols= self.get_columns_with_nulls(null_dict=null_analysis)
-        
-        if not cols: 
-            logger.info('No nulls were found')
-            return None
-        
-        cat_handle= self.config.null_cat_handler
+        num_method= self.config.null_num_handler
+        cat_method= self.config.null_cat_handler
         const_value= self.config.null_cat_handler_value
         
-        num_handle= self.config.null_num_handler
+        cat= NullCatHandler()
+        num= NullNumHandler()
         
-        for col in cols: 
-            if col in self.num_cols:
-                expr= self.num_handle.get_null_num_handler_expr(col=col, null_method=num_handle)
-                list_expr.append(expr)
-                logger.info(f'Expression for column {col} numeric was created')
-            elif col in self.cat_cols: 
-                expr= self.cat_handle.get_null_cat_handler_expr(col=col, null_method=cat_handle, constant_value=const_value)
-                list_expr.append(expr)
-                logger.info(f'Expression for column {col} categorical was created')
-            else: 
-                logger.info(f'Column {col} has no expression for its data type')
+        for col in x_train.columns: 
+            if col == 'index': 
                 continue
-        
-        if not list_expr:
-            logger.info('No nulls were found')
-            return None
-        
-        return list_expr
-
-class PreProcessinAuto: 
-    def __init__(self, frame: pl.DataFrame, config: BaseModel, config_prep: BaseModel, analysis_dict: Dict[str, Any]):
-        self.frame= frame
-        
-        self.config= config
-        self.config_prep= config_prep
-        self.analysis_dict= analysis_dict.get('analysis_data', None)
-    
-    def distribution(self) -> Optional[List[str]]: 
-        distribution_dict= self.analysis_dict.get('distribution', None)
-        if not distribution_dict: 
-            logger.info('No distribution analysis were detected or enabled')
-            return None
-        
-        distribution_expr= DistributionListExpr(frame=self.frame)
-        distribution_list= distribution_expr.auto_distribution(distribution_dict=distribution_dict)
-        
-        if distribution_list: 
-            logger.info('List of expresions for distribution were added into principal list expressions')
-            return distribution_list
-        else: 
-            logger.info('No expressions for distribution analisys were found')
-    
-    def outliers(self) -> Optional[List[str]]: 
-        outlier_dict= self.analysis_dict.get('outliers', None)
-        if not outlier_dict: 
-            logger.info(f'No outlier analysis were detected or enabled')
-            return None
-        
-        outlier_frame= OutlierCleanFrame(frame=self.frame, config=self.config_prep)
-        frame= outlier_frame.iqr_auto_expr_method(outlier_dict=outlier_dict)
-        
-        return frame
-    
-    def correlation(self) -> Optional[List[pl.Expr]]: 
-        corr_dict= self.analysis_dict.get('correlation', None)
-        if not corr_dict: 
-            logger.info(f'No correlation analysis were detected or enabled')
-            return None
-        
-        correlation_op= CorrelationPreprocessing(frame=self.frame, corr_dict=corr_dict, config=self.config)
-        correlation_dict= correlation_op.auto_correlation()
-        
-        if correlation_dict: 
-            logger.info('List of expresions for correlation were added into principal list expressions')
-            return correlation_dict
-        else: 
-            logger.info('No expressions for correlation analisys were found')
-    
-    def get_frame(self) -> Optional[pl.DataFrame]:
-        frame= self.frame
-        
-        change= 0
-        
-        d_expr= self.distribution()
-        o_expr= self.outliers()
-        c_expr= self.correlation()
-        
-        if d_expr: 
-            frame= frame.with_columns(d_expr)
-            logger.info('DataFrame with changes to the distribution data')
-            change+=1
-        if o_expr is not None: 
-            frame= o_expr
-            logger.info('DataFrame with changes to the data for outliers')
-            change+=1
-        if c_expr: 
-            if isinstance(c_expr, list):
-                frame= frame.with_columns(c_expr)
-                logger.info('DataFrame with changes to the correlation data')
-                change+=1
-            else: 
-                drop= c_expr['drop']
-                expr= c_expr['expr']
+            
+            num_nulls= x_train.filter(pl.col(col).is_null()).height
+            
+            if num_nulls > 0:
+                if col in self.num_cols: 
+                    expression= num.get_null_num_handler_expr(col=col, null_method=num_method)
+                    expr.append(expression)
                 
-                frame= frame.with_columns(expr).drop(drop)
-                logger.info('DataFrame with changes to the correlation data')
-                change+=1
+                if col in self.cat_cols: 
+                    expression= cat.get_null_cat_handler_expr(col=col, null_method=cat_method, constant_value=const_value)
+                    expr.append(expression)
         
-        if change > 0: 
-            return frame
-        else: 
-            logger.info(f'No expressions were found')
-            return None
+        return expr
+    
+    def fit_expression(self, x_train: pl.DataFrame) -> pl.DataFrame: 
+        expressions= self.get_expr(x_train=x_train)
+        
+        if not expressions: 
+            return x_train
+        
+        self.nulls= True
+        self.impute_values= {}
+        
+        for expr in expressions: 
+            value= x_train.select(expr).item(0,0)
+            col= expr.meta.root_names()[0]
+            
+            self.impute_values[col]= value
+        
+        x_train= x_train.with_columns(expressions)
+        logger.info('All nulls were imputed')
+        
+        return x_train
+    
+    def transform_expression(self, x_test: pl.DataFrame) -> pl.DataFrame: 
+        if not self.nulls: 
+            return x_test
+        
+        expressions= []
+        
+        for col in self.impute_values: 
+            value= self.impute_values[col]
+            
+            expr= pl.col(col).fill_null(value)
+            expressions.append(expr)
+        
+        x_test= x_test.with_columns(expressions)
+        logger.info('All nulls were imputed')
+        
+        return x_test
 
-class AutoPipeline: 
+class Pipeline: 
     def __init__(self, frame: pl.DataFrame, analysis: Dict[str, Any], config: BaseModel, config_threshold_preprocessing: BaseModel):
         self.config= config
-        self.config_pre= config_threshold_preprocessing
+        self.config_pre= config_threshold_preprocessing.preprocessing
         
         self.frame= frame
+        
         self.analysis= analysis
+        self.analysis_data= analysis.get('analysis_data', None)
     
-    def frame_sampling(self) -> pl.DataFrame: 
+    def x_y_sampling(self, x: pl.DataFrame, y: pl.DataFrame) -> Tuple[pl.DataFrame]: 
         sampling= self.config.sampling
         r_columns= self.config.representative_column
         
-        sample_data= SamplingData(frame=self.frame, config=self.config_pre).sampling(decision=sampling, r_columns=r_columns)
+        x, y= SamplingData(config=self.config_pre).sampling(x=x, y=y, decision=sampling, r_columns=r_columns)
         
         logger.info('Sampled frame were obtained')
         
-        return sample_data
+        return x, y
     
-    def nulls_frame(self, frame: pl.DataFrame) -> Optional[pl.DataFrame]: 
-        list_null_handler= NullHandler(frame=frame, config=self.config).get_expr(null_analysis=self.analysis)
+    def null_general(self, x_train: pl.DataFrame, x_test: pl.DataFrame) -> Tuple[pl.DataFrame]: 
+        nulls= Nulls(
+            frame=self.frame, 
+            JSON=self.analysis, 
+            model=self.config, 
+            model_threshold=self.config_pre
+        )
         
-        if list_null_handler: 
-            logger.info('Null expressions were added')
-            return frame.with_columns(list_null_handler)
-        else:
-            return None
+        x_train= nulls.fit_expressions(x_train=x_train)
+        x_test= nulls.transform_expressions(x_test=x_test)
+        
+        return x_train, x_test
     
-    def analysis_frame(self, frame: pl.DataFrame) -> Optional[pl.DataFrame]: 
-        frame= PreProcessinAuto(frame=frame, config=self.config, config_prep=self.config_pre, analysis_dict=self.analysis).get_frame()
+    def left_nulls(self, x_train: pl.DataFrame, x_test: pl.DataFrame) -> Tuple[pl.DataFrame]: 
+        left_nulls= NullHandler(frame=self.frame, config=self.config)
         
-        if frame is None: 
-            return None
-        else: 
-            return frame
+        x_train= left_nulls.fit_expression(x_train=x_train)
+        x_test= left_nulls.transform_expression(x_test=x_test)
+        
+        return x_train, x_test
     
-    def auto_frame_tests(self) -> Dict[str, pl.DataFrame]: 
-        sample_frame= self.frame_sampling()
-        frame= self.frame
+    def distribution(self, x_train: pl.DataFrame, x_test: pl.DataFrame) -> Tuple[pl.DataFrame]: 
+        distribution= self.analysis_data['distribution']
         
-        nulls= self.nulls_frame(frame=sample_frame)
-        frame_nulls= self.nulls_frame(frame=frame)
-        if frame_nulls is not None: 
-            analysis= self.analysis_frame(frame=nulls)
-            analysis_frame= self.analysis_frame(frame=frame)
-            if analysis_frame is not None: 
-                logger.info('Frame was obtained correctly')
-                analysis= self.analysis_frame(frame=sample_frame)
-                analysis_frame= self.analysis_frame(frame=frame)
-                if analysis_frame is not None: 
-                    logger.info('Frame was obtained correctly')
-                    return {
-                        'sample': analysis.drop('index'), 
-                        'frame': analysis_frame.drop('index')
-                    }
+        c_distribution= Distribution(frame=self.frame, distribution_dict=distribution)
         
-        analysis= self.analysis_frame(frame=sample_frame)
-        analysis_frame= self.analysis_frame(frame=frame)
-        if analysis_frame is not None: 
-            logger.info('Frame was obtained correctly')
-            return {
-                'sample': analysis.drop('index'), 
-                'frame': analysis_frame.drop('index')
-            }
-        else: 
-            return {
-                'sample': sample_frame.drop('index'),
-                'frame': frame.drop('index')
-            }
+        x_train= c_distribution.fit_expressions(x_train=x_train)
+        x_test= c_distribution.transform_expressions(x_test=x_test)
+        
+        return x_train, x_test
+    
+    def outliers(self, x_train: pl.DataFrame, x_test: pl.DataFrame) -> Tuple[pl.DataFrame]: 
+        outliers= self.analysis_data['outliers']
+        
+        c_outlier= Outlier(
+            frame=self.frame, 
+            config=self.config_pre, 
+            outlier_dict=outliers
+        )
+        
+        x_train= c_outlier.fit_expressions(x_train=x_train)
+        x_test= c_outlier.transform_expressions(x_test=x_test)
+        
+        return x_train, x_test
+    
+    def correlation(self, x_train: pl.DataFrame, x_test: pl.DataFrame) -> Tuple[pl.DataFrame]: 
+        correlation= self.analysis_data['correlation']
+        
+        c_correlation= Correlation(
+            frame=self.frame, 
+            corr_dict=correlation, 
+            config=self.config
+        )
+        
+        x_train= c_correlation.fit_expressions(x_train=x_train)
+        x_test= c_correlation.transform_expressions(x_test=x_test)
+        
+        return x_train, x_test
+    
+    # CATEGORY IS MISSING HERE
+    
+    def fit_transform_expression(self,  
+            x_train: pl.DataFrame, 
+            y_train: pl.DataFrame,
+            x_test: pl.DataFrame
+        ) -> Dict[str, Dict[str, pl.DataFrame]]: 
+        
+        distribution_enable= self.config.distribution.enable
+        outlier_enable= self.config.outlier.enable
+        correlation_enable= self.config.correlation.enable
+        
+        x_train, x_test= self.null_general(x_train=x_train, x_test=x_test)
+        x_train, x_test= self.left_nulls(x_train=x_train, x_test=x_test)
+        
+        if distribution_enable: 
+            x_train, x_test= self.distribution(x_train=x_train, x_test=x_test)
+        
+        if outlier_enable: 
+            x_train, x_test= self.outliers(x_train=x_train, x_test=x_test)
+        
+        if correlation_enable: 
+            x_train, x_test= self.correlation(x_train=x_train, x_test=x_test)
+        
+        x_sample, y_sample= self.x_y_sampling(x=x_train, y=y_train)
+        
+        return {
+            'train_sample': {
+                    'x_sample': x_sample,
+                    'y_sample': y_sample
+                },
+            'train_test': {
+                    'x_train': x_train, 
+                    'x_test': x_test
+                }
+        }
 
