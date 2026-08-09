@@ -58,7 +58,7 @@ class Outlier:
     def __init__(self, frame: pl.DataFrame, config: BaseModel, outlier_dict: Dict[str, Any]):
         self.frame= frame
         
-        self.o_config= config.preprocessing.preprocessing_outlier_rules
+        self.o_config= config.preprocessing_outlier_rules
         self.outlier_dict= outlier_dict
         
         self.numeric_frame= self.frame.select(pl.selectors.numeric())
@@ -183,24 +183,24 @@ class Outlier:
     def fit_expressions(self, x_train: pl.DataFrame) -> pl.DataFrame: 
         dict_expr= self.iqr_expr()
         
-        self.filter_expr= dict_expr['filter']
+        self.filter= dict_expr['filter']
         self.expr= dict_expr['expr']
         
-        if self.filter_expr: 
-            x_train= x_train.filter(self.filter_expr)
+        if self.filter: 
+            x_train= x_train.filter(self.filter.values())
             logger.info('Frame was filtered')
         if self.expr: 
-            x_train= x_train.with_columns(self.expr)
+            x_train= x_train.with_columns(self.expr.values())
             logger.info('Frame expressions were applied')
         
         return x_train
     
     def transform_expressions(self, x_test: pl.DataFrame) -> pl.DataFrame: 
-        if self.filter_expr: 
-            x_test= x_test.filter(self.filter_expr)
+        if self.filter: 
+            x_test= x_test.filter(self.filter.values())
             logger.info('Frame was filtered')
         if self.expr: 
-            x_test= x_test.with_columns(self.expr)
+            x_test= x_test.with_columns(self.expr.values())
             logger.info('Frame expressions were applied')
         
         return x_test
