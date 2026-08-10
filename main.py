@@ -1,44 +1,98 @@
+import hydra
+from omegaconf import DictConfig, OmegaConf
 from src.validation.read_validation import ReadConfig
+from src.validation.validation import validation
+
 from src.get_frame import get_frame
-from src.eda.pipeline_eda import EdaPipeline
+from src.eda.pipeline import EdaPipeline
+
 from src.cleaning.pipeline import CleanDataFrame
-from src.ml_process.preprocessing.pipeline import AutoPipeline
+from src.ml_process.preprocessing.pipeline import Pipeline
 
+from pathlib import Path
 import json
+import logging
 
-config= ReadConfig().read_config()
+from sklearn.model_selection import train_test_split
 
-config_var= config['config_vars']
-config_preprocessing= config['preprocessing']
-config_modeling= config['modeling']
-config_cleaning= config['cleaning']
-config= config['config']
+logging.basicConfig(level=logging.INFO, format='%(levelname)s-%(asctime)s-%(message)s')
+logger= logging.getLogger(__name__)
 
-frame= get_frame(file=config.path.data)
+@hydra.main(
+    version_base=None, 
+    config_path="config",
+    config_name="config"
+)
+def main(cfg: DictConfig) -> None:
+    dict_config= OmegaConf.to_container(cfg, resolve=True)
+    
+    try: 
+        config= validation(**dict_config)
+        logger.info('Sucess validation')
+    except Exception as e:
+        raise ValueError(f'There are problems in validating fields:\n{e}')
+    
+    # DataFrame
+    frame= get_frame(file=config.data.path)
+    
+    # EDA JSON and TXT files
+    dict_eda_files= EdaPipeline(
+        frame=frame,
+        config=config
+        ).pipeline_eda()
+    json_path= dict_eda_files['JSON_path']
+    
+    # Open JSON File
+    with open(json_path, 'r', encoding='utf-8') as f: 
+        file= json.load(f)
+    
+    path_cleaning= Path(__file__).parent/'config'/'cleaning'/'cleaning.yaml'
+    cleaning_config= ReadConfig().read_config(
+        frame=frame, 
+        config=config, 
+        path_config=path_cleaning
+    )
+    
+    X, Y= CleanDataFrame(
+        frame=frame, 
+        config_cleaning=cleaning_config, 
+        config=config,
+        JSON=file
+    ).clean_dataframe()
+    
+    test_size= config.data.training.test_size
+    random_state= config.data.training.random_state
+    shuffle= config.data.training.shuffle
+    
+    path_preprocessing= Path(__file__).parent/'config'/'preprocessing'/'preprocessing.yaml'
+    preprocessing= ReadConfig().read_config(
+        frame=X, 
+        config=config, 
+        path_config=path_preprocessing
+    )
+    
+    x_train, x_test, y_train, y_test= train_test_split(
+        X, Y, random_state=random_state, test_size=test_size, shuffle=shuffle
+    )
+    
+    c_preprocessing= Pipeline(
+        frame=X, 
+        analysis=file, 
+        config=preprocessing, 
+        config_threshold_preprocessing=config
+    )
+    
+    preprocessing_dict= c_preprocessing.fit_transform_expression(
+        x_train= x_train, 
+        y_train= y_train, 
+        x_test=x_test
+    )
+    
+    print(preprocessing_dict)
+    
 
-dict_eda_files= EdaPipeline(frame=frame, config=config, config_var=config_var).pipeline_eda()
-json_path= dict_eda_files['JSON_path']
 
-with open(json_path, 'r', encoding='utf-8') as f: 
-    file= json.load(f)
-
-frame_cleaned= CleanDataFrame(
-    frame=frame, 
-    config=config, 
-    config_clean=config_cleaning, 
-    JSON=file
-).clean_dataframe()
-
-dict_eda_files= EdaPipeline(frame=frame_cleaned, config=config, config_var=config_var).pipeline_eda()
-json_path= dict_eda_files['JSON_path']
-
-with open(json_path, 'r', encoding='utf-8') as f: 
-    file= json.load(f)
-
-frame= frame.with_row_index()
-
-preprocessing= AutoPipeline(frame=frame, analysis=file, config=config, config_pre=config_preprocessing)
-
-pre_processing_frame= preprocessing.auto_frame_tests()
+if __name__ == '__main__':
+    main()
 
 
