@@ -225,7 +225,8 @@ class Pipeline:
     def fit_transform_expression(self,  
             x_train: pl.DataFrame, 
             y_train: pl.DataFrame,
-            x_test: pl.DataFrame
+            x_test: pl.DataFrame, 
+            y_test: pl.DataFrame
         ) -> Dict[str, Dict[str, pl.DataFrame]]: 
         
         distribution_enable= self.config.distribution.enable
@@ -244,12 +245,15 @@ class Pipeline:
         if correlation_enable: 
             x_train, x_test= self.correlation(x_train=x_train, x_test=x_test)
         
-        x_sample, y_sample= self.x_y_sampling(x=x_train, y=y_train)
+        x_train_sample, y_train_sample= self.x_y_sampling(x=x_train, y=y_train)
+        x_test_sample, y_test_sample= self.x_y_sampling(x=x_test, y=y_test)
         
         return {
             'train_sample': {
-                    'x_sample': x_sample,
-                    'y_sample': y_sample
+                    'x_train_sample': x_train_sample,
+                    'y_train_sample': y_train_sample, 
+                    'x_test_sample': x_test_sample, 
+                    'y_test_sample': y_test_sample
                 },
             'train_test': {
                     'x_train': x_train, 
