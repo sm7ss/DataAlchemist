@@ -1,0 +1,414 @@
+
+========================================================================================
+                                    DATA ALCHEMIST  
+                             🐥 ANALYSIS REPORT (TEXT MODE)
+========================================================================================
+📅 Date: 2026-08-12
+📁 Dataset: car_data.csv
+📊 Shape: 354369 rows | 16 columns
+========================================================================================
+GENERAL INFO
+----------------------------------------------------------------------------------------
+📝 Available Columns: DateCrawled, Price, VehicleType, RegistrationYear, Gearbox, Power, Model, Mileage, RegistrationMonth, FuelType, Brand, NotRepaired, DateCreated, NumberOfPictures, PostalCode, LastSeen
+
+🪆 Duplicate Values:
+    - Total: 524
+
+🏷️ Column Type: 
+    - DateCrawled: String
+    - Price: Int64
+    - VehicleType: String
+    - RegistrationYear: Int64
+    - Gearbox: String
+    - Power: Int64
+    - Model: String
+    - Mileage: Int64
+    - RegistrationMonth: Int64
+    - FuelType: String
+    - Brand: String
+    - NotRepaired: String
+    - DateCreated: String
+    - NumberOfPictures: Int64
+    - PostalCode: Int64
+    - LastSeen: String
+
+📐 Numeric Statistics:     
+    Price 
+        - Mean: 4416.656775846645 
+        - Median: 2700.0
+        - Std: 4514.158513895535
+        - Min:  0.0
+        - Max: 20000.0
+        
+    RegistrationYear 
+        - Mean: 2004.234447708462 
+        - Median: 2003.0
+        - Std: 90.22795785100556
+        - Min:  1000.0
+        - Max: 9999.0
+        
+    Power 
+        - Mean: 110.0943366942368 
+        - Median: 105.0
+        - Std: 189.85040513977083
+        - Min:  0.0
+        - Max: 20000.0
+        
+    Mileage 
+        - Mean: 128211.17253484363 
+        - Median: 150000.0
+        - Std: 37905.34152975151
+        - Min:  5000.0
+        - Max: 150000.0
+        
+    RegistrationMonth 
+        - Mean: 5.7146449040407035 
+        - Median: 6.0
+        - Std: 3.726420966934916
+        - Min:  0.0
+        - Max: 12.0
+        
+    NumberOfPictures 
+        - Mean: 0.0 
+        - Median: 0.0
+        - Std: 0.0
+        - Min:  0.0
+        - Max: 0.0
+        
+    PostalCode 
+        - Mean: 50508.68908679935 
+        - Median: 49413.0
+        - Std: 25783.096248217207
+        - Min:  1067.0
+        - Max: 99998.0
+     
+🧮 Unique Categoric Values: 
+    - DateCrawled: 15470
+    - VehicleType: 9
+    - Gearbox: 3
+    - Model: 251
+    - FuelType: 8
+    - Brand: 40
+    - NotRepaired: 3
+    - DateCreated: 109
+    - LastSeen: 18592
+ 
+========================================================================================
+MISSING VALUES ANALYSIS
+----------------------------------------------------------------------------------------
+❓ Total Nulls in Dataset: 181077
+
+    - VehicleType: 37490 nulls column (10.579%), 0 nulls row -> action: analyse
+    - Gearbox: 19833 nulls column (5.597%), 0 nulls row -> action: analyse
+    - Model: 19705 nulls column (5.561%), 0 nulls row -> action: analyse
+    - FuelType: 32895 nulls column (9.283%), 0 nulls row -> action: analyse
+    - NotRepaired: 71154 nulls column (20.079%), 0 nulls row -> action: analyse
+
+========================================================================================
+NUMERIC COLUMNS ANALYSIS
+========================================================================================
+DISTRIBUTION 
+----------------------------------------------------------------------------------------
+📊 Price
+    - Mean: 4416.657 | Median: 2700.0 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 RegistrationYear
+    - Mean: 2004.234 | Median: 2003.0 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: minMaxScaler
+
+📊 Power
+    - Mean: 110.094 | Median: 105.0 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: log1p
+        - Scaler: minMaxScaler
+
+📊 Mileage
+    - Mean: 128211.173 | Median: 150000.0 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: very concentrated (75% of the data in less than 30% of the range)
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: minMaxScaler
+
+📊 RegistrationMonth
+    - Mean: 5.715 | Median: 6.0 -> skew: negative (Tail to the left. Smaller values)
+    - Distribution: moderately dispersed
+    ML Suggestions: 
+        - Transformer: square
+        - Scaler: robustScaler
+
+📊 NumberOfPictures
+    - Mean: 0.0 | Median: 0.0 -> skew: symmetrical (Symmetric values)
+    - Distribution: range value is 0
+    ML Suggestions: 
+        - Transformer: Many zeros. Consider a specific model for excess zeros
+        - Scaler: standarScaler
+
+📊 PostalCode
+    - Mean: 50508.689 | Median: 49413.0 -> skew: positive (Tail to the right. Higher values)
+    - Distribution: moderately dispersed
+    ML Suggestions: 
+        - Transformer: sqrt
+        - Scaler: robustScaler
+
+========================================================================================
+OUTLIERS
+----------------------------------------------------------------------------------------
+🚨 Price
+    - IQR (distance between 25 and 75): 5350.0
+    - Total of Outliers: 18979
+    - Percent: 5.356
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Filter: capping
+       - Flag: True
+
+🚨 RegistrationYear
+    - IQR (distance between 25 and 75): 9.0
+    - Total of Outliers: 6309
+    - Percent: 1.78
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: trim
+       - Impute: median
+       - Transform: sqrt
+
+🚨 Power
+    - IQR (distance between 25 and 75): 74.0
+    - Total of Outliers: 7340
+    - Percent: 2.071
+    ML Suggestions: 
+       - Scaler: minMaxScaler
+       - Filter: capping
+       - Impute: median
+
+🚨 Mileage
+    - IQR (distance between 25 and 75): 25000.0
+    - Total of Outliers: 53257
+    - Percent: 15.029
+    ML Suggestions: 
+       - Scaler: robustScaler
+       - Flag: True
+
+========================================================================================
+CORRELATION
+----------------------------------------------------------------------------------------
+No high correlation was detected
+========================================================================================
+CATEGORICAL COLUMNS ANALYSIS
+----------------------------------------------------------------------------------------
+🧮 DateCrawled
+Total unique values: 15470
+
+    Unique Top Values
+    - 05/03/2016 14:25 (0.019%) -> 66 total values
+    - 05/03/2016 14:26 (0.017%) -> 59 total values
+
+    Rare Unique Values
+    - 05/03/2016 16:37 (0.01%) -> 35 total values
+    - 07/03/2016 10:40 (0.008%) -> 29 total values
+    - 07/03/2016 13:45 (0.01%) -> 36 total values
+    - 11/03/2016 13:51 (0.012%) -> 42 total values
+    - 26/03/2016 13:58 (0.013%) -> 45 total values
+    - 04/04/2016 16:49 (0.008%) -> 29 total values
+    - 24/03/2016 10:39 (0.001%) -> 4 total values
+    - 16/03/2016 17:37 (0.01%) -> 34 total values
+    - 21/03/2016 07:36 (0.004%) -> 15 total values
+    - 20/03/2016 15:39 (0.009%) -> 31 total values
+
+    - For many categories: targetEncoder
+    - For hight cardinality: targetEncoder
+
+🧮 VehicleType
+Total unique values: 9
+
+    Unique Top Values
+    - sedan (25.808%) -> 91457 total values
+    - small (22.528%) -> 79831 total values
+
+    Rare Unique Values
+    - other (0.928%) -> 3288 total values
+
+    Many Rare Values
+    - Suggestion: group
+    - Encoder: oneHotEncoder
+    Categories With Nulls
+    - Suggestion: ['group', 'filter', 'constantValue']
+    - Encoder: Any_encoder
+
+🧮 Gearbox
+Total unique values: 3
+
+    Unique Top Values
+    - manual (75.698%) -> 268251 total values
+    - auto (18.705%) -> 66285 total values
+
+    Rare Unique Values
+    📌 Note: there are no rare values
+
+    - For few categories: ordinalEncoder
+    Many Rare Values
+    - Suggestion: group
+    - Encoder: oneHotEncoder
+    Categories With Nulls
+    - Suggestion: ['group', 'filter', 'constantValue']
+    - Encoder: Any_encoder
+
+🧮 Model
+Total unique values: 251
+
+    Unique Top Values
+    - golf (8.249%) -> 29232 total values
+    - other (6.891%) -> 24421 total values
+
+    Rare Unique Values
+    - rav (0.099%) -> 350 total values
+    - q5 (0.027%) -> 97 total values
+    - superb (0.103%) -> 366 total values
+    - yaris (0.292%) -> 1033 total values
+    - cooper (0.55%) -> 1950 total values
+    - roadster (0.051%) -> 181 total values
+    - q3 (0.004%) -> 15 total values
+    - lodgy (0.01%) -> 35 total values
+    - lanos (0.025%) -> 89 total values
+    - cr_reihe (0.097%) -> 345 total values
+
+    - For many categories: targetEncoder
+    - For hight cardinality: targetEncoder
+    Many Rare Values
+    - Suggestion: group
+    - Encoder: oneHotEncoder
+    Categories With Nulls
+    - Suggestion: ['group', 'filter', 'constantValue']
+    - Encoder: Any_encoder
+
+🧮 FuelType
+Total unique values: 8
+
+    Unique Top Values
+    - petrol (61.053%) -> 216352 total values
+    - gasoline (27.858%) -> 98720 total values
+
+    Rare Unique Values
+    - cng (0.159%) -> 565 total values
+    - electric (0.025%) -> 90 total values
+    - hybrid (0.066%) -> 233 total values
+    - other (0.058%) -> 204 total values
+
+    Many Rare Values
+    - Suggestion: group
+    - Encoder: oneHotEncoder
+    Categories With Nulls
+    - Suggestion: ['group', 'filter', 'constantValue']
+    - Encoder: Any_encoder
+
+🧮 Brand
+Total unique values: 40
+
+    Unique Top Values
+    - volkswagen (21.732%) -> 77013 total values
+    - opel (11.268%) -> 39931 total values
+
+    Rare Unique Values
+    - sonstige_autos (0.952%) -> 3374 total values
+    - volvo (0.906%) -> 3210 total values
+    - lancia (0.133%) -> 471 total values
+    - chrysler (0.406%) -> 1439 total values
+    - subaru (0.215%) -> 762 total values
+    - land_rover (0.154%) -> 545 total values
+    - suzuki (0.656%) -> 2323 total values
+    - kia (0.696%) -> 2465 total values
+    - lada (0.063%) -> 225 total values
+    - honda (0.795%) -> 2817 total values
+
+    - For many categories: targetEncoder
+    Many Rare Values
+    - Suggestion: group
+    - Encoder: oneHotEncoder
+
+🧮 NotRepaired
+Total unique values: 3
+
+    Unique Top Values
+    - no (69.747%) -> 247161 total values
+    - None (20.079%) -> 71154 total values
+
+    Rare Unique Values
+    📌 Note: there are no rare values
+
+    - For few categories: ordinalEncoder
+    Many Rare Values
+    - Suggestion: group
+    - Encoder: oneHotEncoder
+    Categories With Nulls
+    - Suggestion: ['group', 'filter', 'constantValue']
+    - Encoder: Any_encoder
+
+🧮 DateCreated
+Total unique values: 109
+
+    Unique Top Values
+    - 03/04/2016 00:00 (3.871%) -> 13719 total values
+    - 04/04/2016 00:00 (3.758%) -> 13317 total values
+
+    Rare Unique Values
+    - 23/11/2015 00:00 (0.001%) -> 2 total values
+    - 17/12/2015 00:00 (0.0%) -> 1 total values
+    - 24/11/2015 00:00 (0.001%) -> 2 total values
+    - 07/08/2015 00:00 (0.0%) -> 1 total values
+    - 25/01/2016 00:00 (0.001%) -> 4 total values
+    - 28/02/2016 00:00 (0.014%) -> 49 total values
+    - 25/02/2016 00:00 (0.006%) -> 20 total values
+    - 10/03/2014 00:00 (0.0%) -> 1 total values
+    - 04/03/2016 00:00 (0.17%) -> 601 total values
+    - 20/01/2016 00:00 (0.001%) -> 2 total values
+
+    - For many categories: targetEncoder
+    - For hight cardinality: targetEncoder
+    Many Rare Values
+    - Suggestion: group
+    - Encoder: oneHotEncoder
+
+🧮 LastSeen
+Total unique values: 18592
+
+    Unique Top Values
+    - 07/04/2016 07:16 (0.185%) -> 654 total values
+    - 07/04/2016 06:45 (0.182%) -> 646 total values
+
+    Rare Unique Values
+    - 09/03/2016 04:45 (0.002%) -> 6 total values
+    - 23/03/2016 20:50 (0.003%) -> 11 total values
+    - 03/04/2016 12:47 (0.006%) -> 23 total values
+    - 22/03/2016 11:49 (0.001%) -> 2 total values
+    - 10/03/2016 22:43 (0.0%) -> 1 total values
+    - 15/03/2016 08:45 (0.009%) -> 31 total values
+    - 15/03/2016 16:20 (0.004%) -> 15 total values
+    - 31/03/2016 16:18 (0.006%) -> 20 total values
+    - 12/03/2016 17:54 (0.002%) -> 7 total values
+    - 26/03/2016 18:54 (0.001%) -> 4 total values
+
+    - For many categories: targetEncoder
+    - For hight cardinality: targetEncoder
+
+========================================================================================
+SUMMARY & RECOMMENDATIONS
+----------------------------------------------------------------------------------------
+✅ Missing values detected and categorized by action
+✅ Outliers quantified and suggested handling per column
+✅ Categorical encoding suggestions provided
+
+⚠️  Priority suggestions actions before modeling:
+    - Handle duplicated rows
+    - Handle nulls in VehicleType, Gearbox, Model, FuelType, NotRepaired
+    - Apply or analyse the suggestions in Price, RegistrationYear, Power, Mileage
+    - Group, remove or filter rare categories
+
+========================================================================================
